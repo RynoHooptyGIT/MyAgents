@@ -1,0 +1,112 @@
+installation:
+  version: 6.0.0
+  installDate: {{INSTALL_DATE}}
+  lastUpdated: {{INSTALL_DATE}}
+modules:
+  - core
+  - bmb
+  - bmm
+  - cis
+ides:
+  - claude-code
+teams:
+  fullstack:
+    name: "Team Plan and Architect"
+    members:
+      - analyst
+      - architect
+      - pm
+      - sm
+      - ux-designer
+    best_for:
+      - "Planning new features"
+      - "Architectural decisions"
+      - "Cross-functional design"
+  creative:
+    name: "Creative Squad"
+    members:
+      - brainstorming-coach
+      - storyteller
+      - creative-problem-solver
+      - design-thinking-coach
+      - innovation-strategist
+      - presentation-master
+    best_for:
+      - "Innovation strategy"
+      - "Creative problem solving"
+      - "Design thinking"
+  implementation:
+    name: "Dev Team"
+    members:
+      - dev
+      - tea
+      - tech-writer
+    best_for:
+      - "Parallel implementation"
+      - "Test coverage review"
+      - "Documentation generation"
+  core-dev:
+    name: "Core Development"
+    members:
+      - navigator
+      - custodian
+      - architect
+      - ux-designer
+      - dev
+      - sm
+      - tea
+    best_for:
+      - "Feature development lifecycle"
+      - "Sprint planning and execution"
+      - "Code quality and repo health"
+  specialists:
+    name: "Technical Specialists"
+    members:
+      - security-auditor
+      - nist-rmf-expert
+      - devops
+      - api-contract
+      - agentic-expert
+      - ml-expert
+      - data-architect
+    best_for:
+      - "Security audits"
+      - "NIST RMF compliance"
+      - "Infrastructure and DevOps"
+      - "API contract validation"
+      - "AI/ML architecture"
+      - "Database optimization"
+  advisors:
+    name: "Industry Advisors"
+    members:
+      - healthcare-expert
+      - government-expert
+      - financial-expert
+    best_for:
+      - "Healthcare AI regulatory guidance"
+      - "Government AI policy"
+      - "Financial services AI governance"
+  full-team:
+    name: "Full Team"
+    members:
+      - navigator
+      - custodian
+      - architect
+      - ux-designer
+      - dev
+      - sm
+      - tea
+      - security-auditor
+      - nist-rmf-expert
+      - devops
+      - api-contract
+      - agentic-expert
+      - ml-expert
+      - data-architect
+      - healthcare-expert
+      - government-expert
+      - financial-expert
+    best_for:
+      - "Full team discussions"
+      - "Cross-functional design reviews"
+      - "Architecture decision records"

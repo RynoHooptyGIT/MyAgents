@@ -1,0 +1,17 @@
+name: migration-audit
+description: "Alembic migration chain integrity: duplicate numbers, down_revision chain, RLS policies, tenant_id columns."
+author: "BMAD"
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+installed_path: "{project-root}/_bmad/bmm/workflows/custodian/migration-audit"
+instructions: "{installed_path}/instructions.md"
+variables:
+  agent: "custodian"
+input_file_patterns:
+  project_context:
+    description: "Project context rules file"
+    whole: "**/project-context.md"
+    load_strategy: "FULL_LOAD"
+standalone: true

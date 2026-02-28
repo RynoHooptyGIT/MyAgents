@@ -1,0 +1,18 @@
+ide: claude-code
+configured_date: {{INSTALL_DATE}}
+last_updated: {{INSTALL_DATE}}
+configuration:
+  subagentChoices:
+    - label: "Fullstack Team (Plan & Architect)"
+      team: fullstack
+      description: "Analyst, Architect, PM, SM, UX Designer - Best for planning and design"
+    - label: "Creative Squad"
+      team: creative
+      description: "Creative agents - Best for innovation and problem solving"
+    - label: "Implementation Team"
+      team: implementation
+      description: "Dev, Test Architect, Tech Writer - Best for parallel implementation"
+    - label: "Custom Selection"
+      team: custom
+      description: "Select specific agents manually"
+  installLocation: "{project-root}/_bmad"

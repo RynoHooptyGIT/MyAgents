@@ -1,0 +1,87 @@
+# Example: React + FastAPI full-stack project
+# Copy this to context-config.yaml and adjust paths to match your project.
+
+output_dir: "_bmad-output/context"
+
+generators:
+  sprint-digest:
+    enabled: true
+    phases:
+      - range: [1, 4]
+        name: "Foundation"
+      - range: [5, 7]
+        name: "Intelligence & Discovery"
+      - range: [8, 10]
+        name: "Governance & Compliance"
+      - range: [11, 13]
+        name: "Agent Framework"
+      - range: [14, 17]
+        name: "Advanced Analytics"
+      - range: [18, 20]
+        name: "Enterprise Features"
+
+  module-index:
+    enabled: true
+    scanners:
+      - type: features
+        label: "Frontend Features"
+        path: "packages/frontend/src/features"
+        extensions: [".ts", ".tsx"]
+      - type: shared
+        label: "Frontend Shared Code"
+        path: "packages/frontend/src"
+        subdirs: ["components", "hooks", "utils", "lib", "types"]
+        extensions: [".ts", ".tsx"]
+      - type: routers
+        label: "Backend API Routers"
+        path: "backend/app/routers"
+      - type: models
+        label: "Backend Models"
+        path: "backend/app/models"
+      - type: services
+        label: "Backend Services"
+        path: "backend/app/services"
+      - type: infrastructure
+        label: "Backend Infrastructure"
+        path: "backend/app"
+        subdirs: ["core", "middleware", "agents", "security", "mcp", "tasks", "schemas"]
+
+  api-index:
+    enabled: true
+    framework: "fastapi"
+    routers_dir: "backend/app/routers"
+
+  schema-digest:
+    enabled: true
+    orm: "sqlalchemy"
+    models_dir: "backend/app/models"
+    model_bases: ["BaseModel", "Base"]
+    skip_classes: ["Base", "Mixin"]
+
+  patterns:
+    enabled: true
+    extractions:
+      - name: "React Query Hook"
+        description: "Use object syntax with queryKey + queryFn."
+        search_dir: "packages/frontend/src"
+        file_glob: "*.tsx"
+        search_text: "useQuery({"
+        language: "typescript"
+      - name: "Zustand Store with Persist"
+        description: "Use skipHydration: true with sessionStorage."
+        search_dir: "packages/frontend/src"
+        file_glob: "useAuth.ts"
+        search_text: "persist("
+        language: "typescript"
+      - name: "FastAPI Router Endpoint"
+        description: "Use Annotated + Depends for DI."
+        search_dir: "backend/app/routers"
+        file_glob: "*.py"
+        search_text: "@router.get"
+        language: "python"
+      - name: "Pydantic v2 Schema"
+        description: "Use ConfigDict(from_attributes=True)."
+        search_dir: "backend/app/schemas"
+        file_glob: "*.py"
+        search_text: "ConfigDict"
+        language: "python"

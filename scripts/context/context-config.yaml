@@ -1,0 +1,109 @@
+# BMAD Context Generator Configuration
+# Edit this file to match your project's tech stack and directory structure.
+# Run: python scripts/context/generate_all.py
+#
+# All paths are relative to the project root.
+
+output_dir: "_bmad-output/context"
+
+generators:
+  # Sprint Digest — Always works (reads sprint-status.yaml)
+  sprint-digest:
+    enabled: true
+    # Phase mapping: epic number range → phase name
+    # Customize to match your project's epic/phase structure
+    phases:
+      - range: [1, 4]
+        name: "Foundation"
+      - range: [5, 7]
+        name: "Core Features"
+      - range: [8, 10]
+        name: "Advanced Features"
+
+  # Module Index — Feature map of frontend/backend modules
+  module-index:
+    enabled: true
+    scanners:
+      # Each scanner produces a section in module-index.md
+      # Supported types: features, shared, routers, models, services, infrastructure
+      - type: features
+        label: "Frontend Features"
+        path: "src/features"
+        extensions: [".ts", ".tsx", ".js", ".jsx"]
+      - type: shared
+        label: "Frontend Shared Code"
+        path: "src"
+        subdirs: ["components", "hooks", "utils", "lib", "types"]
+        extensions: [".ts", ".tsx", ".js", ".jsx"]
+      - type: routers
+        label: "Backend API Routers"
+        path: "backend/app/routers"
+      - type: models
+        label: "Backend Models"
+        path: "backend/app/models"
+      - type: services
+        label: "Backend Services"
+        path: "backend/app/services"
+      - type: infrastructure
+        label: "Backend Infrastructure"
+        path: "backend/app"
+        subdirs: ["core", "middleware", "agents", "security", "mcp", "tasks", "schemas"]
+
+  # API Index — Endpoint reference from router files
+  api-index:
+    enabled: true
+    framework: "fastapi"  # "fastapi" | "express" | "none"
+    routers_dir: "backend/app/routers"
+
+  # Schema Digest — Database schema from ORM models
+  schema-digest:
+    enabled: true
+    orm: "sqlalchemy"  # "sqlalchemy" | "prisma" | "none"
+    models_dir: "backend/app/models"
+    # Base classes that indicate a model (used for filtering)
+    model_bases: ["BaseModel", "Base", "db.Model"]
+    # Mixins to skip
+    skip_classes: ["Base", "Mixin"]
+
+  # Patterns — Canonical code patterns extracted from codebase
+  patterns:
+    enabled: true
+    # Each pattern extracts a code example from your codebase
+    # Customize or remove patterns that don't apply to your stack
+    extractions:
+      - name: "React Query Hook"
+        description: "Use object syntax with queryKey + queryFn. Never use positional args."
+        search_dir: "src"
+        file_glob: "*.tsx"
+        search_text: "useQuery({"
+        language: "typescript"
+      - name: "Zustand Store with Persist"
+        description: "MUST use skipHydration: true with sessionStorage."
+        search_dir: "src"
+        file_glob: "useAuth.ts"
+        search_text: "persist("
+        language: "typescript"
+      - name: "FastAPI Router Endpoint"
+        description: "Use Annotated + Depends for DI. Role-based auth."
+        search_dir: "backend/app/routers"
+        file_glob: "*.py"
+        search_text: "@router.get"
+        language: "python"
+      - name: "Pydantic v2 Schema"
+        description: "Use model_config = ConfigDict(from_attributes=True). NEVER use class Config."
+        search_dir: "backend/app/schemas"
+        file_glob: "*.py"
+        search_text: "ConfigDict"
+        language: "python"
+      - name: "SQLAlchemy 2.0 Model"
+        description: "Inherit BaseModel. Include tenant_id FK. Use lazy='selectin'."
+        search_dir: "backend/app/models"
+        file_glob: "*.py"
+        search_text: "relationship"
+        language: "python"
+      - name: "Service Layer"
+        description: "Constructor takes AsyncSession. Use select() builder."
+        search_dir: "backend/app/services"
+        file_glob: "*.py"
+        search_text: "AsyncSession"
+        language: "python"

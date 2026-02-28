@@ -1,0 +1,74 @@
+# {{PROJECT_NAME}} - Claude Code Instructions
+
+## MANDATORY: Oracle Agent — Always Active
+
+This project uses the BMAD Methodology (v6) with an **Oracle agent (Athena)** as the always-on orchestrator. The Oracle MUST be activated at the start of EVERY session, regardless of what the user asks.
+
+### Session Start Protocol (EVERY SESSION)
+
+1. **ALWAYS invoke the Oracle agent first**: `/bmad:bmm:agents:oracle`
+2. The Oracle reads sprint state from `sprint-status.yaml`, presents a project brief, and displays its menu
+3. The Oracle determines the correct workflow to execute based on user direction
+4. Do NOT skip the Oracle — there are NO exceptions
+
+### What This Means in Practice
+
+- **User says "implement X"** → Oracle checks story file, creates if needed, runs dev-story → code-review → ship
+- **User says "what should I work on?"** → Oracle reads sprint status, recommends next action
+- **User says "review the code"** → Oracle runs code-review workflow
+- **User asks a question about the project** → Oracle uses its CH (Chat) mode
+- **User gives any directive** → Oracle determines the correct workflow/agent and executes it
+
+### Implementation Lifecycle (Oracle Enforces This — No Shortcuts)
+
+1. **`CS`** — Create story file from epic (if one doesn't exist)
+2. **`DS`** — Implement the story (tasks, code, tests, story file updates)
+3. **`CR`** — Adversarial code review (finds 3-10 issues, fixes them)
+4. **`SH`** — Commit, push, and create PR
+
+### Lifecycle Rules
+
+- Never start coding without a story file. If one doesn't exist, create it first via `CS`.
+- Always update `_bmad-output/implementation-artifacts/sprint-status.yaml` when story status changes.
+- Story status transitions: `backlog` → `ready-for-dev` → `in-progress` → `review` → `done`
+- After dev-story (`DS`) completes, ALWAYS run code-review (`CR`) before shipping.
+- The Oracle executes implementation workflows directly. It routes to specialist agents for domain expertise.
+
+## Agent Context System (DO NOT scan the full repo)
+
+Pre-generated context files exist in `_bmad-output/context/`. **USE these instead of scanning the codebase.**
+
+- **`module-index.md`** — Feature map of all frontend modules + backend services/routers/models
+- **`sprint-digest.md`** — Pre-computed sprint summary (use instead of parsing 500+ line YAML)
+- **`api-index.md`** — All API endpoints by router
+- **`schema-digest.md`** — Database schema from ORM models
+- **`patterns.md`** — Canonical code patterns to follow when implementing
+
+Also load `_bmad-output/project-context.md` for critical implementation rules.
+
+**Regeneration Commands:**
+
+- Full refresh: `python scripts/context/generate_all.py`
+- Sprint-only: `python scripts/context/generate_all.py --sprint`
+- Check freshness: `python scripts/context/generate_all.py --check`
+
+**Auto-Regeneration:** A Claude Code `PostToolUse` hook (`.claude/hooks/post-commit-context.sh`) automatically runs `generate_all.py` after every successful `git commit`. Context files stay fresh without manual intervention.
+
+## Project Structure
+
+- Planning docs: `_bmad-output/planning-artifacts/`
+- Story files: `_bmad-output/implementation-artifacts/stories/`
+- Sprint tracking: `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- Agent context: `_bmad-output/context/` (auto-generated, committed to git)
+- Context generators: `scripts/context/` (Python scripts)
+- BMAD config: `_bmad/bmm/config.yaml`
+- Oracle agent: `_bmad/bmm/agents/oracle.md`
+
+## Critical Technical Rules
+
+<!-- ADD YOUR PROJECT-SPECIFIC TECHNICAL RULES BELOW -->
+<!-- Examples: -->
+<!-- - **Framework version** — specific version constraints -->
+<!-- - **Architecture patterns** — patterns to follow -->
+<!-- - **Testing** — testing framework and conventions -->
+<!-- - **Deployment** — deployment requirements -->

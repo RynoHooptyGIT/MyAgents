@@ -1,0 +1,21 @@
+name: gap-analysis
+description: "Full API gap analysis — pagination, error responses, versioning compliance"
+author: "BMAD"
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+installed_path: "{project-root}/_bmad/bmm/workflows/api-contract/gap-analysis"
+instructions: "{installed_path}/instructions.md"
+variables:
+  agent: "pact"
+input_file_patterns:
+  project_context:
+    description: "Project context rules file"
+    whole: "**/project-context.md"
+    load_strategy: "FULL_LOAD"
+  openapi_spec:
+    description: "OpenAPI specification"
+    whole: "backend/openapi/openapi.json"
+    load_strategy: "FULL_LOAD"
+standalone: true

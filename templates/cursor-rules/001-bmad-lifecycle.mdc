@@ -1,0 +1,36 @@
+---
+description: BMAD Implementation Lifecycle - Enforced story-driven development
+alwaysApply: true
+---
+
+# BMAD Implementation Lifecycle
+
+## Story-Driven Development (No Shortcuts)
+
+1. **Create Story (CS)** — Generate story file from epic before coding
+2. **Dev Story (DS)** — Implement tasks, write tests, update story file
+3. **Code Review (CR)** — Adversarial review (must find 3-10 issues)
+4. **Ship (SH)** — Commit, push, create PR
+
+## Rules
+
+- NEVER start coding without a story file in `_bmad-output/implementation-artifacts/stories/`
+- ALWAYS update `_bmad-output/implementation-artifacts/sprint-status.yaml` when story status changes
+- Story status transitions: `backlog` → `ready-for-dev` → `in-progress` → `review` → `done`
+- After dev-story completes, ALWAYS run code-review before shipping
+- The Oracle agent executes implementation workflows directly
+
+## Invoking Workflows
+
+To execute a workflow:
+1. Read `_bmad/core/tasks/workflow.xml` (the workflow engine)
+2. Pass the workflow YAML path as 'workflow-config' parameter
+3. Follow workflow.xml instructions exactly
+
+### Key Workflow Paths
+
+- Create Story: `_bmad/bmm/workflows/4-implementation/create-story/workflow.yaml`
+- Dev Story: `_bmad/bmm/workflows/4-implementation/dev-story/workflow.yaml`
+- Code Review: `_bmad/bmm/workflows/4-implementation/code-review/workflow.yaml`
+- Ship: `_bmad/bmm/workflows/devops/ship/workflow.yaml`
+- Sprint Planning: `_bmad/bmm/workflows/4-implementation/sprint-planning/workflow.yaml`

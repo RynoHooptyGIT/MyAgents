@@ -1,0 +1,37 @@
+---
+description: BMAD Context System - Pre-generated context files for AI agents
+alwaysApply: false
+globs:
+  - _bmad-output/**
+  - scripts/context/**
+---
+
+# BMAD Context System
+
+## Context Files
+
+Pre-generated context files exist in `_bmad-output/context/`. Use these INSTEAD of scanning the full codebase:
+
+| File | Purpose |
+|------|---------|
+| `module-index.md` | Feature map of all frontend/backend modules |
+| `sprint-digest.md` | Pre-computed sprint status summary |
+| `api-index.md` | All API endpoints by router |
+| `schema-digest.md` | Database schema from ORM models |
+| `patterns.md` | Canonical code patterns to follow |
+
+Also load `_bmad-output/project-context.md` for critical implementation rules.
+
+## Regeneration
+
+Context files should be regenerated after significant code changes:
+
+```bash
+python scripts/context/generate_all.py          # Regenerate all
+python scripts/context/generate_all.py --sprint  # Sprint digest only
+python scripts/context/generate_all.py --check   # Check if stale
+```
+
+## Configuration
+
+Edit `scripts/context/context-config.yaml` to configure scan paths for your tech stack.

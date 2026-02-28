@@ -1,0 +1,31 @@
+# <!-- Powered by BMAD-CORE™ -->
+bundle:
+  name: Creative Squad
+  icon: 🎨
+  description: Innovation and creative problem solving team with all CIS creative agents
+  module: cis
+agents: "*"  # All CIS agents: brainstorming-coach, storyteller, creative-problem-solver, design-thinking-coach, innovation-strategist, presentation-master
+party: "./default-party.csv"
+capabilities:
+  best_for:
+    - Innovation strategy
+    - Creative brainstorming sessions
+    - Problem solving with multiple perspectives
+    - Design thinking workshops
+    - Narrative and storytelling development
+    - Presentation design and visual communication
+    - Strategic disruption planning
+  avoid_for:
+    - Technical implementation
+    - Code review
+    - Routine development tasks
+    - Compliance documentation
+coordination:
+  lead_agent: innovation-strategist  # Strategist coordinates by default
+  delegate_mode: true  # Lead coordinates creative exploration
+  require_plan_approval: false  # Creative work is exploratory and iterative
+  typical_team_size: 6  # All CIS agents for full creative spectrum
+agent_teams_usage:
+  when_to_use: "Use agent teams when creative exploration benefits from parallel investigation of different creative methodologies and perspectives"
+  example_prompt: "Spawn creative squad to brainstorm innovative solutions for improving customer retention"
+  expected_workflow: "Innovation strategist leads, brainstorming coach facilitates ideation, design-thinking coach ensures user-centricity, problem-solver analyzes constraints, storyteller crafts narratives, presentation-master visualizes concepts"
