@@ -14,8 +14,8 @@ alwaysApply: true
 
 ## Rules
 
-- NEVER start coding without a story file in `_bmad-output/implementation-artifacts/stories/`
-- ALWAYS update `_bmad-output/implementation-artifacts/sprint-status.yaml` when story status changes
+- NEVER start coding without a story file in `output/implementation-artifacts/stories/`
+- ALWAYS update `output/implementation-artifacts/sprint-status.yaml` when story status changes
 - Story status transitions: `backlog` → `ready-for-dev` → `in-progress` → `review` → `done`
 - After dev-story completes, ALWAYS run code-review before shipping
 - The Oracle agent executes implementation workflows directly
@@ -23,14 +23,14 @@ alwaysApply: true
 ## Invoking Workflows
 
 To execute a workflow:
-1. Read `_bmad/core/tasks/workflow.xml` (the workflow engine)
+1. Read `team/engine/workflow.xml` (the workflow engine)
 2. Pass the workflow YAML path as 'workflow-config' parameter
 3. Follow workflow.xml instructions exactly
 
 ### Key Workflow Paths
 
-- Create Story: `_bmad/bmm/workflows/4-implementation/create-story/workflow.yaml`
-- Dev Story: `_bmad/bmm/workflows/4-implementation/dev-story/workflow.yaml`
-- Code Review: `_bmad/bmm/workflows/4-implementation/code-review/workflow.yaml`
-- Ship: `_bmad/bmm/workflows/devops/ship/workflow.yaml`
-- Sprint Planning: `_bmad/bmm/workflows/4-implementation/sprint-planning/workflow.yaml`
+- Create Story: `team/workflows/implementation/create-story/workflow.yaml`
+- Dev Story: `team/workflows/implementation/dev-story/workflow.yaml`
+- Code Review: `team/workflows/implementation/code-review/workflow.yaml`
+- Ship: `team/workflows/devops/ship/workflow.yaml`
+- Sprint Planning: `team/workflows/implementation/sprint-planning/workflow.yaml`

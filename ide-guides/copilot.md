@@ -33,10 +33,10 @@ always-on orchestrator. The Oracle MUST be activated at the start of EVERY sessi
 
 ### Session Start Protocol
 
-1. Load and follow the full activation protocol in `_bmad/bmm/agents/oracle.md`
-2. Read project config from `_bmad/bmm/config.yaml`
-3. Read sprint state from `_bmad-output/implementation-artifacts/sprint-status.yaml`
-4. Read context files from `_bmad-output/context/` (module-index.md, sprint-digest.md, etc.)
+1. Load and follow the full activation protocol in `team/agents/oracle.md`
+2. Read project config from `team/config.yaml`
+3. Read sprint state from `output/implementation-artifacts/sprint-status.yaml`
+4. Read context files from `output/context/` (module-index.md, sprint-digest.md, etc.)
 5. Present a project brief with current epic, in-flight stories, and recommendation
 6. Display the Oracle's numbered menu and wait for user input
 
@@ -52,14 +52,14 @@ before shipping.
 
 ### Agent Context System
 
-Pre-generated context files in `_bmad-output/context/`:
+Pre-generated context files in `output/context/`:
 - `module-index.md` -- Feature map of frontend modules + backend services
 - `sprint-digest.md` -- Sprint summary (use instead of parsing full YAML)
 - `api-index.md` -- All API endpoints by router
 - `schema-digest.md` -- Database schema from models
 - `patterns.md` -- Canonical code patterns to follow
 
-Also load `_bmad-output/project-context.md` if it exists -- critical rules for implementation.
+Also load `output/project-context.md` if it exists -- critical rules for implementation.
 
 ### Context Regeneration
 
@@ -80,9 +80,9 @@ python scripts/context/generate_all.py
 Since Copilot has no slash commands, invoke the Oracle by asking:
 
 ```
-Please load the agent file at _bmad/bmm/agents/oracle.md and follow its complete
-activation protocol. Read _bmad/bmm/config.yaml for project settings, then read
-_bmad-output/implementation-artifacts/sprint-status.yaml for sprint state.
+Please load the agent file at team/agents/oracle.md and follow its complete
+activation protocol. Read team/config.yaml for project settings, then read
+output/implementation-artifacts/sprint-status.yaml for sprint state.
 Present the project brief and menu.
 ```
 
@@ -117,38 +117,38 @@ Once the Oracle is active, you can use these commands:
 To invoke any agent, ask Copilot to load its file:
 
 ```
-Please load the agent from _bmad/bmm/agents/architect.md and follow its activation protocol.
+Please load the agent from team/agents/architect.md and follow its activation protocol.
 ```
 
 ```
-Please load the agent from _bmad/bmm/agents/security-auditor.md and follow its activation protocol.
+Please load the agent from team/agents/security-auditor.md and follow its activation protocol.
 ```
 
 ```
-Please load the agent from _bmad/cis/agents/brainstorming-coach.md and follow its activation protocol.
+Please load the agent from team/agents/creative-thinking-coach.md and follow its activation protocol.
 ```
 
 ### Agent File Locations
 
 | Agent | File Path |
 |-------|-----------|
-| Oracle (Athena) | `_bmad/bmm/agents/oracle.md` |
-| Architect (Winston) | `_bmad/bmm/agents/architect.md` |
-| Developer (Amelia) | `_bmad/bmm/agents/dev.md` |
-| Test Architect (Murat) | `_bmad/bmm/agents/tea.md` |
-| Security Auditor (Shield) | `_bmad/bmm/agents/security-auditor.md` |
-| DevOps (Forge) | `_bmad/bmm/agents/devops.md` |
-| Custodian (Sentinel) | `_bmad/bmm/agents/custodian.md` |
-| Navigator (Navi) | `_bmad/bmm/agents/navigator.md` |
-| UX Designer (Sally) | `_bmad/bmm/agents/ux-designer.md` |
-| Product Manager (John) | `_bmad/bmm/agents/pm.md` |
-| Scrum Master (Bob) | `_bmad/bmm/agents/sm.md` |
-| Analyst (Mary) | `_bmad/bmm/agents/analyst.md` |
-| Data Architect (Oracle) | `_bmad/bmm/agents/data-architect.md` |
-| API Contract (Pact) | `_bmad/bmm/agents/api-contract.md` |
-| Quick Flow (Barry) | `_bmad/bmm/agents/quick-flow-solo-dev.md` |
-| Brainstorming (Carson) | `_bmad/cis/agents/brainstorming-coach.md` |
-| Agent Builder (Bond) | `_bmad/bmb/agents/agent-builder.md` |
+| Oracle (Athena) | `team/agents/oracle.md` |
+| Architect (Winston) | `team/agents/architect.md` |
+| Developer (Amelia) | `team/agents/dev.md` |
+| Test Architect (Murat) | `team/agents/tea.md` |
+| Security Auditor (Shield) | `team/agents/security-auditor.md` |
+| DevOps (Forge) | `team/agents/devops.md` |
+| Custodian (Sentinel) | `team/agents/custodian.md` |
+| UX Designer (Sally) | `team/agents/ux-designer.md` |
+| Product Manager (John) | `team/agents/pm.md` |
+| Analyst (Mary) | `team/agents/analyst.md` |
+| Data Architect (Oracle) | `team/agents/data-architect.md` |
+| API Contract (Pact) | `team/agents/api-contract.md` |
+| Quick Flow (Barry) | `team/agents/quick-flow-solo-dev.md` |
+| Creative Thinking (Carson) | `team/agents/creative-thinking-coach.md` |
+| Design & Strategy (Maya) | `team/agents/design-strategy-coach.md` |
+| Storyteller & Presenter (Sophia) | `team/agents/storyteller-presenter.md` |
+| Agent Builder (Bond) | `team/agents/agent-builder.md` |
 
 ---
 
@@ -157,8 +157,8 @@ Please load the agent from _bmad/cis/agents/brainstorming-coach.md and follow it
 For workflows, ask Copilot to load both the workflow engine and the specific workflow:
 
 ```
-Please execute the workflow at _bmad/bmm/workflows/4-implementation/code-review/workflow.yaml
-using the workflow engine defined in _bmad/core/tasks/workflow.xml.
+Please execute the workflow at team/workflows/implementation/code-review/workflow.yaml
+using the workflow engine defined in team/engine/workflow.xml.
 Follow all steps exactly as specified.
 ```
 
@@ -166,13 +166,13 @@ Follow all steps exactly as specified.
 
 | Workflow | Path |
 |----------|------|
-| Create Story | `_bmad/bmm/workflows/4-implementation/create-story/workflow.yaml` |
-| Dev Story | `_bmad/bmm/workflows/4-implementation/dev-story/workflow.yaml` |
-| Code Review | `_bmad/bmm/workflows/4-implementation/code-review/workflow.yaml` |
-| Ship | `_bmad/bmm/workflows/devops/ship/workflow.yaml` |
-| Sprint Planning | `_bmad/bmm/workflows/4-implementation/sprint-planning/workflow.yaml` |
-| PRD | `_bmad/bmm/workflows/2-plan-workflows/prd/workflow.md` |
-| Architecture | `_bmad/bmm/workflows/3-solutioning/create-architecture/workflow.md` |
+| Create Story | `team/workflows/implementation/create-story/workflow.yaml` |
+| Dev Story | `team/workflows/implementation/dev-story/workflow.yaml` |
+| Code Review | `team/workflows/implementation/code-review/workflow.yaml` |
+| Ship | `team/workflows/devops/ship/workflow.yaml` |
+| Sprint Planning | `team/workflows/implementation/sprint-planning/workflow.yaml` |
+| PRD | `team/workflows/planning/prd/workflow.md` |
+| Architecture | `team/workflows/solutioning/create-architecture/workflow.md` |
 
 ### Limitations
 
@@ -188,14 +188,14 @@ Complex multi-step workflows with many file reads, template outputs, and variabl
 
 ### Using Context Files
 
-Context files in `_bmad-output/context/` work the same across all tools. Reference them in your prompts:
+Context files in `output/context/` work the same across all tools. Reference them in your prompts:
 
 ```
-Read _bmad-output/context/module-index.md for the project's feature map.
+Read output/context/module-index.md for the project's feature map.
 ```
 
 ```
-Check _bmad-output/context/sprint-digest.md for current sprint status.
+Check output/context/sprint-digest.md for current sprint status.
 ```
 
 Use `@workspace` to reference project files when needed.
@@ -237,7 +237,7 @@ Sprint tracking via `sprint-status.yaml` works fully with Copilot. The Oracle re
 If you need to check sprint state without the Oracle:
 
 ```
-Read _bmad-output/implementation-artifacts/sprint-status.yaml and summarize:
+Read output/implementation-artifacts/sprint-status.yaml and summarize:
 - Count stories by status (backlog, ready-for-dev, in-progress, review, done)
 - Identify the current active epic
 - Recommend the next action

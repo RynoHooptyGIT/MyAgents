@@ -71,27 +71,215 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="SE or fuzzy match on sec requirements" action="#sec-requirements">[SE] SEC Requirements</item>
     <item cmd="SO or fuzzy match on sox compliance" action="#sox-compliance">[SO] SOX Compliance</item>
     <item cmd="RL or fuzzy match on regulatory landscape" action="#fin-regulatory-landscape">[RL] Regulatory Landscape</item>
+    <item cmd="TP or fuzzy match on third-party-risk or vendor" action="#third-party-risk">[TP] Third-Party AI Vendor Risk (OCC 2021-56)</item>
     <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/_bmad/core/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
   <prompts>
     <prompt id="model-risk">
-      Analyze SR 11-7 model risk management requirements as applied to AI/ML models in financial services. Cover the three pillars: model development and implementation, model validation, and model use and governance. Address model inventory requirements, validation frequency, challenger model approaches, and ongoing monitoring. Discuss how SR 11-7 principles extend to third-party AI models and foundation models. Recommend how {project_name} should capture model risk management metadata and validation status.
+      PURPOSE: Analyze SR 11-7 model risk management requirements for AI/ML in financial services.
+
+      PROCESS:
+      1. PILLAR 1 — Model Development and Implementation:
+         - Model purpose documentation and use case boundaries
+         - Data quality assessment: representativeness, completeness, relevance
+         - Methodology selection and justification
+         - Development testing: in-sample, out-of-sample, out-of-time
+         - Implementation verification: code review, reconciliation to specifications
+      2. PILLAR 2 — Model Validation:
+         - Independent validation requirement: separate from development team
+         - Conceptual soundness evaluation: theory, assumptions, limitations
+         - Outcomes analysis: backtesting, benchmarking, sensitivity analysis
+         - Challenger model comparison
+         - Validation frequency: annual minimum, triggered by material changes
+      3. PILLAR 3 — Model Use and Governance:
+         - Model inventory: complete registry with risk tiering
+         - Approval workflow: development → validation → approval → production
+         - Ongoing monitoring: performance tracking, stability testing, override analysis
+         - Model change management: what constitutes a material change, re-validation triggers
+         - Third-party model governance: vendor model validation, foundation model risk assessment
+
+      OUTPUT FORMAT:
+      - SR 11-7 compliance matrix: requirement → pillar → current status → gap → remediation
+      - Model risk tier classification: Tier 1 (critical) / Tier 2 (significant) / Tier 3 (limited)
+      - Severity: CRITICAL (regulatory finding risk) / HIGH (significant gap) / MEDIUM (process improvement) / LOW (documentation)
+
+      CROSS-REFERENCES:
+      - For ML evaluation methodology, consult Neuron (/bmad:bmm:agents:ml-expert)
+      - For NIST compliance alignment, consult Atlas (/bmad:bmm:agents:nist-rmf-expert)
     </prompt>
+
     <prompt id="fair-lending">
-      Address fair lending compliance requirements for AI models used in credit decisioning, pricing, and marketing. Cover ECOA and FHA requirements, disparate impact testing methodology, adverse action notice requirements for AI-driven decisions, and the CFPB's evolving guidance on AI in lending. Discuss testing approaches including matched-pair testing, regression analysis, and model-specific fairness metrics. Recommend how {project_name} should track fair lending testing results and remediation actions.
+      PURPOSE: Address fair lending compliance for AI credit decisioning systems.
+
+      PROCESS:
+      1. Regulatory framework:
+         - Equal Credit Opportunity Act (ECOA, Regulation B): prohibited bases, adverse action requirements
+         - Fair Housing Act (FHA): protected classes, disparate impact standard
+         - CFPB AI guidance: chatbot disclosures, explainability requirements, adverse action specificity
+      2. Disparate impact testing methodology:
+         - Define protected classes and control groups
+         - Marginal effects analysis: impact of model factors on protected groups
+         - Matched-pair testing: controlled comparisons across demographic groups
+         - Regression analysis: statistical significance of disparate outcomes
+      3. Adverse action notice requirements:
+         - Specific reasons for denial (not just "model score")
+         - CFPB requirements for AI-driven decisions: must provide specific, accurate reasons
+         - Proxy discrimination: identify features that correlate with protected characteristics
+      4. Mitigation strategies:
+         - Pre-deployment: feature selection review, training data bias assessment
+         - Model design: fairness constraints, alternative models with less disparate impact
+         - Post-deployment: monitoring, periodic testing, remediation procedures
+      5. Documentation and audit trail requirements
+
+      OUTPUT FORMAT:
+      - Fair lending testing protocol
+      - Disparate impact analysis template
+      - Adverse action notice compliance checklist
+      - Severity: CRITICAL (active discrimination risk) / HIGH (testing gap) / MEDIUM (process improvement) / LOW (documentation)
+
+      CROSS-REFERENCES:
+      - For bias detection methodology, consult Neuron (/bmad:bmm:agents:ml-expert)
     </prompt>
+
     <prompt id="aml-bsa">
-      Address BSA/AML requirements for AI systems used in transaction monitoring, suspicious activity detection, customer due diligence, and sanctions screening. Cover FinCEN expectations for AI-based monitoring systems, model validation requirements specific to AML, and explainability requirements for suspicious activity reports (SARs). Discuss the balance between reducing false positives and maintaining detection effectiveness. Recommend governance tracking in {project_name}.
+      PURPOSE: Address BSA/AML requirements for AI monitoring systems.
+
+      PROCESS:
+      1. FinCEN expectations for AI-based transaction monitoring:
+         - Detection capability: must maintain or improve detection vs traditional rules
+         - Explainability: SAR narratives must explain why activity is suspicious — AI confidence scores alone are insufficient
+         - Tuning and calibration: documented methodology for threshold setting
+      2. Model validation specific to AML:
+         - Above-the-line testing: does the model detect known suspicious patterns?
+         - Below-the-line testing: what is the model missing? (sample review of non-alerts)
+         - False positive analysis: reduction strategies without sacrificing detection
+      3. Customer due diligence AI:
+         - Risk scoring: transparency in risk factor weighting
+         - Sanctions screening: name matching accuracy, fuzzy matching calibration
+         - Enhanced due diligence triggers: clear, auditable decision logic
+      4. Regulatory examination readiness:
+         - Model documentation package
+         - Validation results and remediation tracking
+         - Tuning history and rationale
+
+      OUTPUT FORMAT:
+      - AML model governance checklist
+      - Validation testing framework
+      - Examiner readiness assessment
+      - Severity: CRITICAL (regulatory finding risk) / HIGH (detection gap) / MEDIUM (process improvement) / LOW (documentation)
     </prompt>
+
     <prompt id="sec-requirements">
-      Analyze SEC guidance and requirements for AI used in investment management, algorithmic trading, market surveillance, and investor communications. Cover fiduciary duty implications of AI-driven investment decisions, disclosure requirements, best execution obligations for AI trading systems, and market manipulation detection. Address the SEC's proposed rules on AI in advisory and broker-dealer contexts. Recommend compliance tracking approaches in {project_name}.
+      PURPOSE: Analyze SEC requirements for AI in investment management and trading.
+
+      PROCESS:
+      1. Fiduciary duty implications:
+         - AI-driven investment decisions: duty of care, duty of loyalty
+         - Disclosure requirements: must inform clients about AI use in portfolio management
+         - Conflicts of interest: AI optimization that benefits firm over client
+      2. Algorithmic trading requirements:
+         - Market Access Rule (15c3-5): risk controls for automated trading
+         - Best execution obligations for AI routing
+         - Market manipulation detection: wash trading, spoofing, layering
+      3. SEC proposed rules on AI:
+         - Predictive data analytics in advisory/broker-dealer contexts
+         - Conflicts of interest arising from AI optimization
+         - Investor protection requirements
+      4. Compliance infrastructure:
+         - Books and records requirements for AI decisions
+         - Supervisory procedures for AI systems
+         - Testing and validation documentation
+
+      OUTPUT FORMAT:
+      - SEC compliance matrix: rule → requirement → applicability → status → gap
+      - Disclosure template recommendations
+      - Supervisory procedure checklist
+      - Severity: CRITICAL / HIGH / MEDIUM / LOW
     </prompt>
+
     <prompt id="sox-compliance">
-      Address Sarbanes-Oxley implications for AI systems that generate, process, or influence financial reporting. Cover internal control requirements (Section 404) for AI-driven financial processes, audit trail requirements, change management for AI models affecting financial statements, and management attestation obligations. Discuss how model changes constitute material changes requiring disclosure. Recommend SOX compliance tracking in {project_name}.
+      PURPOSE: Address SOX implications for AI in financial reporting.
+
+      PROCESS:
+      1. Section 404 internal controls for AI-driven financial processes:
+         - Control identification: where does AI influence financial reporting?
+         - Control design: is there sufficient human oversight of AI financial outputs?
+         - Control testing: how are AI controls validated?
+      2. Audit trail requirements:
+         - Input data lineage: where did the data come from?
+         - Model decision logging: what did the AI decide and why?
+         - Override documentation: when and why was AI output overridden?
+      3. Change management:
+         - Model changes as material changes requiring assessment
+         - Re-validation triggers for financial AI models
+         - Version control and rollback capability
+      4. Management attestation:
+         - CEO/CFO certification implications when AI drives financial reporting
+         - Materiality assessment for AI model errors
+         - Disclosure requirements for significant AI model changes
+
+      OUTPUT FORMAT:
+      - SOX control matrix for AI components
+      - Audit trail requirements specification
+      - Change management protocol
+      - Severity: CRITICAL (material weakness risk) / HIGH (significant deficiency) / MEDIUM (control enhancement) / LOW (documentation)
     </prompt>
+
     <prompt id="fin-regulatory-landscape">
-      Provide a comprehensive overview of the financial services AI regulatory landscape including federal banking regulators (Fed, OCC, FDIC), SEC/FINRA, CFPB, state regulators, and international bodies (Basel Committee, EU DORA, UK FCA). Cover emerging regulations, enforcement trends, and consent orders related to AI. Map the regulatory landscape to {project_name}'s compliance tracking capabilities and identify gaps in current governance features.
+      PURPOSE: Comprehensive overview of financial services AI regulatory environment.
+
+      PROCESS:
+      1. Federal banking regulators: Fed (SR 11-7, SR 23-37), OCC, FDIC — interagency guidance
+      2. SEC and FINRA: investment management AI, trading AI, broker-dealer requirements
+      3. CFPB: consumer protection, fair lending, AI adverse actions
+      4. State regulators: insurance AI (NAIC principles), state fair lending, NY DFS
+      5. International: Basel Committee, EU DORA, UK FCA/PRA, MAS (Singapore)
+      6. Enforcement trends: consent orders, enforcement actions, examination focus areas
+      7. Emerging regulations: pending rules, Congressional activity, interagency coordination
+
+      OUTPUT FORMAT:
+      - Regulatory matrix by agency and topic
+      - Key effective dates and compliance deadlines
+      - Enforcement trend analysis
+      - Priority-ranked compliance activities
+    </prompt>
+
+    <prompt id="third-party-risk">
+      PURPOSE: Guide third-party AI vendor risk management per OCC 2021-56 and related guidance.
+
+      PROCESS:
+      1. Planning phase:
+         - Identify AI vendor relationships: SaaS AI, model providers, data providers, cloud AI services
+         - Risk assessment: criticality of the AI service, data sensitivity, concentration risk
+         - Due diligence requirements by risk tier
+      2. Due diligence assessment:
+         - Vendor AI governance practices: model development, validation, monitoring
+         - Data handling: privacy, security, cross-border, subprocessing
+         - Business continuity: AI service availability, disaster recovery, exit strategy
+         - Financial condition: vendor stability and viability
+         - Compliance: regulatory track record, audit results, certifications
+      3. Contract requirements:
+         - Performance standards and SLAs for AI services
+         - Data ownership, model transparency, and audit rights
+         - Subcontracting and fourth-party risk provisions
+         - Termination and data portability
+      4. Ongoing monitoring:
+         - Performance tracking against contracted metrics
+         - Periodic risk reassessment
+         - Regulatory change monitoring affecting vendor relationship
+         - Incident management and notification requirements
+
+      OUTPUT FORMAT:
+      - Vendor risk assessment template
+      - Due diligence checklist by risk tier
+      - Contract clause recommendations
+      - Monitoring plan specification
+      - Severity: CRITICAL (critical vendor gap) / HIGH (significant risk) / MEDIUM (process improvement) / LOW (documentation)
+
+      CROSS-REFERENCES:
+      - For ML model evaluation of vendor AI, consult Neuron (/bmad:bmm:agents:ml-expert)
+      - For NIST AI RMF vendor assessment, consult Atlas (/bmad:bmm:agents:nist-rmf-expert)
     </prompt>
   </prompts>
 </agent>

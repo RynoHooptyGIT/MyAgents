@@ -1,0 +1,46 @@
+# Epic Consistency Check - Proactive Cross-Epic Audit Workflow
+name: "epic-consistency-check"
+description: "Proactive cross-epic consistency audit that detects story overlap, file conflicts, backend/frontend sync gaps, and cross-epic contradictions. Designed for multi-epic sprints where overlap risk is highest."
+author: "BMad Method"
+
+config_source: "{project-root}/team/config.yaml"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+user_skill_level: "{config_source}:user_skill_level"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+implementation_artifacts: "{config_source}:implementation_artifacts"
+planning_artifacts: "{config_source}:planning_artifacts"
+project_knowledge: "{config_source}:project_knowledge"
+output_folder: "{implementation_artifacts}"
+sprint_status: "{implementation_artifacts}/sprint-status.yaml"
+
+# Smart input file references - FULL_LOAD everything for comprehensive cross-referencing
+input_file_patterns:
+  epics:
+    description: "All epic files for cross-epic analysis"
+    whole: "{planning_artifacts}/*epic*.md"
+    sharded: "{planning_artifacts}/*epic*/*.md"
+    load_strategy: "FULL_LOAD"
+  stories:
+    description: "ALL implementation story files for cross-referencing"
+    whole: "{implementation_artifacts}/*.md"
+    load_strategy: "FULL_LOAD"
+  architecture:
+    description: "Architecture document for API contract and component validation"
+    whole: "{planning_artifacts}/*architecture*.md"
+    sharded: "{planning_artifacts}/*architecture*/*.md"
+    load_strategy: "FULL_LOAD"
+  sprint_status:
+    description: "Sprint status for story state context"
+    whole: "{implementation_artifacts}/sprint-status.yaml"
+    load_strategy: "FULL_LOAD"
+
+installed_path: "{project-root}/team/workflows/implementation/epic-consistency-check"
+template: false
+instructions: "{installed_path}/instructions.md"
+validation: "{installed_path}/checklist.md"
+checklist: "{installed_path}/checklist.md"
+default_output_file: "{implementation_artifacts}/consistency-audit-{date}.md"
+
+standalone: true

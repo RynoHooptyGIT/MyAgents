@@ -5,7 +5,7 @@
 #
 # PURPOSE
 # -------
-# Automatically regenerates the tiered context files in _bmad-output/context/
+# Automatically regenerates the tiered context files in output/context/
 # after every successful git commit made through Claude Code. This ensures
 # AI agents always work with up-to-date knowledge of the codebase structure,
 # API surface, database schema, sprint status, and code patterns.
@@ -27,11 +27,11 @@
 #
 # WHAT GETS REGENERATED
 # ---------------------
-#   _bmad-output/context/module-index.md   - Frontend features + backend services map
-#   _bmad-output/context/api-index.md      - All API endpoints by router (930+)
-#   _bmad-output/context/schema-digest.md  - Database tables from SQLAlchemy models
-#   _bmad-output/context/patterns.md       - Canonical code patterns (extracted live)
-#   _bmad-output/context/sprint-digest.md  - Sprint status summary from YAML
+#   output/context/module-index.md   - Frontend features + backend services map
+#   output/context/api-index.md      - All API endpoints by router (930+)
+#   output/context/schema-digest.md  - Database tables from SQLAlchemy models
+#   output/context/patterns.md       - Canonical code patterns (extracted live)
+#   output/context/sprint-digest.md  - Sprint status summary from YAML
 #
 # CONFIGURATION
 # -------------
@@ -62,7 +62,7 @@
 # STDOUT JSON FORMAT (returned to Claude Code)
 # ---------------------------------------------
 #   {
-#     "additionalContext": "Context files regenerated in _bmad-output/context/..."
+#     "additionalContext": "Context files regenerated in output/context/..."
 #   }
 #
 # The `additionalContext` value gets injected into Claude's conversation,
@@ -103,5 +103,5 @@ cd "$CLAUDE_PROJECT_DIR"
 python3 "$GENERATOR" 2>/dev/null
 
 # Notify Claude that context was refreshed
-echo '{"additionalContext": "Context files regenerated in _bmad-output/context/. The module-index, api-index, schema-digest, patterns, and sprint-digest are now up to date with the latest commit."}'
+echo '{"additionalContext": "Context files regenerated in output/context/. The module-index, api-index, schema-digest, patterns, and sprint-digest are now up to date with the latest commit."}'
 exit 0

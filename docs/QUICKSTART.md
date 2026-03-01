@@ -49,7 +49,7 @@ The setup script walks you through an interactive configuration process:
 
 The setup script generates:
 
-- `_bmad/bmm/config.yaml` from `templates/config.bmm.yaml.template`
+- `team/config.yaml` from `templates/config.bmm.yaml.template`
 - `.claude/settings.local.json` from `templates/settings.local.json.template` (Claude Code)
 - `.cursor/rules/` from `templates/cursor-rules/` (Cursor)
 - `.github/copilot-instructions.md` (GitHub Copilot)
@@ -87,7 +87,7 @@ Then run the generator manually to create initial context files:
 python scripts/context/generate_all.py
 ```
 
-This creates files in `_bmad-output/context/`:
+This creates files in `output/context/`:
 
 | File | Contents |
 |------|----------|
@@ -121,13 +121,13 @@ Start a session with the Oracle agent:
 
 **Claude Code:**
 ```
-/bmad:bmm:agents:oracle
+/team:oracle
 ```
 
 **Cursor:** The Oracle activates automatically via the `000-bmad-oracle.mdc` rule with `alwaysApply: true`.
 
 **Copilot:** Ask the AI:
-> Load the agent from `_bmad/bmm/agents/oracle.md` and follow its activation protocol.
+> Load the agent from `team/agents/oracle.md` and follow its activation protocol.
 
 The Oracle will:
 1. Load `config.yaml` and read your project settings
@@ -136,15 +136,15 @@ The Oracle will:
 4. Display its command menu
 
 Select **[SP] Sprint Planning** to create your initial `sprint-status.yaml`. The sprint planning workflow will:
-- Look for epic files in `_bmad-output/planning-artifacts/`
+- Look for epic files in `output/planning-artifacts/`
 - Extract all epics and stories into a tracking structure
-- Create `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- Create `output/implementation-artifacts/sprint-status.yaml`
 
 If you do not have epic files yet, work through the planning phases first:
-1. **Create Product Brief** -- `/bmad:bmm:workflows:create-product-brief`
-2. **Create PRD** -- `/bmad:bmm:workflows:prd`
-3. **Create Architecture** -- `/bmad:bmm:workflows:create-architecture`
-4. **Create Epics and Stories** -- `/bmad:bmm:workflows:create-epics-and-stories`
+1. **Create Product Brief** -- `/team:create-product-brief`
+2. **Create PRD** -- `/team:prd`
+3. **Create Architecture** -- `/team:create-architecture`
+4. **Create Epics and Stories** -- `/team:create-epics-and-stories`
 5. **Sprint Planning** -- Oracle menu [SP]
 
 ## Step 6: Create Your First Story and Start Developing
@@ -164,7 +164,7 @@ Every new session follows the same pattern:
 
 1. Oracle activates (automatically or via slash command)
 2. Oracle reads `config.yaml` and `sprint-status.yaml`
-3. Oracle loads context files from `_bmad-output/context/`
+3. Oracle loads context files from `output/context/`
 4. Oracle presents a project brief with current state and recommendation
 5. Oracle displays the command menu and waits for your direction
 6. You choose what to work on; Oracle determines and executes the correct workflow
@@ -175,10 +175,10 @@ After setup, verify everything is configured correctly:
 
 ```bash
 # Check that config was generated
-cat _bmad/bmm/config.yaml
+cat team/config.yaml
 
 # Check that context files exist (if you have a codebase)
-ls _bmad-output/context/
+ls output/context/
 
 # Check context freshness
 python scripts/context/generate_all.py --check

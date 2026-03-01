@@ -1,6 +1,6 @@
-# BMAD v6 Architecture
+# My Dev Team — Architecture
 
-This document explains how BMAD works internally -- the workflow engine, agent activation protocol, Oracle orchestration, variable resolution, context generation pipeline, and sprint status tracking.
+This document explains how the system works internally -- the workflow engine, agent activation protocol, Oracle orchestration, variable resolution, context generation pipeline, and sprint status tracking.
 
 ## System Overview
 
@@ -37,14 +37,14 @@ Output: Code, Story Updates, Sprint Status Updates
 
 ## Workflow Engine
 
-The workflow engine lives at `_bmad/core/tasks/workflow.xml`. It is the core operating system that all BMAD workflows run through. When the Oracle or any agent needs to execute a workflow, they load `workflow.xml` and pass it a `workflow.yaml` configuration file.
+The workflow engine lives at `team/engine/workflow.xml`. It is the core operating system that all workflows run through. When the Oracle or any agent needs to execute a workflow, they load `workflow.xml` and pass it a `workflow.yaml` configuration file.
 
 ### Execution Flow
 
 **Step 1: Load and Initialize**
 
 1. Read the `workflow.yaml` from the provided path
-2. Load the external config from `config_source` (always `_bmad/bmm/config.yaml` for BMM workflows)
+2. Load the external config from `config_source` (always `team/config.yaml`)
 3. Resolve all `{config_source}:` references with values from config (e.g., `{config_source}:project_name` becomes `My Project`)
 4. Resolve system variables: `{project-root}`, `{installed_path}`, `{date}`
 5. Ask user for any variables that remain unknown
@@ -155,13 +155,13 @@ The agent stays in character until dismissed via the exit menu item.
 
 ## Oracle Orchestrator
 
-The Oracle (Athena) at `_bmad/bmm/agents/oracle.md` is the mandatory first activation for every session. It is not optional -- it must be loaded before any work begins.
+The Oracle (Athena) at `team/agents/oracle.md` is the mandatory first activation for every session. It is not optional -- it must be loaded before any work begins.
 
 ### Oracle Activation Sequence
 
 1. Load persona from agent file
-2. **Load configuration**: Read `_bmad/bmm/config.yaml`, store all fields as session variables
-3. **Load context files**: Read `project-context.md`, `module-index.md`, `sprint-digest.md` from `_bmad-output/`
+2. **Load configuration**: Read `team/config.yaml`, store all fields as session variables
+3. **Load context files**: Read `project-context.md`, `module-index.md`, `sprint-digest.md` from `output/`
 4. **Check context freshness**: Run `generate_all.py --check`; warn if stale
 5. Remember user name from config
 6. **Read sprint state**: Load `sprint-status.yaml` completely
@@ -210,17 +210,17 @@ When the Oracle routes to a specialist agent, it provides the exact slash comman
 
 | Task Domain | Agent | Command |
 |-------------|-------|---------|
-| Backend API/data design | Winston (Architect) | `/bmad:bmm:agents:architect` |
-| Frontend UI/UX design | Sally (UX Designer) | `/bmad:bmm:agents:ux-designer` |
-| Test strategy | Murat (Test Architect) | `/bmad:bmm:agents:tea` |
-| Repo health/patterns | Sentinel (Custodian) | `/bmad:bmm:agents:custodian` |
-| Security review | Shield (Security Auditor) | `/bmad:bmm:agents:security-auditor` |
-| NIST RMF compliance | Atlas (NIST Expert) | `/bmad:bmm:agents:nist-rmf-expert` |
-| Docker/CI/CD | Forge (DevOps) | `/bmad:bmm:agents:devops` |
-| API contract drift | Pact (API Contract) | `/bmad:bmm:agents:api-contract` |
-| AI/Agentic architecture | Nexus (Agentic Expert) | `/bmad:bmm:agents:agentic-expert` |
-| ML/model evaluation | Neuron (ML Expert) | `/bmad:bmm:agents:ml-expert` |
-| SQL/data/caching | Oracle (Data Architect) | `/bmad:bmm:agents:data-architect` |
+| Backend API/data design | Winston (Architect) | `/team:architect` |
+| Frontend UI/UX design | Sally (UX Designer) | `/team:ux-designer` |
+| Test strategy | Murat (Test Architect) | `/team:tea` |
+| Repo health/patterns | Sentinel (Custodian) | `/team:custodian` |
+| Security review | Shield (Security Auditor) | `/team:security-auditor` |
+| NIST RMF compliance | Atlas (NIST Expert) | `/team:nist-rmf-expert` |
+| Docker/CI/CD | Forge (DevOps) | `/team:devops` |
+| API contract drift | Pact (API Contract) | `/team:api-contract` |
+| AI/Agentic architecture | Nexus (Agentic Expert) | `/team:agentic-expert` |
+| ML/model evaluation | Neuron (ML Expert) | `/team:ml-expert` |
+| SQL/data/caching | Oracle (Data Architect) | `/team:data-architect` |
 
 ## Variable Resolution
 
@@ -231,8 +231,8 @@ BMAD uses a variable system to make workflows and agents portable across project
 | Variable | Resolves To | Example |
 |----------|------------|---------|
 | `{project-root}` | Project root directory | `/home/user/my-project` |
-| `{installed_path}` | Directory containing the current workflow | `_bmad/bmm/workflows/4-implementation/dev-story` |
-| `{config_source}` | Path to the module's config.yaml | `_bmad/bmm/config.yaml` |
+| `{installed_path}` | Directory containing the current workflow | `team/workflows/implementation/dev-story` |
+| `{config_source}` | Path to the module's config.yaml | `team/config.yaml` |
 | `{date}` | Current date (system-generated) | `2026-02-27` |
 
 ### Config Variables
@@ -243,9 +243,9 @@ Config variables are loaded from `config.yaml` and accessed via the `{config_sou
 |----------|-------------|---------------|
 | `{config_source}:project_name` | `project_name` | `My SaaS App` |
 | `{config_source}:user_name` | `user_name` | `Sarah` |
-| `{config_source}:output_folder` | `output_folder` | `{project-root}/_bmad-output` |
-| `{config_source}:planning_artifacts` | `planning_artifacts` | `{project-root}/_bmad-output/planning-artifacts` |
-| `{config_source}:implementation_artifacts` | `implementation_artifacts` | `{project-root}/_bmad-output/implementation-artifacts` |
+| `{config_source}:output_folder` | `output_folder` | `{project-root}/output` |
+| `{config_source}:planning_artifacts` | `planning_artifacts` | `{project-root}/output/planning-artifacts` |
+| `{config_source}:implementation_artifacts` | `implementation_artifacts` | `{project-root}/output/implementation-artifacts` |
 | `{config_source}:communication_language` | `communication_language` | `English` |
 
 ### Resolution Order
@@ -289,7 +289,7 @@ JSON response with additionalContext
       |
       v
 Claude Code injects message into conversation:
-"Context files regenerated in _bmad-output/context/..."
+"Context files regenerated in output/context/..."
 ```
 
 ### Manual Commands
@@ -367,45 +367,46 @@ The Oracle reads sprint-status.yaml and applies this priority:
 5. **LOW**: Current epic complete but no retrospective -- execute RT
 6. **INFO**: Everything clear -- present brief and ask user
 
-## Module System
+## Directory Structure
 
-BMAD is organized into four modules, each with its own `config.yaml`, agents, and workflows:
+All agents and workflows are organized in a flat `team/` directory:
 
-### Core (`_bmad/core/`)
-
-The platform foundation. Contains:
-- `tasks/workflow.xml` -- The workflow execution engine
-- `tasks/index-docs.xml` -- Document indexing task
-- `tasks/shard-doc.xml` -- Document sharding task
-- `tasks/review-adversarial-general.xml` -- Adversarial review task
-- `workflows/brainstorming/` -- Creative brainstorming sessions
-- `workflows/party-mode/` -- Multi-agent group discussions
-- `workflows/feature-orchestrator/` -- Parallel feature decomposition
-- `workflows/advanced-elicitation/` -- Deep questioning techniques
-- `agents/bmad-master.md` -- Master executor agent
-- `resources/excalidraw/` -- Diagram creation helpers
-
-### BMM (`_bmad/bmm/`)
-
-The main methodology module. Contains 22 agents and 45+ workflows organized by phase (analysis, planning, solutioning, implementation) plus domain-specific workflow groups (devops, testing, security, data, API, ML, navigation).
-
-### BMB (`_bmad/bmb/`)
-
-The builder module. Contains 3 agents (Bond, Wendy, Morgan) and 3 workflows for creating custom agents, workflows, and modules that are BMAD-compliant.
-
-### CIS (`_bmad/cis/`)
-
-The creative innovation suite. Contains 6 agents and 4 workflows for brainstorming, design thinking, creative problem solving, innovation strategy, storytelling, and visual presentations.
+```
+team/
+  config.yaml           # Unified configuration
+  manifest.yaml         # Team definitions and metadata
+  agent-manifest.csv    # Agent registry
+  agents/               # All 27 agents (flat, no module nesting)
+  workflows/            # All workflows by category
+    analysis/           # Phase 1: Product brief, research
+    planning/           # Phase 2: PRD, UX design
+    solutioning/        # Phase 3: Architecture, epics
+    implementation/     # Phase 4: Dev story, code review, ship
+    quick-flow/         # Rapid development workflows
+    builders/           # Agent/workflow/module creation
+    brainstorming/      # Creative brainstorming sessions
+    party-mode/         # Multi-agent group discussions
+    feature-orchestrator/ # Parallel feature decomposition
+    ... (20+ categories)
+  engine/               # Workflow execution engine
+    workflow.xml        # Core workflow processor
+    index-docs.xml      # Document indexing task
+    shard-doc.xml       # Document sharding task
+    review-adversarial-general.xml  # Adversarial review task
+  resources/            # Shared resources (excalidraw helpers)
+  data/                 # Project data, knowledge bases, testarch
+  teams/                # Team composition files
+```
 
 ## Team System
 
-BMAD supports agent teams -- multiple agents working in parallel on different aspects of a task. Teams are defined in `_bmad/_config/manifest.yaml`:
+BMAD supports agent teams -- multiple agents working in parallel on different aspects of a task. Teams are defined in `team/manifest.yaml`:
 
 ```yaml
 teams:
   fullstack:
     name: "Team Plan and Architect"
-    members: [analyst, architect, pm, sm, ux-designer]
+    members: [analyst, architect, pm, ux-designer]
     best_for: ["Planning new features", "Architectural decisions"]
 
   implementation:
@@ -415,7 +416,7 @@ teams:
 
   creative:
     name: "Creative Squad"
-    members: [brainstorming-coach, storyteller, creative-problem-solver, ...]
+    members: [creative-thinking-coach, design-strategy-coach, storyteller-presenter]
     best_for: ["Innovation strategy", "Creative problem solving"]
 ```
 

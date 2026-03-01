@@ -47,12 +47,12 @@ at the start of EVERY conversation.
 
 ### Activation Steps
 
-1. Load the Oracle agent from `_bmad/bmm/agents/oracle.md` and follow its complete activation protocol
-2. Load project config from `_bmad/bmm/config.yaml` -- store project_name, user_name, output paths
-3. Load sprint digest from `_bmad-output/context/sprint-digest.md` for quick sprint overview
-4. Load full sprint state from `_bmad-output/implementation-artifacts/sprint-status.yaml`
-5. Load project context from `_bmad-output/project-context.md` if it exists
-6. Load module index from `_bmad-output/context/module-index.md` if it exists
+1. Load the Oracle agent from `team/agents/oracle.md` and follow its complete activation protocol
+2. Load project config from `team/config.yaml` -- store project_name, user_name, output paths
+3. Load sprint digest from `output/context/sprint-digest.md` for quick sprint overview
+4. Load full sprint state from `output/implementation-artifacts/sprint-status.yaml`
+5. Load project context from `output/project-context.md` if it exists
+6. Load module index from `output/context/module-index.md` if it exists
 7. Parse sprint data: count stories by status, identify active epic, find in-progress/review stories
 8. Present a PROJECT BRIEF with: current epic, in-flight stories, recommendation
 9. Display the Oracle's numbered menu and WAIT for user input
@@ -87,7 +87,7 @@ alwaysApply: true
 
 Before executing any implementation workflow, verify these pre-conditions:
 
-- **Before Dev Story**: A story file MUST exist in `_bmad-output/implementation-artifacts/stories/`
+- **Before Dev Story**: A story file MUST exist in `output/implementation-artifacts/stories/`
   for the target story. If missing, run Create Story (CS) first.
 - **Before Code Review**: Story status MUST be `in-progress` or `review` in sprint-status.yaml.
   If not, run Dev Story (DS) first.
@@ -96,7 +96,7 @@ Before executing any implementation workflow, verify these pre-conditions:
 
 ## Sprint Status Updates
 
-Update `_bmad-output/implementation-artifacts/sprint-status.yaml` when story status changes:
+Update `output/implementation-artifacts/sprint-status.yaml` when story status changes:
 - Create Story: Set to `ready-for-dev`
 - Dev Story start: Set to `in-progress`
 - Code Review start: Set to `review`
@@ -104,10 +104,10 @@ Update `_bmad-output/implementation-artifacts/sprint-status.yaml` when story sta
 
 ## Workflow Engine
 
-All BMAD workflows are executed through the workflow engine at `_bmad/core/tasks/workflow.xml`.
+All BMAD workflows are executed through the workflow engine at `team/engine/workflow.xml`.
 When executing a workflow:
 1. Load workflow.yaml from the specified path
-2. Load config from config_source (usually `_bmad/bmm/config.yaml`)
+2. Load config from config_source (usually `team/config.yaml`)
 3. Resolve all variables: {project-root}, {installed_path}, {config_source}:field
 4. Read instruction files completely (never use offset/limit)
 5. Execute ALL steps IN EXACT ORDER
@@ -131,13 +131,13 @@ alwaysApply: true
 
 Use these files instead of scanning the full codebase:
 
-- `_bmad-output/context/module-index.md` -- Feature map of frontend modules + backend services
-- `_bmad-output/context/sprint-digest.md` -- Pre-computed sprint summary
-- `_bmad-output/context/api-index.md` -- All API endpoints by router
-- `_bmad-output/context/schema-digest.md` -- Database schema from models
-- `_bmad-output/context/patterns.md` -- Canonical code patterns to follow
+- `output/context/module-index.md` -- Feature map of frontend modules + backend services
+- `output/context/sprint-digest.md` -- Pre-computed sprint summary
+- `output/context/api-index.md` -- All API endpoints by router
+- `output/context/schema-digest.md` -- Database schema from models
+- `output/context/patterns.md` -- Canonical code patterns to follow
 
-Also: `_bmad-output/project-context.md` -- Critical implementation rules (if it exists).
+Also: `output/project-context.md` -- Critical implementation rules (if it exists).
 
 ## Regeneration
 
@@ -183,15 +183,15 @@ Since Cursor has no slash commands, invoke agents using `@` file references in c
 ### Using @ References
 
 ```
-Load @_bmad/bmm/agents/oracle.md and follow its activation protocol.
+Load @team/agents/oracle.md and follow its activation protocol.
 ```
 
 ```
-Load @_bmad/bmm/agents/architect.md and follow its activation protocol.
+Load @team/agents/architect.md and follow its activation protocol.
 ```
 
 ```
-Load @_bmad/bmm/agents/security-auditor.md and follow its activation protocol.
+Load @team/agents/security-auditor.md and follow its activation protocol.
 ```
 
 The `@` prefix in Cursor chat tells the AI to read the referenced file and include it in context.
@@ -200,19 +200,20 @@ The `@` prefix in Cursor chat tells the AI to read the referenced file and inclu
 
 | Agent | @ Reference |
 |-------|-------------|
-| Oracle (Athena) | `@_bmad/bmm/agents/oracle.md` |
-| Architect (Winston) | `@_bmad/bmm/agents/architect.md` |
-| Developer (Amelia) | `@_bmad/bmm/agents/dev.md` |
-| Test Architect (Murat) | `@_bmad/bmm/agents/tea.md` |
-| Security (Shield) | `@_bmad/bmm/agents/security-auditor.md` |
-| DevOps (Forge) | `@_bmad/bmm/agents/devops.md` |
-| Custodian (Sentinel) | `@_bmad/bmm/agents/custodian.md` |
-| Navigator (Navi) | `@_bmad/bmm/agents/navigator.md` |
-| UX Designer (Sally) | `@_bmad/bmm/agents/ux-designer.md` |
-| Product Manager (John) | `@_bmad/bmm/agents/pm.md` |
-| Data Architect (Oracle) | `@_bmad/bmm/agents/data-architect.md` |
-| Brainstorming (Carson) | `@_bmad/cis/agents/brainstorming-coach.md` |
-| Agent Builder (Bond) | `@_bmad/bmb/agents/agent-builder.md` |
+| Oracle (Athena) | `@team/agents/oracle.md` |
+| Architect (Winston) | `@team/agents/architect.md` |
+| Developer (Amelia) | `@team/agents/dev.md` |
+| Test Architect (Murat) | `@team/agents/tea.md` |
+| Security (Shield) | `@team/agents/security-auditor.md` |
+| DevOps (Forge) | `@team/agents/devops.md` |
+| Custodian (Sentinel) | `@team/agents/custodian.md` |
+| UX Designer (Sally) | `@team/agents/ux-designer.md` |
+| Product Manager (John) | `@team/agents/pm.md` |
+| Data Architect (Oracle) | `@team/agents/data-architect.md` |
+| Creative Thinking (Carson) | `@team/agents/creative-thinking-coach.md` |
+| Design & Strategy (Maya) | `@team/agents/design-strategy-coach.md` |
+| Storyteller & Presenter (Sophia) | `@team/agents/storyteller-presenter.md` |
+| Agent Builder (Bond) | `@team/agents/agent-builder.md` |
 
 ---
 
@@ -221,29 +222,29 @@ The `@` prefix in Cursor chat tells the AI to read the referenced file and inclu
 To execute a workflow, reference both the workflow engine and the specific workflow:
 
 ```
-Execute @_bmad/bmm/workflows/4-implementation/code-review/workflow.yaml
-using the engine at @_bmad/core/tasks/workflow.xml.
+Execute @team/workflows/implementation/code-review/workflow.yaml
+using the engine at @team/engine/workflow.xml.
 ```
 
 ### Common Workflows
 
 | Workflow | @ References |
 |----------|-------------|
-| Create Story | `@_bmad/bmm/workflows/4-implementation/create-story/workflow.yaml` |
-| Dev Story | `@_bmad/bmm/workflows/4-implementation/dev-story/workflow.yaml` |
-| Code Review | `@_bmad/bmm/workflows/4-implementation/code-review/workflow.yaml` |
-| Ship | `@_bmad/bmm/workflows/devops/ship/workflow.yaml` |
-| Sprint Planning | `@_bmad/bmm/workflows/4-implementation/sprint-planning/workflow.yaml` |
-| PRD | `@_bmad/bmm/workflows/2-plan-workflows/prd/workflow.md` |
-| Architecture | `@_bmad/bmm/workflows/3-solutioning/create-architecture/workflow.md` |
-| Quick Dev | `@_bmad/bmm/workflows/bmad-quick-flow/quick-dev/workflow.md` |
+| Create Story | `@team/workflows/implementation/create-story/workflow.yaml` |
+| Dev Story | `@team/workflows/implementation/dev-story/workflow.yaml` |
+| Code Review | `@team/workflows/implementation/code-review/workflow.yaml` |
+| Ship | `@team/workflows/devops/ship/workflow.yaml` |
+| Sprint Planning | `@team/workflows/implementation/sprint-planning/workflow.yaml` |
+| PRD | `@team/workflows/planning/prd/workflow.md` |
+| Architecture | `@team/workflows/solutioning/create-architecture/workflow.md` |
+| Quick Dev | `@team/workflows/quick-flow/quick-dev/workflow.md` |
 
 ### Workflow Engine Reference
 
 Always include the workflow engine when executing workflows:
 
 ```
-@_bmad/core/tasks/workflow.xml
+@team/engine/workflow.xml
 ```
 
 This tells the AI how to parse workflow.yaml, resolve variables, and execute steps.
@@ -291,13 +292,13 @@ Sprint tracking works fully in Cursor. The Oracle reads `sprint-status.yaml` and
 ### Direct Status Check
 
 ```
-Read @_bmad-output/implementation-artifacts/sprint-status.yaml and summarize the current sprint state.
+Read @output/implementation-artifacts/sprint-status.yaml and summarize the current sprint state.
 ```
 
 Or use the sprint digest for a quick overview:
 
 ```
-Read @_bmad-output/context/sprint-digest.md for the current sprint summary.
+Read @output/context/sprint-digest.md for the current sprint summary.
 ```
 
 ---
@@ -314,7 +315,7 @@ Read @_bmad-output/context/sprint-digest.md for the current sprint summary.
 
 5. **Reference instruction files directly.** For complex workflows, you can point the AI to specific step files:
    ```
-   Execute step 3 from @_bmad/bmm/workflows/4-implementation/code-review/instructions.xml
+   Execute step 3 from @team/workflows/implementation/code-review/instructions.xml
    ```
 
 6. **Use Composer for multi-file edits.** Cursor's Composer mode is well-suited for BMAD's dev-story workflow, which often touches multiple files across the codebase.
@@ -326,7 +327,7 @@ Read @_bmad-output/context/sprint-digest.md for the current sprint summary.
 | Aspect | Claude Code | Cursor |
 |--------|------------|--------|
 | Oracle activation | CLAUDE.md (automatic) | .mdc rule with alwaysApply (automatic) |
-| Agent invocation | `/bmad:bmm:agents:oracle` | `Load @_bmad/bmm/agents/oracle.md` |
+| Agent invocation | `/team:oracle` | `Load @team/agents/oracle.md` |
 | Workflow execution | Slash command | `Execute @path/to/workflow.yaml using @workflow.xml` |
 | Context regeneration | Automatic (post-commit hook) | Manual (`python scripts/context/generate_all.py`) |
 | Agent teams | Experimental (env var) | Not available |

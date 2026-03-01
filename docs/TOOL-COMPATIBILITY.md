@@ -45,12 +45,12 @@ Claude Code has the deepest BMAD integration with native support for every featu
 BMAD installs 81 slash commands in the `claude-commands/` directory (which maps to `.claude/commands/` in the project). These provide direct access to every agent and workflow:
 
 ```
-/bmad:bmm:agents:oracle          # Invoke the Oracle
-/bmad:bmm:workflows:dev-story    # Run dev-story workflow
-/bmad:bmm:workflows:code-review  # Run code review
-/bmad:bmm:workflows:ship         # Ship (commit, push, PR)
-/bmad:cis:agents:brainstorming-coach  # Invoke brainstorming
-/bmad:bmb:agents:agent-builder   # Build a custom agent
+/team:oracle          # Invoke the Oracle
+/team:dev-story    # Run dev-story workflow
+/team:code-review  # Run code review
+/team:ship         # Ship (commit, push, PR)
+/team:creative-thinking-coach  # Invoke creative thinking
+/team:agent-builder   # Build a custom agent
 ```
 
 Commands are organized by module: `bmm/agents/`, `bmm/workflows/`, `bmb/agents/`, `bmb/workflows/`, `cis/agents/`, `cis/workflows/`, `core/agents/`, `core/workflows/`, `core/tasks/`.
@@ -85,7 +85,7 @@ Enable with the environment variable:
 }
 ```
 
-Agent teams allow multiple BMAD agents to work in parallel on different aspects of a task. Teams are defined in `_bmad/_config/manifest.yaml`. Workflows can invoke teams via `invoke-team` tags. Party mode enables group discussions between agents.
+Agent teams allow multiple BMAD agents to work in parallel on different aspects of a task. Teams are defined in `team/manifest.yaml`. Workflows can invoke teams via `invoke-team` tags. Party mode enables group discussions between agents.
 
 ### Settings and Permissions
 
@@ -120,10 +120,10 @@ alwaysApply: true
 
 # BMAD Oracle Activation Protocol
 
-At the start of every conversation, load and follow the activation protocol in `_bmad/bmm/agents/oracle.md`.
-Load `_bmad/bmm/config.yaml` for project settings.
-Read `_bmad-output/implementation-artifacts/sprint-status.yaml` for sprint state.
-Read context files from `_bmad-output/context/` for codebase knowledge.
+At the start of every conversation, load and follow the activation protocol in `team/agents/oracle.md`.
+Load `team/config.yaml` for project settings.
+Read `output/implementation-artifacts/sprint-status.yaml` for sprint state.
+Read context files from `output/context/` for codebase knowledge.
 ```
 
 This ensures the Oracle activates in every Cursor chat session.
@@ -133,12 +133,12 @@ This ensures the Oracle activates in every Cursor chat session.
 Cursor does not support custom slash commands. Instead, invoke agents and workflows by asking the AI:
 
 ```
-Load the agent from @_bmad/bmm/agents/architect.md and follow its activation protocol.
+Load the agent from @team/agents/architect.md and follow its activation protocol.
 ```
 
 ```
-Execute the workflow at @_bmad/bmm/workflows/4-implementation/code-review/workflow.yaml
-using the workflow engine at @_bmad/core/tasks/workflow.xml.
+Execute the workflow at @team/workflows/implementation/code-review/workflow.yaml
+using the workflow engine at @team/engine/workflow.xml.
 ```
 
 The `@` prefix references files in Cursor's chat interface.
@@ -175,9 +175,9 @@ Create `.github/copilot-instructions.md` with the Oracle activation protocol. Co
 Copilot does not support custom slash commands. Invoke agents manually:
 
 ```
-Please load the agent file at _bmad/bmm/agents/oracle.md and follow its complete activation protocol.
-Read _bmad/bmm/config.yaml for project settings.
-Then read _bmad-output/implementation-artifacts/sprint-status.yaml for sprint state.
+Please load the agent file at team/agents/oracle.md and follow its complete activation protocol.
+Read team/config.yaml for project settings.
+Then read output/implementation-artifacts/sprint-status.yaml for sprint state.
 ```
 
 ### No Post-Commit Hooks
@@ -213,13 +213,13 @@ For AI coding tools not listed above (Windsurf, Aider, Continue, etc.), BMAD can
 Most AI coding tools support a project instructions file. Create one with:
 1. Oracle activation protocol (load oracle.md, read config, read sprint status)
 2. Lifecycle rules (create-story, dev-story, code-review, ship)
-3. References to context files in `_bmad-output/context/`
+3. References to context files in `output/context/`
 4. Project-specific technical rules
 
 ### Manual Agent Invocation
 
 Ask the AI to:
-1. Read the agent file (e.g., `_bmad/bmm/agents/oracle.md`)
+1. Read the agent file (e.g., `team/agents/oracle.md`)
 2. Follow its activation steps
 3. Present its menu
 4. Execute selected workflows
@@ -239,7 +239,7 @@ Regardless of tool, these BMAD features work everywhere:
 - Agent persona files (readable by any AI)
 - Workflow YAML configurations (parseable by any AI)
 - Sprint-status.yaml tracking
-- Context files in `_bmad-output/context/`
+- Context files in `output/context/`
 - Template files and output artifacts
 - The workflow execution logic in `workflow.xml`
 

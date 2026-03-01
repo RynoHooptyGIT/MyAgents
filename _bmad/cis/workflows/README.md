@@ -92,7 +92,7 @@ workflow [workflow-name] --data /path/to/context.md
 ### Via Agent
 
 ```bash
-agent cis/brainstorming-coach
+agent cis/creative-thinking-coach
 > *brainstorm
 ```
 

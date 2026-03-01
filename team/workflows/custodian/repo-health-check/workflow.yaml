@@ -1,0 +1,17 @@
+name: repo-health-check
+description: "Full repository health scan: count files, check registrations, find duplicates, verify structure."
+author: "BMAD"
+config_source: "{project-root}/team/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+installed_path: "{project-root}/team/workflows/custodian/repo-health-check"
+instructions: "{installed_path}/instructions.md"
+variables:
+  agent: "custodian"
+input_file_patterns:
+  project_context:
+    description: "Project context rules file"
+    whole: "**/project-context.md"
+    load_strategy: "FULL_LOAD"
+standalone: true

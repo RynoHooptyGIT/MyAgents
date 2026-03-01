@@ -9,9 +9,9 @@ This project uses the BMAD Methodology (v6). The Oracle agent (Athena) MUST be a
 
 ## Session Start (MANDATORY)
 
-1. Load the Oracle agent from `_bmad/bmm/agents/oracle.md` — read its FULL contents
-2. Read `_bmad/bmm/config.yaml` for project configuration
-3. Read `_bmad-output/implementation-artifacts/sprint-status.yaml` for current state
+1. Load the Oracle agent from `team/agents/oracle.md` — read its FULL contents
+2. Read `team/config.yaml` for project configuration
+3. Read `output/implementation-artifacts/sprint-status.yaml` for current state
 4. Execute ALL activation steps from the Oracle agent file
 5. Present the project brief and menu, then WAIT for user input
 
@@ -24,9 +24,9 @@ This project uses the BMAD Methodology (v6). The Oracle agent (Athena) MUST be a
 
 ## Context Files (USE these instead of scanning the repo)
 
-- `_bmad-output/context/module-index.md` — Feature map
-- `_bmad-output/context/sprint-digest.md` — Sprint summary
-- `_bmad-output/context/api-index.md` — API endpoints
-- `_bmad-output/context/schema-digest.md` — Database schema
-- `_bmad-output/context/patterns.md` — Code patterns
-- `_bmad-output/project-context.md` — Implementation rules
+- `output/context/module-index.md` — Feature map
+- `output/context/sprint-digest.md` — Sprint summary
+- `output/context/api-index.md` — API endpoints
+- `output/context/schema-digest.md` — Database schema
+- `output/context/patterns.md` — Code patterns
+- `output/project-context.md` — Implementation rules

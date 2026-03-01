@@ -1,0 +1,49 @@
+# My Dev Team — Unified Configuration
+# Merged from BMAD v6 module configs (core, bmb, bmm, cis)
+
+# ─── Project Identity ─────────────────────────
+project_name: "{{PROJECT_NAME}}"
+user_name: "{{USER_NAME}}"
+user_skill_level: intermediate
+communication_language: English
+document_output_language: English
+
+# ─── Output Paths ─────────────────────────────
+output_folder: "{project-root}/output"
+planning_artifacts: "{project-root}/output/planning-artifacts"
+implementation_artifacts: "{project-root}/output/implementation-artifacts"
+bmb_creations_output_folder: "{project-root}/output/bmb-creations"
+project_knowledge: "{project-root}/docs"
+
+# ─── Test Architect Settings ──────────────────
+tea_use_mcp_enhancements: false
+tea_use_playwright_utils: false
+
+# ─── Agent Teams Configuration ────────────────
+teams:
+  enabled: false
+  default_mode: "auto"  # Options: "auto", "in-process", "tmux"
+  auto_spawn_threshold: 3  # Auto-suggest teams for tasks with 3+ parallel components
+  preferred_teams:
+    - fullstack  # First choice for planning/design tasks
+    - implementation  # For parallel development
+  token_budget_multiplier: 2.5  # Agent teams use ~2.5x more tokens than single sessions
+
+# ─── Git Workflow Configuration ───────────────
+# Branch conventions referenced by dev-story, ship, and commit workflows.
+# dev-story reads fix_keywords from this config; other values are documentation.
+git_workflow:
+  base_branch: "develop"
+  production_branch: "main"
+  branch_prefixes:
+    feature: "feature/"
+    fix: "fix/"
+  # Keywords in story title/epic that trigger fix/ prefix instead of feature/
+  fix_keywords: ["fix", "bug", "hotfix", "patch", "repair", "resolve"]
+
+# ─── GitHub Integration ───────────────────────
+# Workflows will auto-sync stories to GitHub Issues when gh CLI is available
+github_sync:
+  enabled: false
+  repo_owner: "{{GITHUB_OWNER}}"
+  repo_name: "{{GITHUB_REPO}}"

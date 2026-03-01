@@ -7,17 +7,17 @@ This project uses the BMAD (Build, Manage, Architect, Deploy) methodology with a
 ### Session Start Protocol
 
 At the start of every session:
-1. Load the Oracle agent from `_bmad/bmm/agents/oracle.md` and follow its activation protocol exactly
-2. Read `_bmad/bmm/config.yaml` for project configuration
-3. Read `_bmad-output/implementation-artifacts/sprint-status.yaml` for current project state
+1. Load the Oracle agent from `team/agents/oracle.md` and follow its activation protocol exactly
+2. Read `team/config.yaml` for project configuration
+3. Read `output/implementation-artifacts/sprint-status.yaml` for current project state
 4. Present the project brief and menu, then wait for direction
 
 ### Implementation Lifecycle (No Shortcuts)
 
-1. **Create Story** — Generate story file from epic (`_bmad/bmm/workflows/4-implementation/create-story/`)
-2. **Dev Story** — Implement the story (`_bmad/bmm/workflows/4-implementation/dev-story/`)
-3. **Code Review** — Adversarial review, find 3-10 issues (`_bmad/bmm/workflows/4-implementation/code-review/`)
-4. **Ship** — Commit, push, create PR (`_bmad/bmm/workflows/devops/ship/`)
+1. **Create Story** — Generate story file from epic (`team/workflows/implementation/create-story/`)
+2. **Dev Story** — Implement the story (`team/workflows/implementation/dev-story/`)
+3. **Code Review** — Adversarial review, find 3-10 issues (`team/workflows/implementation/code-review/`)
+4. **Ship** — Commit, push, create PR (`team/workflows/devops/ship/`)
 
 ### Lifecycle Rules
 
@@ -28,35 +28,35 @@ At the start of every session:
 
 ### Agent Context System
 
-Pre-generated context files in `_bmad-output/context/` — use these instead of scanning the codebase:
+Pre-generated context files in `output/context/` — use these instead of scanning the codebase:
 - `module-index.md` — Feature map of all modules
 - `sprint-digest.md` — Sprint summary
 - `api-index.md` — API endpoints
 - `schema-digest.md` — Database schema
 - `patterns.md` — Code patterns to follow
 
-Also load `_bmad-output/project-context.md` for implementation rules.
+Also load `output/project-context.md` for implementation rules.
 
 **Regenerate after commits**: `python scripts/context/generate_all.py`
 
 ### Invoking Agents
 
 To use a specialist agent, load the full agent file and follow its activation protocol:
-- Oracle: `_bmad/bmm/agents/oracle.md`
-- Architect: `_bmad/bmm/agents/architect.md`
-- Developer: `_bmad/bmm/agents/dev.md`
-- Security Auditor: `_bmad/bmm/agents/security-auditor.md`
-- Test Architect: `_bmad/bmm/agents/tea.md`
-- (See `_bmad/bmm/agents/` for all available agents)
+- Oracle: `team/agents/oracle.md`
+- Architect: `team/agents/architect.md`
+- Developer: `team/agents/dev.md`
+- Security Auditor: `team/agents/security-auditor.md`
+- Test Architect: `team/agents/tea.md`
+- (See `team/agents/` for all available agents)
 
 ### Invoking Workflows
 
 To execute a workflow:
-1. Load `_bmad/core/tasks/workflow.xml` (the workflow engine)
+1. Load `team/engine/workflow.xml` (the workflow engine)
 2. Pass the workflow YAML path as the 'workflow-config' parameter
 3. Follow workflow.xml instructions to process the workflow
 
-Example: `_bmad/bmm/workflows/4-implementation/dev-story/workflow.yaml`
+Example: `team/workflows/implementation/dev-story/workflow.yaml`
 
 ### Limitations vs Claude Code
 

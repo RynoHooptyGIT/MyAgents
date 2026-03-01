@@ -9,7 +9,7 @@ installed_path: "{project-root}/_bmad/bmm/workflows/navigator/project-brief"
 instructions: "{installed_path}/instructions.md"
 variables:
   sprint_status_file: "{config_source}:implementation_artifacts/sprint-status.yaml"
-  agent: "navigator"
+  agent: "oracle"
 input_file_patterns:
   sprint_status:
     description: "Sprint status tracking file"

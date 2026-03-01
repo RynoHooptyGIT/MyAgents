@@ -71,27 +71,187 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="UI or fuzzy match on use case inventory" action="#use-case-inventory">[UI] Use Case Inventory</item>
     <item cmd="AC or fuzzy match on accessibility" action="#accessibility">[AC] Accessibility</item>
     <item cmd="RL or fuzzy match on regulatory landscape" action="#gov-regulatory-landscape">[RL] Regulatory Landscape</item>
+    <item cmd="PR or fuzzy match on procurement" action="#procurement">[PR] AI Procurement Compliance (OMB M-24-18)</item>
     <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/_bmad/core/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
   <prompts>
     <prompt id="executive-orders">
-      Analyze Executive Order 14110 requirements and agency obligations for AI governance. Cover the key provisions including safety testing requirements, red-teaming mandates, watermarking standards, and reporting obligations. Address timelines and responsible agencies. Map EO requirements to {project_name}'s governance capabilities and identify gaps that need to be addressed.
+      PURPOSE: Analyze EO 14110 requirements and agency AI obligations.
+
+      PROCESS:
+      1. Enumerate key EO 14110 provisions by section:
+         - Section 4: Safety and security (dual-use foundation model reporting, red-team testing, watermarking)
+         - Section 5: Responsible innovation (NIST AI Safety Institute, testbeds, National AI Research Resource)
+         - Section 7: Consumer protection (healthcare AI, education AI, housing AI)
+         - Section 8: Workers (principles for AI in the workplace, labor displacement)
+         - Section 9: Federal government use (AI talent, procurement, agency adoption)
+         - Section 10: Equity and civil rights (algorithmic discrimination protections)
+      2. Identify applicable provisions based on the system under review
+      3. Map provisions to specific compliance requirements with deadlines
+      4. Assess current compliance status against each applicable requirement
+      5. Recommend implementation steps for gaps
+
+      OUTPUT FORMAT:
+      - EO provision matrix: section → requirement → deadline → responsible agency → compliance status
+      - Gap analysis with prioritized remediation steps
+      - Severity: CRITICAL (missed deadline) / HIGH (approaching deadline) / MEDIUM (gap identified) / LOW (enhancement)
+
+      CROSS-REFERENCES:
+      - For NIST AI RMF implementation, consult Atlas (/bmad:bmm:agents:nist-rmf-expert)
     </prompt>
+
     <prompt id="omb-memos">
-      Provide implementation guidance for OMB M-24-10 (AI governance, innovation, and risk management) and M-24-18 (responsible AI acquisition). Cover Chief AI Officer designation requirements, AI governance body establishment, minimum risk management practices, rights-impacting AI safeguards, and procurement requirements. Recommend how {project_name} can support agencies in meeting these requirements.
+      PURPOSE: Implementation guidance for OMB AI memoranda.
+
+      PROCESS:
+      1. OMB M-24-10 requirements:
+         - Chief AI Officer designation and responsibilities
+         - AI governance body establishment (composition, charter, meeting cadence)
+         - Minimum risk management practices for AI use
+         - Rights-impacting AI safeguards: impact assessment, public notice, human oversight, appeal mechanisms
+         - Safety-impacting AI safeguards: testing, monitoring, human control
+         - AI use case inventory requirements and reporting
+      2. OMB M-24-18 requirements:
+         - AI procurement principles: responsible AI, interoperability, vendor assessment
+         - Contract requirements for AI vendors
+         - Pre-procurement risk assessment
+         - Post-deployment monitoring requirements
+      3. Map requirements to existing governance capabilities
+      4. Identify implementation gaps and recommend solutions
+
+      OUTPUT FORMAT:
+      - Compliance checklist per memorandum
+      - Implementation roadmap with milestones
+      - Governance structure recommendation
+      - Severity: CRITICAL / HIGH / MEDIUM / LOW
     </prompt>
+
     <prompt id="fedramp-fisma">
-      Address FedRAMP and FISMA authorization requirements for government AI cloud services. Cover the authorization process, security control requirements (NIST SP 800-53), continuous monitoring, and AI-specific security considerations. Discuss the relationship between FedRAMP authorization levels (Low, Moderate, High) and AI risk levels. Recommend how {project_name} should track authorization status.
+      PURPOSE: Address FedRAMP/FISMA authorization for government AI cloud services.
+
+      PROCESS:
+      1. Determine authorization level needed: Low, Moderate, High based on data sensitivity and AI risk
+      2. Map NIST SP 800-53 security controls to AI-specific requirements:
+         - CA (Assessment): AI model validation, testing evidence
+         - CM (Configuration): model versioning, change management
+         - SI (System Integrity): input validation, output monitoring, drift detection
+         - AU (Audit): decision logging, explainability records
+      3. Address continuous monitoring requirements for AI systems:
+         - Model performance monitoring
+         - Security control effectiveness
+         - Vulnerability scanning of AI infrastructure
+      4. Evaluate 3PAO assessment requirements specific to AI components
+      5. Plan authorization package documentation
+
+      OUTPUT FORMAT:
+      - Authorization level recommendation with justification
+      - AI-specific security control mapping
+      - Continuous monitoring plan for AI components
+      - Severity: CRITICAL / HIGH / MEDIUM / LOW
     </prompt>
+
     <prompt id="use-case-inventory">
-      Guide the creation and maintenance of government AI use case inventories as required by EO 14110 and OMB M-24-10. Cover required inventory fields, classification criteria (rights-impacting vs. safety-impacting), exemption criteria, and annual reporting requirements. Map inventory requirements to {project_name}'s catalog and governance features. Recommend workflow for inventory maintenance.
+      PURPOSE: Guide government AI use case inventory creation and maintenance.
+
+      PROCESS:
+      1. Define inventory scope: which AI systems must be inventoried (per M-24-10 and EO 14110)
+      2. Classify each use case:
+         - Rights-impacting: affects individual rights, access to services, or opportunities
+         - Safety-impacting: affects physical safety, critical infrastructure, or public health
+         - Neither: administrative, internal efficiency, non-sensitive
+      3. Capture required fields per OMB guidance:
+         - Use case name and description
+         - AI technique/technology used
+         - Purpose and intended benefits
+         - Stage of development (planned, piloting, production)
+         - Risk classification
+         - Responsible officials
+      4. Apply exemption criteria: classified, sensitive law enforcement, etc.
+      5. Design maintenance workflow: quarterly review, annual reporting, change triggers
+
+      OUTPUT FORMAT:
+      - Inventory template with all required fields
+      - Classification decision tree
+      - Maintenance calendar and workflow
+      - Severity: CRITICAL (missing required entries) / HIGH (classification errors) / MEDIUM (incomplete fields) / LOW (documentation gaps)
     </prompt>
+
     <prompt id="accessibility">
-      Address Section 508 accessibility requirements for AI-powered interfaces and outputs. Cover WCAG 2.1 AA compliance for AI features, accessibility of AI-generated content, assistive technology compatibility, and testing requirements. Discuss emerging accessibility considerations for conversational AI, automated decision systems, and AI-generated media. Connect to {project_name}'s tool evaluation criteria.
+      PURPOSE: Address Section 508 accessibility for AI-powered interfaces.
+
+      PROCESS:
+      1. WCAG 2.1 AA compliance for AI features:
+         - Perceivable: alt text for AI-generated images, captions for AI audio, text alternatives for AI visualizations
+         - Operable: keyboard navigation for AI interactions, sufficient time limits, no seizure-inducing content
+         - Understandable: plain language for AI explanations, error prevention for AI-driven forms, consistent behavior
+         - Robust: assistive technology compatibility, ARIA attributes for dynamic AI content
+      2. AI-specific accessibility concerns:
+         - Conversational AI: screen reader compatibility, text-based alternatives, timeout handling
+         - Automated decision systems: accessible appeal mechanisms, understandable explanations
+         - AI-generated content: ensure generated content meets accessibility standards
+      3. Testing requirements: automated scanning, manual testing with assistive technology, user testing with people with disabilities
+      4. Remediation planning for identified gaps
+
+      OUTPUT FORMAT:
+      - Accessibility audit checklist organized by WCAG principle
+      - AI-specific accessibility risk assessment
+      - Testing protocol recommendation
+      - Severity: CRITICAL (access barrier) / HIGH (significant usability issue) / MEDIUM (best practice gap) / LOW (enhancement)
     </prompt>
+
     <prompt id="gov-regulatory-landscape">
-      Provide a comprehensive overview of the government AI regulatory landscape including federal Executive Orders, OMB memoranda, NIST frameworks, agency-specific policies, DoD directives, Intelligence Community guidance, and state-level AI legislation. Cover international government AI policies (EU AI Act, UK framework) that may affect interoperability. Map the regulatory landscape to {project_name}'s compliance tracking capabilities.
+      PURPOSE: Comprehensive overview of government AI regulatory environment.
+
+      PROCESS:
+      1. Federal: Executive Orders, OMB memoranda, NIST frameworks, agency-specific AI strategies
+      2. Defense and Intelligence: DoD AI Strategy, Responsible AI principles, IC AI ethics framework
+      3. Congressional: pending AI legislation, committee reports, GAO AI Accountability Framework
+      4. State-level: AI legislation trends (transparency, bias testing, employment AI, government use)
+      5. International: EU AI Act impact on US interoperability, UK AI framework, OECD AI Principles
+      6. Enforcement trends: FTC enforcement actions, agency consent orders, litigation
+      7. Map landscape to governance capabilities and identify compliance priorities
+
+      OUTPUT FORMAT:
+      - Regulatory landscape matrix organized by jurisdiction and topic
+      - Timeline of key effective dates and deadlines
+      - Priority-ranked compliance activities
+      - Gap analysis against current capabilities
+    </prompt>
+
+    <prompt id="procurement">
+      PURPOSE: Guide AI procurement compliance per OMB M-24-18 and federal acquisition requirements.
+
+      PROCESS:
+      1. Pre-procurement assessment:
+         - AI risk classification for the procurement
+         - Market research for responsible AI vendors
+         - Requirements definition: explainability, fairness, security, monitoring
+      2. Contract requirements per M-24-18:
+         - Responsible AI provisions in contracts
+         - Vendor AI governance assessment criteria
+         - Data rights and model ownership clauses
+         - Performance monitoring and SLA requirements
+         - Incident reporting and breach notification
+      3. Evaluation criteria:
+         - Technical capability and AI maturity
+         - Responsible AI practices and certifications
+         - Past performance with government AI systems
+         - Security and FedRAMP authorization status
+      4. Post-award management:
+         - Ongoing vendor AI risk monitoring
+         - Performance validation against contracted metrics
+         - Change management for AI model updates
+         - Exit strategy and data portability
+
+      OUTPUT FORMAT:
+      - Procurement checklist per acquisition phase
+      - Contract clause recommendations
+      - Vendor assessment scorecard template
+      - Severity: CRITICAL (regulatory non-compliance) / HIGH (significant risk) / MEDIUM (best practice gap) / LOW (optimization)
+
+      CROSS-REFERENCES:
+      - For NIST AI RMF vendor assessment, consult Atlas (/bmad:bmm:agents:nist-rmf-expert)
     </prompt>
   </prompts>
 </agent>

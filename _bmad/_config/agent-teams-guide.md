@@ -34,10 +34,10 @@ Agent teams allow multiple BMAD agents to work together in parallel as a coordin
 
 ### 1. Fullstack Team (Planning & Design)
 
-**Members:** analyst, architect, pm, sm, ux-designer
+**Members:** analyst, architect, pm, ux-designer
 **Best for:** Planning, design, requirements, strategic alignment
 **Lead Agent:** PM coordinates by default
-**Typical Size:** 5 agents
+**Typical Size:** 4 agents
 
 **Example Usage:**
 ```
@@ -49,14 +49,14 @@ Create a fullstack team to design the new authentication system
 - Analyst gathers and documents requirements
 - Architect designs system with security focus
 - UX Designer reviews user impact
-- Scrum Master prepares implementation stories
+- Oracle orchestrates implementation workflow
 
 ### 2. Creative Squad (Innovation)
 
-**Members:** brainstorming-coach, storyteller, creative-problem-solver, design-thinking-coach, innovation-strategist, presentation-master
+**Members:** creative-thinking-coach, design-strategy-coach, storyteller-presenter
 **Best for:** Innovation, problem solving, creative exploration
-**Lead Agent:** Innovation strategist coordinates
-**Typical Size:** 6 agents (all CIS agents)
+**Lead Agent:** Design-strategy coach coordinates
+**Typical Size:** 3 agents (all CIS agents)
 
 **Example Usage:**
 ```
@@ -64,12 +64,9 @@ Spawn creative squad to brainstorm solutions for user retention
 ```
 
 **Expected Workflow:**
-- Innovation strategist leads exploration
-- Brainstorming coach facilitates ideation
-- Design-thinking coach ensures user-centricity
-- Problem-solver analyzes constraints
-- Storyteller crafts narratives
-- Presentation-master visualizes concepts
+- Design-strategy coach leads exploration and ensures user-centricity
+- Creative-thinking coach facilitates ideation and analyzes constraints
+- Storyteller-presenter crafts narratives and visualizes concepts
 
 ### 3. Implementation Team (Parallel Development)
 
@@ -390,14 +387,14 @@ BMAD workflows can use agent teams programmatically:
 ```
 Create a fullstack team to plan a new AI review feature for healthcare vendors
 
-Expected team: analyst, architect, pm, sm, ux-designer
+Expected team: analyst, architect, pm, ux-designer
 
 Workflow:
 1. PM coordinates overall planning
 2. Analyst researches healthcare compliance requirements
 3. Architect designs scalable AI integration
 4. UX Designer ensures HIPAA-compliant user flows
-5. SM breaks down into implementation stories
+5. PM routes to Oracle for story creation
 
 Result: Comprehensive plan with requirements, architecture, UX flows, and stories
 ```
@@ -427,15 +424,12 @@ Result: Multi-dimensional review catching issues single reviewer might miss
 ```
 Spawn creative squad to brainstorm innovative features for user retention
 
-Expected team: All 6 CIS agents
+Expected team: All 3 CIS agents
 
 Workflow:
-1. Innovation strategist frames the challenge
-2. Brainstorming coach facilitates wild idea generation
-3. Design-thinking coach ensures user-centricity
-4. Problem-solver analyzes constraints and feasibility
-5. Storyteller crafts compelling narratives
-6. Presentation-master visualizes top concepts
+1. Design-strategy coach frames the challenge and ensures user-centricity
+2. Creative-thinking coach facilitates wild idea generation and analyzes constraints
+3. Storyteller-presenter crafts compelling narratives and visualizes top concepts
 
 Result: Diverse, creative solutions with user validation plans
 ```

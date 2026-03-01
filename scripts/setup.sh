@@ -1,16 +1,16 @@
 #!/bin/bash
 # =============================================================================
-# BMAD v6 Setup Script
+# My Dev Team — Setup Script
 # =============================================================================
-# Installs the BMAD methodology into a new project.
-# Run from the bmad-method-v6 directory:
+# Installs the agent team methodology into a new project.
+# Run from the MyAgents directory:
 #   bash scripts/setup.sh /path/to/your/project
 # =============================================================================
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-BMAD_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+TEAM_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Colors
 RED='\033[0;31m'
@@ -21,21 +21,17 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 echo -e "${CYAN}"
-echo "  ██████╗ ███╗   ███╗ █████╗ ██████╗     ██╗   ██╗ ██████╗ "
-echo "  ██╔══██╗████╗ ████║██╔══██╗██╔══██╗    ██║   ██║██╔════╝ "
-echo "  ██████╔╝██╔████╔██║███████║██║  ██║    ██║   ██║███████╗ "
-echo "  ██╔══██╗██║╚██╔╝██║██╔══██║██║  ██║    ╚██╗ ██╔╝██╔═══╝ "
-echo "  ██████╔╝██║ ╚═╝ ██║██║  ██║██████╔╝     ╚████╔╝ ╚██████╗"
-echo "  ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═════╝      ╚═══╝   ╚═════╝"
+echo "  ╔═══════════════════════════════════════════╗"
+echo "  ║         My Dev Team — Setup               ║"
+echo "  ║    AI-Assisted Development Methodology    ║"
+echo "  ╚═══════════════════════════════════════════╝"
 echo -e "${NC}"
-echo -e "${BLUE}Build, Manage, Architect, Deploy — AI-Assisted Development${NC}"
-echo ""
 
 # ── Target directory ─────────────────────────────────────────────
 TARGET_DIR="${1:-$(pwd)}"
 
-if [ "$TARGET_DIR" = "$BMAD_ROOT" ]; then
-    echo -e "${RED}ERROR: Cannot install BMAD into the template repository itself.${NC}"
+if [ "$TARGET_DIR" = "$TEAM_ROOT" ]; then
+    echo -e "${RED}ERROR: Cannot install into the template repository itself.${NC}"
     echo "Usage: bash scripts/setup.sh /path/to/your/project"
     exit 1
 fi
@@ -51,7 +47,7 @@ if [ ! -d "$TARGET_DIR" ]; then
     fi
 fi
 
-echo -e "${GREEN}Installing BMAD v6 into: ${TARGET_DIR}${NC}"
+echo -e "${GREEN}Installing My Dev Team into: ${TARGET_DIR}${NC}"
 echo ""
 
 # ── Collect project info ─────────────────────────────────────────
@@ -79,7 +75,7 @@ echo "  1) Claude Code only (recommended)"
 echo "  2) Claude Code + GitHub Copilot"
 echo "  3) Claude Code + Cursor"
 echo "  4) All three (Claude Code + Copilot + Cursor)"
-echo "  5) None (just install BMAD core)"
+echo "  5) None (just install core)"
 read -p "Choice [1]: " TOOL_CHOICE
 TOOL_CHOICE="${TOOL_CHOICE:-1}"
 
@@ -99,69 +95,54 @@ substitute() {
         "$file" 2>/dev/null || true
 }
 
-# ── Step 1: Copy BMAD core ───────────────────────────────────────
-echo -e "\n${CYAN}[1/6] Copying BMAD core system...${NC}"
-cp -R "$BMAD_ROOT/_bmad" "$TARGET_DIR/_bmad"
+# ── Step 1: Copy team system ────────────────────────────────────
+echo -e "\n${CYAN}[1/6] Copying team system...${NC}"
+cp -R "$TEAM_ROOT/team" "$TARGET_DIR/team"
 
-# Apply project name to agents and config
-sed -i '' "s|{project_name}|${PROJECT_NAME}|g" "$TARGET_DIR/_bmad/bmm/config.yaml" 2>/dev/null || true
+echo -e "  ${GREEN}✓${NC} team/ directory installed (27 agents, 70+ workflows)"
 
-echo -e "  ${GREEN}✓${NC} _bmad/ directory installed (34 agents, 70+ workflows)"
+# ── Step 2: Generate config ─────────────────────────────────────
+echo -e "${CYAN}[2/6] Generating configuration...${NC}"
 
-# ── Step 2: Generate config files ────────────────────────────────
-echo -e "${CYAN}[2/6] Generating configuration files...${NC}"
-
-# BMM config
-cp "$BMAD_ROOT/templates/config.bmm.yaml.template" "$TARGET_DIR/_bmad/bmm/config.yaml"
-substitute "$TARGET_DIR/_bmad/bmm/config.yaml"
-
-# Core config
-cp "$BMAD_ROOT/templates/config.core.yaml.template" "$TARGET_DIR/_bmad/core/config.yaml"
-substitute "$TARGET_DIR/_bmad/core/config.yaml"
-
-# BMB config
-cp "$BMAD_ROOT/templates/config.bmb.yaml.template" "$TARGET_DIR/_bmad/bmb/config.yaml"
-substitute "$TARGET_DIR/_bmad/bmb/config.yaml"
+# Unified config
+cp "$TEAM_ROOT/templates/config.yaml.template" "$TARGET_DIR/team/config.yaml"
+substitute "$TARGET_DIR/team/config.yaml"
 
 # Manifest
-cp "$BMAD_ROOT/templates/manifest.yaml.template" "$TARGET_DIR/_bmad/_config/manifest.yaml"
-substitute "$TARGET_DIR/_bmad/_config/manifest.yaml"
+cp "$TEAM_ROOT/templates/manifest.yaml.template" "$TARGET_DIR/team/manifest.yaml"
+substitute "$TARGET_DIR/team/manifest.yaml"
 
-# IDE config
-cp "$BMAD_ROOT/templates/claude-code.yaml.template" "$TARGET_DIR/_bmad/_config/ides/claude-code.yaml"
-substitute "$TARGET_DIR/_bmad/_config/ides/claude-code.yaml"
-
-echo -e "  ${GREEN}✓${NC} config.yaml (bmm, core, bmb), manifest.yaml generated"
+echo -e "  ${GREEN}✓${NC} config.yaml, manifest.yaml generated"
 
 # ── Step 3: Set up AI tool integrations ──────────────────────────
 echo -e "${CYAN}[3/6] Setting up AI tool integrations...${NC}"
 
 # Claude Code (options 1-4)
 if [ "$TOOL_CHOICE" != "5" ]; then
-    mkdir -p "$TARGET_DIR/.claude/commands/bmad"
+    mkdir -p "$TARGET_DIR/.claude/commands/team"
     mkdir -p "$TARGET_DIR/.claude/hooks"
 
     # CLAUDE.md
-    cp "$BMAD_ROOT/templates/CLAUDE.md.template" "$TARGET_DIR/CLAUDE.md"
+    cp "$TEAM_ROOT/templates/CLAUDE.md.template" "$TARGET_DIR/CLAUDE.md"
     substitute "$TARGET_DIR/CLAUDE.md"
 
     # Settings
-    cp "$BMAD_ROOT/templates/settings.local.json.template" "$TARGET_DIR/.claude/settings.local.json"
+    cp "$TEAM_ROOT/templates/settings.local.json.template" "$TARGET_DIR/.claude/settings.local.json"
 
-    # Slash commands
-    cp -R "$BMAD_ROOT/claude-commands/"* "$TARGET_DIR/.claude/commands/bmad/"
+    # Slash commands (flat namespace)
+    cp "$TEAM_ROOT/claude-commands/team/"* "$TARGET_DIR/.claude/commands/team/"
 
     # Hook
-    cp "$BMAD_ROOT/hooks/post-commit-context.sh" "$TARGET_DIR/.claude/hooks/post-commit-context.sh"
+    cp "$TEAM_ROOT/hooks/post-commit-context.sh" "$TARGET_DIR/.claude/hooks/post-commit-context.sh"
     chmod +x "$TARGET_DIR/.claude/hooks/post-commit-context.sh"
 
-    echo -e "  ${GREEN}✓${NC} Claude Code: CLAUDE.md, 81 slash commands, hooks"
+    echo -e "  ${GREEN}✓${NC} Claude Code: CLAUDE.md, 76 slash commands, hooks"
 fi
 
 # GitHub Copilot (options 2, 4)
 if [ "$TOOL_CHOICE" = "2" ] || [ "$TOOL_CHOICE" = "4" ]; then
     mkdir -p "$TARGET_DIR/.github"
-    cp "$BMAD_ROOT/templates/copilot-instructions.md.template" "$TARGET_DIR/.github/copilot-instructions.md"
+    cp "$TEAM_ROOT/templates/copilot-instructions.md.template" "$TARGET_DIR/.github/copilot-instructions.md"
     substitute "$TARGET_DIR/.github/copilot-instructions.md"
     echo -e "  ${GREEN}✓${NC} GitHub Copilot: .github/copilot-instructions.md"
 fi
@@ -169,40 +150,40 @@ fi
 # Cursor (options 3, 4)
 if [ "$TOOL_CHOICE" = "3" ] || [ "$TOOL_CHOICE" = "4" ]; then
     mkdir -p "$TARGET_DIR/.cursor/rules"
-    cp "$BMAD_ROOT/templates/cursor-rules/"*.mdc "$TARGET_DIR/.cursor/rules/"
+    cp "$TEAM_ROOT/templates/cursor-rules/"*.mdc "$TARGET_DIR/.cursor/rules/"
     echo -e "  ${GREEN}✓${NC} Cursor: .cursor/rules/ (3 rule files)"
 fi
 
 # ── Step 4: Set up context generators ────────────────────────────
 echo -e "${CYAN}[4/6] Setting up context generators...${NC}"
 mkdir -p "$TARGET_DIR/scripts/context"
-cp "$BMAD_ROOT/scripts/context/"*.py "$TARGET_DIR/scripts/context/"
-cp "$BMAD_ROOT/scripts/context/context-config.yaml" "$TARGET_DIR/scripts/context/context-config.yaml"
-cp "$BMAD_ROOT/scripts/context/context-config.example.yaml" "$TARGET_DIR/scripts/context/context-config.example.yaml"
+cp "$TEAM_ROOT/scripts/context/"*.py "$TARGET_DIR/scripts/context/"
+cp "$TEAM_ROOT/scripts/context/context-config.yaml" "$TARGET_DIR/scripts/context/context-config.yaml"
+cp "$TEAM_ROOT/scripts/context/context-config.example.yaml" "$TARGET_DIR/scripts/context/context-config.example.yaml"
 echo -e "  ${GREEN}✓${NC} Context generators installed (edit scripts/context/context-config.yaml)"
 
 # ── Step 5: Create output directory structure ────────────────────
 echo -e "${CYAN}[5/6] Creating output directory structure...${NC}"
-mkdir -p "$TARGET_DIR/_bmad-output/planning-artifacts"
-mkdir -p "$TARGET_DIR/_bmad-output/implementation-artifacts/stories"
-mkdir -p "$TARGET_DIR/_bmad-output/context"
-mkdir -p "$TARGET_DIR/_bmad-output/analysis"
-mkdir -p "$TARGET_DIR/_bmad-output/excalidraw-diagrams"
-mkdir -p "$TARGET_DIR/_bmad-output/testing"
-mkdir -p "$TARGET_DIR/_bmad-output/devops"
+mkdir -p "$TARGET_DIR/output/planning-artifacts"
+mkdir -p "$TARGET_DIR/output/implementation-artifacts/stories"
+mkdir -p "$TARGET_DIR/output/context"
+mkdir -p "$TARGET_DIR/output/analysis"
+mkdir -p "$TARGET_DIR/output/excalidraw-diagrams"
+mkdir -p "$TARGET_DIR/output/testing"
+mkdir -p "$TARGET_DIR/output/devops"
 
 # Add .gitkeep files
 for dir in planning-artifacts implementation-artifacts/stories context analysis excalidraw-diagrams testing devops; do
-    touch "$TARGET_DIR/_bmad-output/$dir/.gitkeep"
+    touch "$TARGET_DIR/output/$dir/.gitkeep"
 done
 
-echo -e "  ${GREEN}✓${NC} _bmad-output/ scaffolding created"
+echo -e "  ${GREEN}✓${NC} output/ scaffolding created"
 
 # ── Step 6: Final summary ────────────────────────────────────────
 echo -e "${CYAN}[6/6] Installation complete!${NC}"
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
-echo -e "${GREEN}  BMAD v6 installed successfully!${NC}"
+echo -e "${GREEN}  My Dev Team installed successfully!${NC}"
 echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
 echo ""
 echo -e "  Project: ${YELLOW}${PROJECT_NAME}${NC}"
@@ -221,7 +202,7 @@ fi
 echo ""
 echo "  3. Start a session — the Oracle activates automatically:"
 if [ "$TOOL_CHOICE" != "5" ]; then
-    echo "     ${YELLOW}/bmad:bmm:agents:oracle${NC}"
+    echo "     ${YELLOW}/team:oracle${NC}"
 fi
 echo ""
 echo "  4. Initialize sprint tracking:"

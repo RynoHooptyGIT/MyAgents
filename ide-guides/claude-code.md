@@ -20,13 +20,13 @@ Claude Code integration includes:
 
 1. Instruct Claude to activate the Oracle agent before any other work
 2. Define the implementation lifecycle (create-story, dev-story, code-review, ship)
-3. Point to context files in `_bmad-output/context/`
+3. Point to context files in `output/context/`
 4. List project-specific technical rules
 
 ### Key Sections
 
 **Oracle Activation Protocol** -- Tells Claude to:
-- Always invoke the Oracle first: `/bmad:bmm:agents:oracle`
+- Always invoke the Oracle first: `/team:oracle`
 - Read sprint state from `sprint-status.yaml`
 - Present a project brief and menu
 - Enforce lifecycle gates before executing workflows
@@ -65,102 +65,97 @@ BMAD provides 81 slash commands organized by module. In Claude Code, type `/bmad
 Invoke any agent directly:
 
 ```
-/bmad:bmm:agents:oracle              # Project Oracle (Athena)
-/bmad:bmm:agents:architect           # Architect (Winston)
-/bmad:bmm:agents:dev                 # Developer (Amelia)
-/bmad:bmm:agents:security-auditor    # Security Auditor (Shield)
-/bmad:bmm:agents:tea                 # Test Architect (Murat)
-/bmad:bmm:agents:custodian           # Custodian (Sentinel)
-/bmad:bmm:agents:devops              # DevOps (Forge)
-/bmad:bmm:agents:data-architect      # Data Architect (Oracle)
-/bmad:bmm:agents:navigator           # Navigator (Navi)
-/bmad:bmm:agents:pm                  # Product Manager (John)
-/bmad:bmm:agents:analyst             # Analyst (Mary)
-/bmad:bmm:agents:sm                  # Scrum Master (Bob)
-/bmad:bmm:agents:ux-designer         # UX Designer (Sally)
-/bmad:bmm:agents:tech-writer         # Tech Writer (Paige)
-/bmad:bmm:agents:quick-flow-solo-dev # Quick Flow Solo Dev (Barry)
-/bmad:bmm:agents:api-contract        # API Contract (Pact)
-/bmad:bmm:agents:agentic-expert      # Agentic Expert (Nexus)
-/bmad:bmm:agents:ml-expert           # ML Expert (Neuron)
-/bmad:bmm:agents:nist-rmf-expert     # NIST RMF Expert (Atlas)
-/bmad:bmm:agents:healthcare-expert   # Healthcare Expert (Dr. Vita)
-/bmad:bmm:agents:government-expert   # Government Expert (Senator)
-/bmad:bmm:agents:financial-expert    # Financial Expert (Sterling)
-/bmad:cis:agents:brainstorming-coach     # Brainstorming Coach (Carson)
-/bmad:cis:agents:design-thinking-coach   # Design Thinking Coach (Maya)
-/bmad:cis:agents:creative-problem-solver # Creative Problem Solver (Dr. Quinn)
-/bmad:cis:agents:innovation-strategist   # Innovation Strategist (Victor)
-/bmad:cis:agents:presentation-master     # Presentation Master (Caravaggio)
-/bmad:cis:agents:storyteller             # Storyteller (Sophia)
-/bmad:bmb:agents:agent-builder       # Agent Builder (Bond)
-/bmad:bmb:agents:workflow-builder    # Workflow Builder (Wendy)
-/bmad:bmb:agents:module-builder      # Module Builder (Morgan)
-/bmad:core:agents:bmad-master        # BMad Master
+/team:oracle              # Project Oracle (Athena)
+/team:architect           # Architect (Winston)
+/team:dev                 # Developer (Amelia)
+/team:security-auditor    # Security Auditor (Shield)
+/team:tea                 # Test Architect (Murat)
+/team:custodian           # Custodian (Sentinel)
+/team:devops              # DevOps (Forge)
+/team:data-architect      # Data Architect (Oracle)
+/team:pm                  # Product Manager (John)
+/team:analyst             # Analyst (Mary)
+/team:ux-designer         # UX Designer (Sally)
+/team:tech-writer         # Tech Writer (Paige)
+/team:quick-flow-solo-dev # Quick Flow Solo Dev (Barry)
+/team:api-contract        # API Contract (Pact)
+/team:agentic-expert      # Agentic Expert (Nexus)
+/team:ml-expert           # ML Expert (Neuron)
+/team:nist-rmf-expert     # NIST RMF Expert (Atlas)
+/team:healthcare-expert   # Healthcare Expert (Dr. Vita)
+/team:government-expert   # Government Expert (Senator)
+/team:financial-expert    # Financial Expert (Sterling)
+/team:creative-thinking-coach   # Creative Thinking Coach (Carson)
+/team:design-strategy-coach     # Design & Strategy Coach (Maya)
+/team:storyteller-presenter     # Storyteller & Presenter (Sophia)
+/team:agent-builder       # Agent Builder (Bond)
+/team:workflow-builder    # Workflow Builder (Wendy)
+/team:module-builder      # Module Builder (Morgan)
+/team:bmad-master        # BMad Master
 ```
 
 ### Workflow Commands (BMM)
 
 ```
-/bmad:bmm:workflows:create-product-brief     # Phase 1: Analysis
-/bmad:bmm:workflows:research                 # Phase 1: Analysis
-/bmad:bmm:workflows:prd                      # Phase 2: Planning
-/bmad:bmm:workflows:create-ux-design         # Phase 2: Planning
-/bmad:bmm:workflows:create-architecture      # Phase 3: Solutioning
-/bmad:bmm:workflows:create-epics-and-stories # Phase 3: Solutioning
-/bmad:bmm:workflows:check-implementation-readiness  # Phase 3
-/bmad:bmm:workflows:create-story             # Phase 4: Implementation
-/bmad:bmm:workflows:dev-story                # Phase 4: Implementation
-/bmad:bmm:workflows:code-review              # Phase 4: Implementation
-/bmad:bmm:workflows:ship                     # Phase 4: Implementation (DevOps)
-/bmad:bmm:workflows:commit                   # DevOps
-/bmad:bmm:workflows:branch-cleanup           # DevOps
-/bmad:bmm:workflows:sprint-planning          # Sprint Management
-/bmad:bmm:workflows:sprint-status            # Sprint Management
-/bmad:bmm:workflows:epic-consistency-check   # Sprint Management
-/bmad:bmm:workflows:correct-course           # Sprint Management
-/bmad:bmm:workflows:retrospective            # Sprint Management
-/bmad:bmm:workflows:quick-dev                # Quick Flow
-/bmad:bmm:workflows:quick-spec               # Quick Flow
-/bmad:bmm:workflows:pr-review                # Custodian
-/bmad:bmm:workflows:document-project         # Project
-/bmad:bmm:workflows:generate-project-context # Project
-/bmad:bmm:workflows:workflow-init            # Project
-/bmad:bmm:workflows:workflow-status          # Project
-/bmad:bmm:workflows:testarch-atdd            # Testing
-/bmad:bmm:workflows:testarch-automate        # Testing
-/bmad:bmm:workflows:testarch-ci              # Testing
-/bmad:bmm:workflows:testarch-framework       # Testing
-/bmad:bmm:workflows:testarch-nfr             # Testing
-/bmad:bmm:workflows:testarch-test-design     # Testing
-/bmad:bmm:workflows:testarch-test-review     # Testing
-/bmad:bmm:workflows:testarch-trace           # Testing
-/bmad:bmm:workflows:create-excalidraw-diagram    # Diagrams
-/bmad:bmm:workflows:create-excalidraw-dataflow   # Diagrams
-/bmad:bmm:workflows:create-excalidraw-flowchart  # Diagrams
-/bmad:bmm:workflows:create-excalidraw-wireframe  # Diagrams
+/team:create-product-brief     # Phase 1: Analysis
+/team:research                 # Phase 1: Analysis
+/team:prd                      # Phase 2: Planning
+/team:create-ux-design         # Phase 2: Planning
+/team:create-architecture      # Phase 3: Solutioning
+/team:create-epics-and-stories # Phase 3: Solutioning
+/team:check-implementation-readiness  # Phase 3
+/team:create-story             # Phase 4: Implementation
+/team:dev-story                # Phase 4: Implementation
+/team:code-review              # Phase 4: Implementation
+/team:ship                     # Phase 4: Implementation (DevOps)
+/team:commit                   # DevOps
+/team:branch-cleanup           # DevOps
+/team:sprint-planning          # Sprint Management
+/team:sprint-status            # Sprint Management
+/team:epic-consistency-check   # Sprint Management
+/team:correct-course           # Sprint Management
+/team:retrospective            # Sprint Management
+/team:quick-dev                # Quick Flow
+/team:quick-spec               # Quick Flow
+/team:pr-review                # Custodian
+/team:document-project         # Project
+/team:generate-project-context # Project
+/team:workflow-init            # Project
+/team:workflow-status          # Project
+/team:testarch-atdd            # Testing
+/team:testarch-automate        # Testing
+/team:testarch-ci              # Testing
+/team:testarch-framework       # Testing
+/team:testarch-nfr             # Testing
+/team:testarch-test-design     # Testing
+/team:testarch-test-review     # Testing
+/team:testarch-trace           # Testing
+/team:create-excalidraw-diagram    # Diagrams
+/team:create-excalidraw-dataflow   # Diagrams
+/team:create-excalidraw-flowchart  # Diagrams
+/team:create-excalidraw-wireframe  # Diagrams
 ```
 
 ### Workflow Commands (CIS, Core, BMB)
 
 ```
-/bmad:cis:workflows:design-thinking      # Creative Innovation
-/bmad:cis:workflows:innovation-strategy  # Creative Innovation
-/bmad:cis:workflows:problem-solving      # Creative Innovation
-/bmad:cis:workflows:storytelling         # Creative Innovation
-/bmad:core:workflows:brainstorming       # Core
-/bmad:core:workflows:party-mode          # Core
-/bmad:core:workflows:feature-orchestrator # Core
-/bmad:bmb:workflows:agent               # Builder
-/bmad:bmb:workflows:module              # Builder
-/bmad:bmb:workflows:workflow            # Builder
+/team:design-thinking      # Creative Innovation
+/team:innovation-strategy  # Creative Innovation
+/team:problem-solving      # Creative Innovation
+/team:storytelling         # Creative Innovation
+/team:brainstorming       # Core
+/team:party-mode          # Core
+/team:feature-orchestrator # Core
+/team:agent               # Builder
+/team:module              # Builder
+/team:workflow            # Builder
 ```
 
 ### Task Commands
 
 ```
-/bmad:core:tasks:index-docs   # Index documents in a directory
-/bmad:core:tasks:shard-doc    # Split large documents into sections
+/team:index-docs   # Index documents in a directory
+/team:shard-doc    # Split large documents into sections
 ```
 
 ---
@@ -220,7 +215,7 @@ The post-commit hook at `hooks/post-commit-context.sh` (copied to `.claude/hooks
 2. The hook reads JSON from stdin describing what command was executed
 3. If the command was `git commit` and it succeeded, the hook runs `scripts/context/generate_all.py`
 4. The hook outputs JSON with `additionalContext` that gets injected into the conversation
-5. Claude Code sees the message: "Context files regenerated in _bmad-output/context/..."
+5. Claude Code sees the message: "Context files regenerated in output/context/..."
 
 ### Zero Overhead
 
@@ -255,13 +250,13 @@ Set the environment variable in `.claude/settings.local.json`:
 
 ### Available Teams
 
-Teams are defined in `_bmad/_config/manifest.yaml`:
+Teams are defined in `team/manifest.yaml`:
 
 | Team | Members | Best For |
 |------|---------|----------|
-| **fullstack** | analyst, architect, pm, sm, ux-designer | Planning, architectural decisions |
+| **fullstack** | analyst, architect, pm, ux-designer | Planning, architectural decisions |
 | **implementation** | dev, tea, tech-writer | Parallel development, test coverage |
-| **creative** | brainstorming-coach, storyteller, creative-problem-solver, design-thinking-coach, innovation-strategist, presentation-master | Innovation, creative problem solving |
+| **creative** | creative-thinking-coach, design-strategy-coach, storyteller-presenter | Innovation, creative problem solving |
 
 ### Invocation
 
@@ -306,7 +301,7 @@ MCP servers are configured in Claude Code's MCP settings (separate from BMAD). S
 
 1. Start Claude Code in your project directory
 2. Claude reads CLAUDE.md automatically
-3. Claude invokes the Oracle (or you type `/bmad:bmm:agents:oracle`)
+3. Claude invokes the Oracle (or you type `/team:oracle`)
 4. Oracle loads config, reads sprint status, presents project brief
 5. You select a menu item or give a directive
 6. Oracle executes the appropriate workflow
@@ -321,7 +316,7 @@ MCP servers are configured in Claude Code's MCP settings (separate from BMAD). S
 
 - Verify `CLAUDE.md` exists in the project root
 - Check that it contains the Oracle activation protocol
-- Try invoking manually: `/bmad:bmm:agents:oracle`
+- Try invoking manually: `/team:oracle`
 
 ### Slash commands not appearing
 
@@ -346,4 +341,4 @@ MCP servers are configured in Claude Code's MCP settings (separate from BMAD). S
 
 - Verify `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` is set in settings
 - This is an experimental feature -- behavior may vary
-- Check `_bmad/_config/manifest.yaml` for team definitions
+- Check `team/manifest.yaml` for team definitions

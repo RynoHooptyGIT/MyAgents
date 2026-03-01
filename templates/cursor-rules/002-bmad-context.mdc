@@ -2,7 +2,7 @@
 description: BMAD Context System - Pre-generated context files for AI agents
 alwaysApply: false
 globs:
-  - _bmad-output/**
+  - output/**
   - scripts/context/**
 ---
 
@@ -10,7 +10,7 @@ globs:
 
 ## Context Files
 
-Pre-generated context files exist in `_bmad-output/context/`. Use these INSTEAD of scanning the full codebase:
+Pre-generated context files exist in `output/context/`. Use these INSTEAD of scanning the full codebase:
 
 | File | Purpose |
 |------|---------|
@@ -20,7 +20,7 @@ Pre-generated context files exist in `_bmad-output/context/`. Use these INSTEAD 
 | `schema-digest.md` | Database schema from ORM models |
 | `patterns.md` | Canonical code patterns to follow |
 
-Also load `_bmad-output/project-context.md` for critical implementation rules.
+Also load `output/project-context.md` for critical implementation rules.
 
 ## Regeneration
 

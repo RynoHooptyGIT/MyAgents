@@ -6,7 +6,7 @@ This project uses the BMAD Methodology (v6) with an **Oracle agent (Athena)** as
 
 ### Session Start Protocol (EVERY SESSION)
 
-1. **ALWAYS invoke the Oracle agent first**: `/bmad:bmm:agents:oracle`
+1. **ALWAYS invoke the Oracle agent first**: `/team:oracle`
 2. The Oracle reads sprint state from `sprint-status.yaml`, presents a project brief, and displays its menu
 3. The Oracle determines the correct workflow to execute based on user direction
 4. Do NOT skip the Oracle — there are NO exceptions
@@ -29,14 +29,14 @@ This project uses the BMAD Methodology (v6) with an **Oracle agent (Athena)** as
 ### Lifecycle Rules
 
 - Never start coding without a story file. If one doesn't exist, create it first via `CS`.
-- Always update `_bmad-output/implementation-artifacts/sprint-status.yaml` when story status changes.
+- Always update `output/implementation-artifacts/sprint-status.yaml` when story status changes.
 - Story status transitions: `backlog` → `ready-for-dev` → `in-progress` → `review` → `done`
 - After dev-story (`DS`) completes, ALWAYS run code-review (`CR`) before shipping.
 - The Oracle executes implementation workflows directly. It routes to specialist agents for domain expertise.
 
 ## Agent Context System (DO NOT scan the full repo)
 
-Pre-generated context files exist in `_bmad-output/context/`. **USE these instead of scanning the codebase.**
+Pre-generated context files exist in `output/context/`. **USE these instead of scanning the codebase.**
 
 - **`module-index.md`** — Feature map of all frontend modules + backend services/routers/models
 - **`sprint-digest.md`** — Pre-computed sprint summary (use instead of parsing 500+ line YAML)
@@ -44,7 +44,7 @@ Pre-generated context files exist in `_bmad-output/context/`. **USE these instea
 - **`schema-digest.md`** — Database schema from ORM models
 - **`patterns.md`** — Canonical code patterns to follow when implementing
 
-Also load `_bmad-output/project-context.md` for critical implementation rules.
+Also load `output/project-context.md` for critical implementation rules.
 
 **Regeneration Commands:**
 
@@ -56,13 +56,13 @@ Also load `_bmad-output/project-context.md` for critical implementation rules.
 
 ## Project Structure
 
-- Planning docs: `_bmad-output/planning-artifacts/`
-- Story files: `_bmad-output/implementation-artifacts/stories/`
-- Sprint tracking: `_bmad-output/implementation-artifacts/sprint-status.yaml`
-- Agent context: `_bmad-output/context/` (auto-generated, committed to git)
+- Planning docs: `output/planning-artifacts/`
+- Story files: `output/implementation-artifacts/stories/`
+- Sprint tracking: `output/implementation-artifacts/sprint-status.yaml`
+- Agent context: `output/context/` (auto-generated, committed to git)
 - Context generators: `scripts/context/` (Python scripts)
-- BMAD config: `_bmad/bmm/config.yaml`
-- Oracle agent: `_bmad/bmm/agents/oracle.md`
+- BMAD config: `team/config.yaml`
+- Oracle agent: `team/agents/oracle.md`
 
 ## Critical Technical Rules
 

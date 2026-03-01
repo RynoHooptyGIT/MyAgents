@@ -16,7 +16,6 @@ teams:
       - analyst
       - architect
       - pm
-      - sm
       - ux-designer
     best_for:
       - "Planning new features"
@@ -25,12 +24,9 @@ teams:
   creative:
     name: "Creative Squad"
     members:
-      - brainstorming-coach
-      - storyteller
-      - creative-problem-solver
-      - design-thinking-coach
-      - innovation-strategist
-      - presentation-master
+      - creative-thinking-coach
+      - design-strategy-coach
+      - storyteller-presenter
     best_for:
       - "Innovation strategy"
       - "Creative problem solving"
@@ -48,12 +44,11 @@ teams:
   core-dev:
     name: "Core Development"
     members:
-      - navigator
+      - oracle
       - custodian
       - architect
       - ux-designer
       - dev
-      - sm
       - tea
     best_for:
       - "Feature development lifecycle"
@@ -89,12 +84,11 @@ teams:
   full-team:
     name: "Full Team"
     members:
-      - navigator
+      - oracle
       - custodian
       - architect
       - ux-designer
       - dev
-      - sm
       - tea
       - security-auditor
       - nist-rmf-expert

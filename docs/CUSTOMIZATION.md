@@ -12,12 +12,12 @@ The easiest way to create a BMAD-compliant agent is through the Agent Builder wo
 
 **Claude Code:**
 ```
-/bmad:bmb:agents:agent-builder
+/team:agent-builder
 ```
 
 **Other tools:**
 ```
-Load the agent from _bmad/bmb/agents/agent-builder.md and follow its activation protocol.
+Load the agent from team/agents/agent-builder.md and follow its activation protocol.
 ```
 
 Bond (the Agent Builder) guides you through an 8-step process:
@@ -38,8 +38,8 @@ The builder produces a BMAD-compliant agent file with proper structure, activati
 Create a new `.md` file in the appropriate module's `agents/` directory:
 
 ```
-_bmad/bmm/agents/my-agent.md      # For project-specific agents
-_bmad/cis/agents/my-agent.md      # For creative/innovation agents
+team/agents/my-agent.md      # For project-specific agents
+team/agents/my-agent.md      # For creative/innovation agents
 ```
 
 Follow this structure:
@@ -55,7 +55,7 @@ You must fully embody this agent's persona and follow all activation instruction
 <agent id="my-agent" name="PersonaName" title="Agent Title" icon="...">
   <activation critical="MANDATORY">
     <step n="1">Load persona from this current agent file</step>
-    <step n="2">Load and read {project-root}/_bmad/bmm/config.yaml
+    <step n="2">Load and read {project-root}/team/config.yaml
       Store fields as session variables: {user_name}, {project_name}
     </step>
     <step n="3">Remember: user's name is {user_name}</step>
@@ -74,7 +74,7 @@ You must fully embody this agent's persona and follow all activation instruction
   </persona>
 
   <menu>
-    <item cmd="1 or keyword" workflow="{project-root}/_bmad/bmm/workflows/path/workflow.yaml">[1] Menu Item</item>
+    <item cmd="1 or keyword" workflow="{project-root}/team/workflows/path/workflow.yaml">[1] Menu Item</item>
     <item cmd="2 or keyword" action="#my-prompt">[2] Another Item</item>
     <item cmd="DA or exit">[DA] Dismiss Agent</item>
   </menu>
@@ -89,10 +89,10 @@ You must fully embody this agent's persona and follow all activation instruction
 
 ### Registering the Agent
 
-After creating the agent file, add it to `_bmad/_config/agent-manifest.csv`:
+After creating the agent file, add it to `team/agent-manifest.csv`:
 
 ```csv
-"my-agent","PersonaName","Agent Title","...icon...","Role description","Identity description","Communication style","Principles","bmm","_bmad/bmm/agents/my-agent.md","team-name"
+"my-agent","PersonaName","Agent Title","...icon...","Role description","Identity description","Communication style","Principles","bmm","team/agents/my-agent.md","team-name"
 ```
 
 ### Creating a Slash Command (Claude Code)
@@ -107,7 +107,7 @@ Content:
 ```markdown
 Load and fully activate the agent: $ARGUMENTS
 
-@_bmad/bmm/agents/my-agent.md
+@team/agents/my-agent.md
 ```
 
 ---
@@ -118,12 +118,12 @@ Load and fully activate the agent: $ARGUMENTS
 
 **Claude Code:**
 ```
-/bmad:bmb:workflows:workflow
+/team:workflow
 ```
 
 **Other tools:**
 ```
-Load the agent from _bmad/bmb/agents/workflow-builder.md and follow its activation protocol.
+Load the agent from team/agents/workflow-builder.md and follow its activation protocol.
 ```
 
 Wendy (the Workflow Builder) guides you through creating a structured workflow with proper YAML configuration, instruction steps, templates, and validation.
@@ -133,7 +133,7 @@ Wendy (the Workflow Builder) guides you through creating a structured workflow w
 Create a new directory in the appropriate workflow group:
 
 ```
-_bmad/bmm/workflows/my-category/my-workflow/
+team/workflows/my-category/my-workflow/
   workflow.yaml       # Configuration (required)
   instructions.md     # Step-by-step instructions (required)
   template.md         # Output template (optional, for document workflows)
@@ -148,7 +148,7 @@ description: "What this workflow does"
 version: "1.0.0"
 
 # Module configuration source
-config_source: "{project-root}/_bmad/bmm/config.yaml"
+config_source: "{project-root}/team/config.yaml"
 
 # Instructions file
 instructions: "{installed_path}/instructions.md"
@@ -189,10 +189,10 @@ Generate the analysis based on loaded inputs.
 
 ### Registering the Workflow
 
-Add to `_bmad/_config/workflow-manifest.csv`:
+Add to `team/workflow-manifest.csv`:
 
 ```csv
-"my-workflow","What this workflow does","bmm","_bmad/bmm/workflows/my-category/my-workflow/workflow.yaml"
+"my-workflow","What this workflow does","bmm","team/workflows/my-category/my-workflow/workflow.yaml"
 ```
 
 ### Creating a Slash Command (Claude Code)
@@ -202,20 +202,19 @@ Create `claude-commands/bmm/workflows/my-workflow.md`:
 ```markdown
 Execute this workflow: $ARGUMENTS
 
-@_bmad/core/tasks/workflow.xml
-@_bmad/bmm/workflows/my-category/my-workflow/workflow.yaml
+@team/engine/workflow.xml
+@team/workflows/my-category/my-workflow/workflow.yaml
 ```
 
 ---
 
 ## Customizing Existing Agents
 
-Each BMM agent has a customization sidecar file in `_bmad/_config/agents/`:
+Each BMM agent has a customization sidecar file in `team/agents/`:
 
 ```
-_bmad/_config/agents/bmm-dev.customize.yaml
-_bmad/_config/agents/bmm-architect.customize.yaml
-_bmad/_config/agents/bmm-sm.customize.yaml
+team/agents/bmm-dev.customize.yaml
+team/agents/bmm-architect.customize.yaml
 ...
 ```
 
@@ -252,7 +251,7 @@ additional_prompts:
 
 ## Configuring Teams
 
-Teams are defined in `_bmad/_config/manifest.yaml` under the `teams` section:
+Teams are defined in `team/manifest.yaml` under the `teams` section:
 
 ```yaml
 teams:
@@ -277,12 +276,12 @@ Use the agent's `name` field (from agent-manifest.csv) as the member identifier:
 | `architect` | Winston (Architect) |
 | `dev` | Amelia (Developer) |
 | `pm` | John (Product Manager) |
-| `sm` | Bob (Scrum Master) |
+| `oracle` | Athena (Project Oracle) |
 | `tea` | Murat (Test Architect) |
 | `tech-writer` | Paige (Tech Writer) |
 | `ux-designer` | Sally (UX Designer) |
+| `quick-flow-solo-dev` | Barry (Quick Flow Solo Dev) |
 | `custodian` | Sentinel (Custodian) |
-| `navigator` | Navi (Navigator) |
 | `security-auditor` | Shield (Security) |
 | `devops` | Forge (DevOps) |
 | `api-contract` | Pact (API Contract) |
@@ -293,12 +292,9 @@ Use the agent's `name` field (from agent-manifest.csv) as the member identifier:
 | `healthcare-expert` | Dr. Vita (Healthcare) |
 | `government-expert` | Senator (Government) |
 | `financial-expert` | Sterling (Financial) |
-| `brainstorming-coach` | Carson (Brainstorming) |
-| `design-thinking-coach` | Maya (Design Thinking) |
-| `creative-problem-solver` | Dr. Quinn (Problem Solver) |
-| `innovation-strategist` | Victor (Innovation) |
-| `presentation-master` | Caravaggio (Presentations) |
-| `storyteller` | Sophia (Storyteller) |
+| `creative-thinking-coach` | Carson (Creative Thinking) |
+| `design-strategy-coach` | Maya (Design & Strategy) |
+| `storyteller-presenter` | Sophia (Storyteller & Presenter) |
 
 ### Team Configuration Options
 
@@ -342,7 +338,7 @@ backend:
 
 # Output configuration
 output:
-  directory: "_bmad-output/context"
+  directory: "output/context"
   files:
     - module_index     # Feature map
     - api_index        # API endpoints
@@ -357,7 +353,7 @@ You can add custom context generators by creating new Python scripts in `scripts
 
 1. Scan specified paths using glob patterns
 2. Extract structured information
-3. Write a markdown summary file to `_bmad-output/context/`
+3. Write a markdown summary file to `output/context/`
 4. Be fast enough to run on every commit (under 5 seconds ideally)
 
 ### Manual Regeneration
@@ -399,7 +395,7 @@ Add to the `## Critical Technical Rules` section:
 For more comprehensive rules, generate a `project-context.md` file:
 
 ```
-/bmad:bmm:workflows:generate-project-context
+/team:generate-project-context
 ```
 
 This workflow scans your codebase and produces a concise file with critical rules and patterns optimized for LLM context efficiency. It is loaded by the Oracle at session start and referenced by the Developer agent during implementation.
@@ -408,12 +404,12 @@ This workflow scans your codebase and produces a concise file with critical rule
 
 ## Adding to the Oracle's Routing Table
 
-To add custom agents to the Oracle's routing table, edit the `route-to-agent` prompt in `_bmad/bmm/agents/oracle.md`:
+To add custom agents to the Oracle's routing table, edit the `route-to-agent` prompt in `team/agents/oracle.md`:
 
 ```xml
 <prompt id="route-to-agent">
   ...existing routing table...
-  | My custom domain | CustomAgent (MyAgent) | /bmad:bmm:agents:my-agent |
+  | My custom domain | CustomAgent (MyAgent) | /team:my-agent |
 </prompt>
 ```
 
@@ -427,7 +423,7 @@ For large-scale customization, create an entirely new BMAD module using the Modu
 
 **Claude Code:**
 ```
-/bmad:bmb:agents:module-builder
+/team:module-builder
 ```
 
 Morgan (the Module Builder) guides you through creating a complete module with:
@@ -438,7 +434,7 @@ Morgan (the Module Builder) guides you through creating a complete module with:
 - `README.md` -- Module documentation
 - Installer script for integration with BMAD core
 
-After creation, register the module in `_bmad/_config/manifest.yaml`:
+After creation, register the module in `team/manifest.yaml`:
 
 ```yaml
 modules:
