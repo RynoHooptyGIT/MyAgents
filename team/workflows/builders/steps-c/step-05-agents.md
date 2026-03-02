@@ -128,7 +128,7 @@ agent:
 
 ---
 
-_Spec created on {date} via BMAD Module workflow_
+_Spec created on {date} via Module Builder workflow_
 ```
 
 ### 4. Create All Agent Specs

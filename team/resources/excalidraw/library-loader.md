@@ -47,4 +47,4 @@ Hundreds of pre-built component libraries exist for:
 
 ## User Configuration
 
-Future: Users will be able to configure favorite libraries in their BMAD config for automatic loading.
+Future: Users will be able to configure favorite libraries in their team config for automatic loading.

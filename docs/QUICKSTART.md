@@ -1,6 +1,6 @@
-# BMAD v6 Quick Start Guide
+# My Dev Team — Quick Start Guide
 
-This guide walks you through setting up BMAD v6 for a new project, from installation through your first development sprint.
+This guide walks you through setting up My Dev Team for a new project, from installation through your first development sprint.
 
 ## Prerequisites
 
@@ -9,12 +9,12 @@ This guide walks you through setting up BMAD v6 for a new project, from installa
 - An AI coding tool: Claude Code, Cursor, or GitHub Copilot
 - `jq` (used by post-commit hooks; optional but recommended)
 
-## Step 1: Clone or Copy BMAD into Your Project
+## Step 1: Clone or Copy Into Your Project
 
 **Option A: Clone as template (new project)**
 
 ```bash
-git clone https://github.com/your-org/bmad-method-v6.git my-project
+git clone https://github.com/your-org/my-dev-team.git my-project
 cd my-project
 ```
 
@@ -23,7 +23,7 @@ cd my-project
 Copy the following directories and files into your project root:
 
 ```
-_bmad/              # Core system (agents, workflows, config)
+team/               # Agent team system (agents, workflows, config)
 claude-commands/    # Slash commands (Claude Code only)
 hooks/              # Post-commit hook
 scripts/            # Setup and context generation
@@ -49,7 +49,7 @@ The setup script walks you through an interactive configuration process:
 
 The setup script generates:
 
-- `team/config.yaml` from `templates/config.bmm.yaml.template`
+- `team/config.yaml` from `templates/config.yaml.template`
 - `.claude/settings.local.json` from `templates/settings.local.json.template` (Claude Code)
 - `.cursor/rules/` from `templates/cursor-rules/` (Cursor)
 - `.github/copilot-instructions.md` (GitHub Copilot)
@@ -184,12 +184,12 @@ ls output/context/
 python scripts/context/generate_all.py --check
 
 # Verify slash commands are available (Claude Code)
-ls claude-commands/bmm/agents/oracle.md
+ls claude-commands/team/oracle.md
 ```
 
 ## Next Steps
 
-- Read the [Architecture Guide](ARCHITECTURE.md) to understand how BMAD works internally
+- Read the [Architecture Guide](ARCHITECTURE.md) to understand how the system works internally
 - Browse the [Agent Catalog](AGENT-CATALOG.md) to see all available specialist agents
 - Review the [Workflow Catalog](WORKFLOW-CATALOG.md) for the complete list of workflows
 - See your IDE-specific guide: [Claude Code](../ide-guides/claude-code.md) | [Cursor](../ide-guides/cursor.md) | [Copilot](../ide-guides/copilot.md)

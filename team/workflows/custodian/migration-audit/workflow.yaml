@@ -1,6 +1,6 @@
 name: migration-audit
 description: "Alembic migration chain integrity: duplicate numbers, down_revision chain, RLS policies, tenant_id columns."
-author: "BMAD"
+author: "My Dev Team"
 config_source: "{project-root}/team/config.yaml"
 output_folder: "{config_source}:output_folder"
 user_name: "{config_source}:user_name"

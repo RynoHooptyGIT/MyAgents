@@ -1,6 +1,6 @@
 name: migration-review
 description: "Database migration review (zero-downtime, backfill strategies, data validation)"
-author: "BMAD"
+author: "My Dev Team"
 config_source: "{project-root}/team/config.yaml"
 output_folder: "{config_source}:output_folder"
 user_name: "{config_source}:user_name"

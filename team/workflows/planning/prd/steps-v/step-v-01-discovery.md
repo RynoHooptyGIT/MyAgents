@@ -63,7 +63,7 @@ Handle fresh context validation by confirming PRD path, discovering and loading 
 Load and read the complete file at:
 `{prdPurpose}`
 
-This file contains the BMAD PRD philosophy, standards, and validation criteria that will guide all validation checks. Internalize this understanding - it defines what makes a great BMAD PRD.
+This file contains the PRD philosophy, standards, and validation criteria that will guide all validation checks. Internalize this understanding - it defines what makes a great BMAD PRD.
 
 ### 2. Discover PRD to Validate
 

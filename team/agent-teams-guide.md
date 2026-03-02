@@ -1,8 +1,8 @@
-# BMAD Agent Teams User Guide
+# Agent Teams User Guide
 
 ## Overview
 
-Agent teams allow multiple BMAD agents to work together in parallel as a coordinated team. Unlike subagents (which work sequentially and report back to the main agent), agent teams enable:
+Agent teams allow multiple agents to work together in parallel as a coordinated team. Unlike subagents (which work sequentially and report back to the main agent), agent teams enable:
 
 - **Parallel work**: Multiple agents working simultaneously on different aspects
 - **Direct communication**: Teammates message each other directly without going through the lead
@@ -341,7 +341,7 @@ Current limitations to be aware of:
 - **Lead is fixed:** Cannot promote a teammate to lead or transfer leadership
 - **Permissions set at spawn:** All teammates start with lead's permission mode
 
-## Integration with BMAD Workflows
+## Integration with Workflows
 
 ### Party Mode Enhancement
 
@@ -354,7 +354,7 @@ Party mode now detects agent teams capability and offers to use them for complex
 
 ### Workflow XML Tags
 
-BMAD workflows can use agent teams programmatically:
+workflows can use agent teams programmatically:
 
 ```xml
 <!-- Spawn Agent Team -->

@@ -13,7 +13,7 @@ validationReportPath: '{validation_report_path}'
 
 ## STEP GOAL:
 
-Detect if PRD follows BMAD format and route appropriately - classify as BMAD Standard / BMAD Variant / Non-Standard, with optional parity check for non-standard formats.
+Detect if PRD follows format and route appropriately - classify as BMAD Standard / BMAD Variant / Non-Standard, with optional parity check for non-standard formats.
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
@@ -98,7 +98,7 @@ Based on core section count, classify:
 
 **BMAD Variant:**
 - 3-4 core sections present
-- Generally follows BMAD patterns but may have structural differences
+- Generally follows patterns but may have structural differences
 - Missing some sections but recognizable as BMAD-style
 
 **Non-Standard:**
@@ -116,7 +116,7 @@ Append to validation report:
 **PRD Structure:**
 [List all ## Level 2 headers found]
 
-**BMAD Core Sections Present:**
+**the core system Sections Present:**
 - Executive Summary: [Present/Missing]
 - Success Criteria: [Present/Missing]
 - Product Scope: [Present/Missing]

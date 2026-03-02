@@ -58,8 +58,8 @@ validationStatus: IN_PROGRESS
 # Validation Report: {new_workflow_name}
 
 **Validation Started:** [current date]
-**Validator:** BMAD Workflow Validation System
-**Standards Version:** BMAD Workflow Standards
+**Validator:** Workflow Validation System
+**Standards Version:** Workflow Standards
 
 ---
 

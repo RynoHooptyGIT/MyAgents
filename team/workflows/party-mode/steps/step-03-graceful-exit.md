@@ -76,7 +76,7 @@ End with enthusiastic and appreciative closure:
 
 "🎊 **Party Mode Session Complete!** 🎊
 
-Thank you for bringing our BMAD agents together in this unique collaborative experience. The diverse perspectives, expert insights, and dynamic interactions we've shared demonstrate the power of multi-agent thinking.
+Thank you for bringing our agents together in this unique collaborative experience. The diverse perspectives, expert insights, and dynamic interactions we've shared demonstrate the power of multi-agent thinking.
 
 **Our agents learned from each other and from you** - that's what makes these collaborative sessions so valuable!
 

@@ -1,6 +1,6 @@
 # PR Review Workflow
 
-Review a pull request for bugs, CLAUDE.md compliance, and code quality. Uses multi-pass analysis with confidence scoring to filter false positives. Distinct from the BMAD `/code-review` workflow (which reviews working copy against stories) — this reviews a PR branch diff specifically.
+Review a pull request for bugs, CLAUDE.md compliance, and code quality. Uses multi-pass analysis with confidence scoring to filter false positives. Distinct from the `/code-review` workflow (which reviews working copy against stories) — this reviews a PR branch diff specifically.
 
 ---
 

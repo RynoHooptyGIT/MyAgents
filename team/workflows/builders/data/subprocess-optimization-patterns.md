@@ -1,6 +1,6 @@
 # Subprocess Optimization Patterns
 
-**Purpose:** Context-saving and performance patterns for subprocess/subagent usage in BMAD workflows.
+**Purpose:** Context-saving and performance patterns for subprocess/subagent usage in workflows.
 
 ---
 

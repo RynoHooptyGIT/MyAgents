@@ -6,7 +6,7 @@
 
 ## What is a BMAD Module?
 
-A **BMAD module** is a self-contained package of functionality that extends the BMAD framework. Modules provide:
+A **BMAD module** is a self-contained package of functionality that extends the framework. Modules provide:
 - **Agents** — AI personas with specialized expertise and menu-driven commands
 - **Workflows** — Structured processes for accomplishing complex tasks
 - **Configuration** — module.yaml for user customization
@@ -34,7 +34,7 @@ A new, independent module focused on a specific domain.
 
 ### 2. Extension Module
 
-Extends an existing BMAD module with additional functionality.
+Extends an existing module with additional functionality.
 
 **Characteristics:**
 - Builds upon an existing module's agents and workflows
@@ -118,7 +118,7 @@ Extension contains both overrides and new files — applies rules per file
 
 ### 3. Global Module
 
-Affects the entire BMAD framework and all modules.
+Affects the entire framework and all modules.
 
 **Characteristics:**
 - Core functionality that impacts all modules

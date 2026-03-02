@@ -1,6 +1,6 @@
-# BMAD v6 Workflow Catalog
+# My Dev Team — Workflow Catalog
 
-All workflows in BMAD v6 organized by phase and domain. Each entry includes the workflow name, purpose, key inputs and outputs, and the slash command path for Claude Code invocation.
+All workflows organized by phase and domain. Each entry includes the workflow name, purpose, key inputs and outputs, and the slash command path for Claude Code invocation.
 
 ---
 
@@ -540,7 +540,7 @@ All workflows in BMAD v6 organized by phase and domain. Each entry includes the 
 
 ### party-mode
 
-- **Purpose**: Orchestrate group discussions between all installed BMAD agents, enabling natural multi-agent conversations where agents debate, challenge, and build on each other's expertise.
+- **Purpose**: Orchestrate group discussions between all installed agents, enabling natural multi-agent conversations where agents debate, challenge, and build on each other's expertise.
 - **Inputs**: Discussion topic, agent selection (optional)
 - **Outputs**: Discussion transcript and conclusions
 - **Slash command**: `/team:party-mode`
@@ -558,14 +558,14 @@ All workflows in BMAD v6 organized by phase and domain. Each entry includes the 
 
 ### agent (builder)
 
-- **Purpose**: Tri-modal workflow for creating, editing, and validating BMAD-compliant agents through an 8-step guided process.
+- **Purpose**: Tri-modal workflow for creating, editing, and validating compliant agents through an 8-step guided process.
 - **Inputs**: Agent concept (create), existing agent file (edit/validate)
 - **Outputs**: Agent `.md` file with persona, menu, and activation protocol
 - **Slash command**: `/team:agent`
 
 ### module (builder)
 
-- **Purpose**: Quad-modal workflow for creating BMAD modules (Brief, Create, Edit, Validate) with full structure, config, agents, workflows, and documentation.
+- **Purpose**: Quad-modal workflow for creating modules (Brief, Create, Edit, Validate) with full structure, config, agents, workflows, and documentation.
 - **Inputs**: Module concept (brief), module brief (create), existing module (edit/validate)
 - **Outputs**: Complete module directory with config.yaml, agents, workflows, and docs
 - **Slash command**: `/team:module`

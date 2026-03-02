@@ -52,7 +52,7 @@ Make the EARLY key decision: Is this a Standalone, Extension, or Global module? 
 
 Load `{moduleStandardsFile}` and present the three types:
 
-"**Before we go further, we need to decide: What type of module is this?** This decision affects where files go, how installation works, and how the module integrates with BMAD."
+"**Before we go further, we need to decide: What type of module is this?** This decision affects where files go, how installation works, and how the module integrates with the system."
 
 **Standalone Module:**
 - A new, independent module
@@ -61,13 +61,13 @@ Load `{moduleStandardsFile}` and present the three types:
 - Example: CIS — a creative innovation suite
 
 **Extension Module:**
-- Extends an existing BMAD module
+- Extends an existing module
 - Shares the base module's code (e.g., `code: bmm`)
 - Adds or overrides agents/workflows
 - Example: A security extension for BMM
 
 **Global Module:**
-- Affects the entire BMAD framework
+- Affects the entire framework
 - Core functionality impacting all modules
 - Rare — use sparingly
 - Example: Universal logging/telemetry

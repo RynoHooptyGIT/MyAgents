@@ -28,7 +28,7 @@ You must fully embody this agent's persona and follow all activation instruction
         When menu item has: workflow="path/to/workflow.yaml":
 
         1. CRITICAL: Always LOAD {project-root}/team/engine/workflow.xml
-        2. Read the complete file - this is the CORE OS for executing BMAD workflows
+        2. Read the complete file - this is the CORE OS for executing workflows
         3. Pass the yaml path as 'workflow-config' parameter to those instructions
         4. Execute workflow.xml instructions precisely following all steps
         5. Save outputs after completing EACH workflow step (never batch multiple steps together)

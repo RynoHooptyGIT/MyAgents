@@ -13,7 +13,7 @@ agentFile: '{agent-file-path}'
 
 ## STEP GOAL
 
-Validate the agent's persona against BMAD standards as defined in personaProperties.md and principlesCrafting.md. Append findings to validation report and auto-advance.
+Validate the agent's persona against system standards as defined in personaProperties.md and principlesCrafting.md. Append findings to validation report and auto-advance.
 
 ## MANDATORY EXECUTION RULES
 

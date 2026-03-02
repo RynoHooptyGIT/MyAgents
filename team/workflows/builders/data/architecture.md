@@ -1,6 +1,6 @@
 # Workflow Architecture
 
-**Purpose:** Core structural patterns for BMAD workflows.
+**Purpose:** Core structural patterns for workflows.
 
 ---
 

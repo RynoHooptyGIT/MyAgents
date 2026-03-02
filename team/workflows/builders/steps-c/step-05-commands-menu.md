@@ -18,7 +18,7 @@ partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
 
 # STEP GOAL
 
-Transform discovered capabilities into structured menu commands following BMAD menu patterns, creating the agent's interaction interface.
+Transform discovered capabilities into structured menu commands following menu patterns, creating the agent's interaction interface.
 
 # MANDATORY EXECUTION RULES
 

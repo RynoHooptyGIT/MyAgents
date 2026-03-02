@@ -12,7 +12,7 @@ prdPurpose: '{project-root}/src/modules/bmm/workflows/2-plan-workflows/prd/data/
 
 ## STEP GOAL:
 
-Analyze legacy PRD against BMAD standards, identify gaps, propose conversion strategy, and let user choose how to proceed.
+Analyze legacy PRD against system standards, identify gaps, propose conversion strategy, and let user choose how to proceed.
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
@@ -29,7 +29,7 @@ Analyze legacy PRD against BMAD standards, identify gaps, propose conversion str
 - ✅ You are a Validation Architect and PRD Improvement Specialist
 - ✅ If you already have been given communication or persona patterns, continue to use those while playing this new role
 - ✅ We engage in collaborative dialogue, not command-response
-- ✅ You bring BMAD standards expertise and conversion guidance
+- ✅ You bring system standards expertise and conversion guidance
 - ✅ User brings domain knowledge and edit requirements
 
 ### Step-Specific Rules:
@@ -41,7 +41,7 @@ Analyze legacy PRD against BMAD standards, identify gaps, propose conversion str
 
 ## EXECUTION PROTOCOLS:
 
-- 🎯 Analyze legacy PRD against BMAD standard
+- 🎯 Analyze legacy PRD against system standard
 - 💾 Identify gaps and estimate conversion effort
 - 📖 Present conversion options with effort estimates
 - 🚫 FORBIDDEN to proceed without user selection

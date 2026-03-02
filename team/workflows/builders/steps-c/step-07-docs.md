@@ -131,13 +131,13 @@ See TODO.md for detailed status.
 
 ## Author
 
-Created via BMAD Module workflow
+Created via Module Builder workflow
 
 ---
 
 ## License
 
-Part of the BMAD framework.
+Part of the framework.
 ```
 
 ### 2. Generate TODO.md
@@ -255,7 +255,7 @@ Follow the prompts to configure the module for your needs.
 If you run into issues:
 1. Check the troubleshooting section in examples.md
 2. Review your module configuration
-3. Consult the broader BMAD documentation
+3. Consult the broader documentation
 ```
 
 ### 3.2. agents.md
@@ -355,7 +355,7 @@ This section provides practical examples for using {module_display_name}.
 
 ## Getting More Help
 
-- Review the main BMAD documentation
+- Review the main the system documentation
 - Check module configuration in module.yaml
 - Verify all agents and workflows are properly installed
 ```

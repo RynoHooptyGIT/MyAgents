@@ -21,11 +21,11 @@ partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
 
 # STEP GOAL
 
-Assemble the agent plan content into a complete Expert agent YAML file with sidecar folder structure. Expert agents require persistent memory storage, so the build creates a sidecar folder next to the agent.yaml (which gets installed to `team/_memory/` during BMAD installation).
+Assemble the agent plan content into a complete Expert agent YAML file with sidecar folder structure. Expert agents require persistent memory storage, so the build creates a sidecar folder next to the agent.yaml (which gets installed to `team/_memory/` during installation).
 
 ## MANDATORY EXECUTION RULES
 
-1. **EXPERT AGENT = SIDECAR REQUIRED**: Every Expert agent MUST have a sidecar folder created next to agent.yaml (build location), which will be installed to `team/_memory/` during BMAD installation
+1. **EXPERT AGENT = SIDECAR REQUIRED**: Every Expert agent MUST have a sidecar folder created next to agent.yaml (build location), which will be installed to `team/_memory/` during installation
 2. **CRITICAL_ACTIONS FORMAT**: All critical_actions MUST use `{project-root}/team/_memory/{sidecar-folder}/` for file operations (runtime path)
 3. **TEMPLATE COMPLIANCE**: Follow expert-agent-template.md structure exactly
 4. **YAML VALIDATION**: Ensure valid YAML syntax with proper indentation (2-space)
@@ -110,7 +110,7 @@ metadata:
 1. **Create Sidecar Directory** (NEXT TO agent.yaml):
    - Path: `{agentBuildOutput}/{agent-name}-sidecar/`
    - Use `mkdir -p` to create full path
-   - Note: This folder gets installed to `team/_memory/` during BMAD installation
+   - Note: This folder gets installed to `team/_memory/` during installation
 
 2. **Create Starter Files** (if specified in critical_actions):
    ```bash
@@ -132,7 +132,7 @@ metadata:
    - {file2}.md: {description}
 
    ## Runtime Access
-   After BMAD installation, this folder will be accessible at:
+   After installation, this folder will be accessible at:
    `{project-root}/team/_memory/{sidecar-folder}/{filename}.md`
    ```
 
@@ -175,7 +175,7 @@ ONLY WHEN [C continue option] is selected and [complete YAML generated and writt
 
 This step produces TWO artifacts:
 1. **Agent YAML**: Complete expert agent definition at `{agentYamlOutput}`
-2. **Sidecar Structure**: Folder and files at `{agentBuildOutput}/{agent-name}-sidecar/` (build location, installs to `team/_memory/` during BMAD installation)
+2. **Sidecar Structure**: Folder and files at `{agentBuildOutput}/{agent-name}-sidecar/` (build location, installs to `team/_memory/` during installation)
 
 Both must exist before proceeding to validation.
 

@@ -1,6 +1,6 @@
-# BMAD v6 -- Claude Code Setup Guide
+# My Dev Team — Claude Code Setup Guide
 
-Claude Code has the deepest BMAD integration of any supported tool. This guide covers the complete setup and all available features.
+Claude Code has the deepest integration of any supported tool. This guide covers the complete setup and all available features.
 
 ## Overview
 
@@ -16,7 +16,7 @@ Claude Code integration includes:
 
 ## CLAUDE.md -- Session Instructions
 
-`CLAUDE.md` is automatically read by Claude Code at the start of every session. BMAD uses it to:
+`CLAUDE.md` is automatically read by Claude Code at the start of every session. It is used to:
 
 1. Instruct Claude to activate the Oracle agent before any other work
 2. Define the implementation lifecycle (create-story, dev-story, code-review, ship)
@@ -58,7 +58,7 @@ Add your project's rules to the `## Critical Technical Rules` section. These are
 
 ## Slash Commands
 
-BMAD provides 81 slash commands organized by module. In Claude Code, type `/bmad:` and tab-complete to see all available commands.
+76 slash commands are available. In Claude Code, type `/team:` and tab-complete to see all available commands.
 
 ### Agent Commands
 
@@ -91,7 +91,7 @@ Invoke any agent directly:
 /team:agent-builder       # Agent Builder (Bond)
 /team:workflow-builder    # Workflow Builder (Wendy)
 /team:module-builder      # Module Builder (Morgan)
-/team:bmad-master        # BMad Master
+/team:bmad-master        # Master
 ```
 
 ### Workflow Commands (BMM)
@@ -235,7 +235,7 @@ Enable verbose mode in Claude Code (Ctrl+O) to see hook output in the transcript
 
 ## Agent Teams
 
-Agent teams are an experimental feature that allows multiple BMAD agents to work in parallel.
+Agent teams are an experimental feature that allows multiple agents to work in parallel.
 
 ### Enabling
 
@@ -293,7 +293,7 @@ Provides up-to-date documentation for any library or framework:
 
 ### Configuration
 
-MCP servers are configured in Claude Code's MCP settings (separate from BMAD). See Claude Code documentation for MCP server setup.
+MCP servers are configured in Claude Code's MCP settings (separate from this system). See Claude Code documentation for MCP server setup.
 
 ---
 

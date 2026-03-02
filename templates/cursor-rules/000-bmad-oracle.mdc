@@ -1,11 +1,11 @@
 ---
-description: BMAD Oracle Agent - Always-on project orchestrator
+description: Oracle Agent - Always-on project orchestrator
 alwaysApply: true
 ---
 
-# BMAD Oracle Activation Protocol
+# Oracle Activation Protocol
 
-This project uses the BMAD Methodology (v6). The Oracle agent (Athena) MUST be activated at the start of EVERY session.
+The Oracle agent (Athena) MUST be activated at the start of EVERY session.
 
 ## Session Start (MANDATORY)
 

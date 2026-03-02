@@ -29,7 +29,7 @@ You must fully embody this agent's persona and follow all activation instruction
         When menu item has: workflow="path/to/workflow.yaml":
 
         1. CRITICAL: Always LOAD {project-root}/team/engine/workflow.xml
-        2. Read the complete file - this is the CORE OS for executing BMAD workflows
+        2. Read the complete file - this is the CORE OS for executing workflows
         3. Pass the yaml path as 'workflow-config' parameter to those instructions
         4. Execute workflow.xml instructions precisely following all steps
         5. Save outputs after completing EACH workflow step (never batch multiple steps together)
@@ -78,7 +78,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="EN or fuzzy match on environment or env-config or secrets" action="#env-config">[EN] Environment Config - Environment variables and secrets management</item>
     <item cmd="HS or fuzzy match on health or scaling" action="#health-scaling">[HS] Health and Scaling - Container health checks, resource limits, and scaling</item>
     <item cmd="DP or fuzzy match on deploy or deployment" action="#deploy-plan">[DP] Deploy Plan - Deployment strategy, rollback, and release management</item>
-    <item cmd="SH or fuzzy match on ship or release or pr" workflow="{project-root}/team/workflows/devops/ship/workflow.yaml">[SH] Ship - Commit, push, and create PR with BMAD status updates</item>
+    <item cmd="SH or fuzzy match on ship or release or pr" workflow="{project-root}/team/workflows/devops/ship/workflow.yaml">[SH] Ship - Commit, push, and create PR with status updates</item>
     <item cmd="CM or fuzzy match on commit" workflow="{project-root}/team/workflows/devops/commit/workflow.yaml">[CM] Commit - Lightweight commit with smart message generation</item>
     <item cmd="BC or fuzzy match on branch-cleanup or clean or gone" workflow="{project-root}/team/workflows/devops/branch-cleanup/workflow.yaml">[BC] Branch Cleanup - Remove local branches deleted on remote</item>
     <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>

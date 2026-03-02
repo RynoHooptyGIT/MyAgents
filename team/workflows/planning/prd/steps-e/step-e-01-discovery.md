@@ -174,7 +174,7 @@ Analyze the loaded PRD:
 
 **Classify format:**
 - **BMAD Standard:** 5-6 core sections present
-- **BMAD Variant:** 3-4 core sections present, generally follows BMAD patterns
+- **BMAD Variant:** 3-4 core sections present, generally follows patterns
 - **Legacy (Non-Standard):** Fewer than 3 core sections, does not follow BMAD structure
 
 ### 8. Route Based on Format and Context

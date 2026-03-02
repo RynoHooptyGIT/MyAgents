@@ -836,7 +836,7 @@ HANDOFF:
   - Reused: Progress tracking, phase completion logic
 
 - **Workflow Chaining**: Input/output contracts
-  - Location: Various BMAD workflows
+  - Location: Various workflows
   - Reused: Handoff protocol between workflows
 
 ---

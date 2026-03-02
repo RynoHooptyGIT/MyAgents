@@ -1,6 +1,6 @@
-# BMAD v6 -- Cursor IDE Setup Guide
+# My Dev Team — Cursor IDE Setup Guide
 
-Cursor provides good BMAD support through its `.cursor/rules/` system with `.mdc` files. This guide covers how to set up and use BMAD effectively in Cursor.
+Cursor provides good support through its `.cursor/rules/` system with `.mdc` files. This guide covers how to set up and use the system effectively in Cursor.
 
 ## Overview
 
@@ -31,18 +31,18 @@ Cursor automatically reads all `.mdc` files from `.cursor/rules/` and applies th
 
 ## Step 2: Oracle Activation Rule (Always Active)
 
-Create `.cursor/rules/000-bmad-oracle.mdc`:
+Create `.cursor/rules/000-oracle.mdc`:
 
 ```markdown
 ---
 alwaysApply: true
 ---
 
-# BMAD Oracle Activation Protocol
+# Oracle Activation Protocol
 
 ## MANDATORY: Every Session
 
-This project uses the BMAD Methodology (v6). The Oracle agent (Athena) MUST be activated
+The Oracle agent (Athena) MUST be activated
 at the start of EVERY conversation.
 
 ### Activation Steps
@@ -74,14 +74,14 @@ The `alwaysApply: true` frontmatter ensures this rule is loaded in every Cursor 
 
 ## Step 3: Lifecycle Enforcement Rule
 
-Create `.cursor/rules/001-bmad-lifecycle.mdc`:
+Create `.cursor/rules/001-lifecycle.mdc`:
 
 ```markdown
 ---
 alwaysApply: true
 ---
 
-# BMAD Implementation Lifecycle Rules
+# Implementation Lifecycle Rules
 
 ## Lifecycle Gates
 
@@ -104,7 +104,7 @@ Update `output/implementation-artifacts/sprint-status.yaml` when story status ch
 
 ## Workflow Engine
 
-All BMAD workflows are executed through the workflow engine at `team/engine/workflow.xml`.
+All workflows are executed through the workflow engine at `team/engine/workflow.xml`.
 When executing a workflow:
 1. Load workflow.yaml from the specified path
 2. Load config from config_source (usually `team/config.yaml`)
@@ -118,14 +118,14 @@ When executing a workflow:
 
 ## Step 4: Context System Rule
 
-Create `.cursor/rules/002-bmad-context.mdc`:
+Create `.cursor/rules/002-context.mdc`:
 
 ```markdown
 ---
 alwaysApply: true
 ---
 
-# BMAD Agent Context System
+# Agent Context System
 
 ## Pre-Generated Context Files
 
@@ -318,7 +318,7 @@ Read @output/context/sprint-digest.md for the current sprint summary.
    Execute step 3 from @team/workflows/implementation/code-review/instructions.xml
    ```
 
-6. **Use Composer for multi-file edits.** Cursor's Composer mode is well-suited for BMAD's dev-story workflow, which often touches multiple files across the codebase.
+6. **Use Composer for multi-file edits.** Cursor's Composer mode is well-suited for the dev-story workflow, which often touches multiple files across the codebase.
 
 ---
 
@@ -335,4 +335,4 @@ Read @output/context/sprint-digest.md for the current sprint summary.
 | Settings/permissions | settings.local.json | Cursor settings |
 | MCP tools | Full support | Varies by version |
 
-Despite these differences, the core BMAD methodology works the same. The Oracle orchestrates, workflows execute in order, lifecycle gates are enforced, and sprint-status.yaml is the single source of truth.
+Despite these differences, the core methodology works the same. The Oracle orchestrates, workflows execute in order, lifecycle gates are enforced, and sprint-status.yaml is the single source of truth.

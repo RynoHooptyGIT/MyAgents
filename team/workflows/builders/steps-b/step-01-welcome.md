@@ -59,7 +59,7 @@ Welcome the user to the Module Brief workflow, select the collaboration mode (In
 
 "**Welcome to the Module Brief workflow!** 🚀
 
-I'm here to help you create an amazing BMAD module. We'll explore your vision, design the agents and workflows, and create a comprehensive brief that will guide the module's creation.
+I'm here to help you create an amazing module. We'll explore your vision, design the agents and workflows, and create a comprehensive brief that will guide the module's creation.
 
 Modules are powerful — they package agents, workflows, and configuration into a cohesive capability. Let's make something great!"
 

@@ -1,12 +1,7 @@
 installation:
-  version: 6.0.0
+  version: 1.0.0
   installDate: {{INSTALL_DATE}}
   lastUpdated: {{INSTALL_DATE}}
-modules:
-  - core
-  - bmb
-  - bmm
-  - cis
 ides:
   - claude-code
 teams:

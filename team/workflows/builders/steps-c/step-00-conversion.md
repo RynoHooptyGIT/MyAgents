@@ -1,6 +1,6 @@
 ---
 name: 'step-00-conversion'
-description: 'Convert existing workflow to BMAD compliant format by reading all instructions and extracting plan'
+description: 'Convert existing workflow to compliant format by reading all instructions and extracting plan'
 
 nextStepFile: './step-02-classification.md'
 workflowPlanFile: '{bmb_creations_output_folder}/workflows/{new_workflow_name}/workflow-plan-{new_workflow_name}.md'
@@ -10,7 +10,7 @@ workflowPlanFile: '{bmb_creations_output_folder}/workflows/{new_workflow_name}/w
 
 ## STEP GOAL:
 
-Convert an existing workflow (any format) to BMAD compliant format by fully reading and understanding every instruction, extracting the essence, and creating a plan document.
+Convert an existing workflow (any format) to compliant format by fully reading and understanding every instruction, extracting the essence, and creating a plan document.
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
@@ -60,7 +60,7 @@ Convert an existing workflow (any format) to BMAD compliant format by fully read
 
 **If no path was passed:**
 
-"I can help you convert an existing workflow to BMAD compliant format.
+"I can help you convert an existing workflow to compliant format.
 
 **Please provide the path to the workflow you want to convert:**
 
@@ -177,7 +177,7 @@ What style? What level of detail? What collaborative approach?}
 {List issues to address}
 
 **Compliance gaps identified:**
-{List what's missing for BMAD compliance}
+{List what's missing for system compliance}
 ```
 
 ### 4. Present Extracted Information to User

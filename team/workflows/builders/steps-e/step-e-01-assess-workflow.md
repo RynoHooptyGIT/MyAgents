@@ -13,7 +13,7 @@ conversionStep: '../steps-c/step-00-conversion.md'
 
 ## STEP GOAL:
 
-Load the target workflow, check if it follows BMAD step-file architecture, check for existing validation report, and offer to run validation if needed.
+Load the target workflow, check if it follows step-file architecture, check for existing validation report, and offer to run validation if needed.
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
@@ -68,7 +68,7 @@ From the user input provided by workflow.md routing, extract:
 
 ### 3. Compliance Check
 
-**Determine if workflow is BMAD-compliant:**
+**Determine if workflow is compliant:**
 
 **Compliant workflow has:**
 - ✅ workflow.md file exists at root
@@ -88,7 +88,7 @@ From the user input provided by workflow.md routing, extract:
 
 "**Workflow Assessment Result: Non-Compliant Format**
 
-I found that this workflow does not follow BMAD step-file architecture:
+I found that this workflow does not follow step-file architecture:
 - [Describe what was found - e.g., legacy format, missing workflow.md, etc.]
 
 **Recommendation:** This workflow should be converted using the create workflow process. The create workflow can use your existing workflow as input discovery material to build a new compliant workflow.
@@ -110,7 +110,7 @@ I found that this workflow does not follow BMAD step-file architecture:
 
 "**Workflow Assessment Result: Compliant Format**
 
-This workflow follows BMAD step-file architecture:
+This workflow follows step-file architecture:
 - ✅ workflow.md found
 - ✅ Step folders: [list which ones exist]
 - ✅ Data folder: [yes/no]

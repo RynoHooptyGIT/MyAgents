@@ -15,4 +15,4 @@ configuration:
     - label: "Custom Selection"
       team: custom
       description: "Select specific agents manually"
-  installLocation: "{project-root}/_bmad"
+  installLocation: "{project-root}/team"

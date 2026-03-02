@@ -144,7 +144,7 @@ installed_path: '{project-root}/team/{module_code}/workflows/{workflow_folder_na
 
 ---
 
-_Spec created on {date} via BMAD Module workflow_
+_Spec created on {date} via Module Builder workflow_
 ```
 
 ### 3. Create All Workflow Specs

@@ -82,7 +82,7 @@ Thoroughly review the existing PRD, analyze validation report findings (if provi
 
 **IF no validation report:**
 1. Read entire PRD thoroughly
-2. Analyze against BMAD standards (from prd-purpose.md)
+2. Analyze against system standards (from prd-purpose.md)
 3. Identify issues in:
    - Information density (anti-patterns)
    - Structure and flow

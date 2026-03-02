@@ -2,7 +2,7 @@
 
 ## MANDATORY: Oracle Agent — Always Active
 
-This project uses the BMAD Methodology (v6) with an **Oracle agent (Athena)** as the always-on orchestrator. The Oracle MUST be activated at the start of EVERY session, regardless of what the user asks.
+This project uses an **Oracle agent (Athena)** as the always-on orchestrator. The Oracle MUST be activated at the start of EVERY session, regardless of what the user asks.
 
 ### Session Start Protocol (EVERY SESSION)
 
@@ -61,7 +61,7 @@ Also load `output/project-context.md` for critical implementation rules.
 - Sprint tracking: `output/implementation-artifacts/sprint-status.yaml`
 - Agent context: `output/context/` (auto-generated, committed to git)
 - Context generators: `scripts/context/` (Python scripts)
-- BMAD config: `team/config.yaml`
+- Team config: `team/config.yaml`
 - Oracle agent: `team/agents/oracle.md`
 
 ## Critical Technical Rules

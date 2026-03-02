@@ -69,7 +69,7 @@ Load and read full config from {project-root}/team/config.yaml and resolve:
 
 **If mode is still unclear, ask user:**
 
-"Welcome to the BMAD Workflow Creator! What would you like to do?
+"Welcome to the Workflow Creator! What would you like to do?
 
 **[C]reate** - Build a new workflow from scratch
 **[V]alidate** - Review an existing workflow and generate validation report
@@ -85,7 +85,7 @@ Please select: [C]reate / [V]alidate / [E]dit"
 "**Creating a new workflow. How would you like to start?**
 
 **[F]rom scratch** - Start with a blank slate - I'll help you discover your idea
-**[C]onvert existing** - Convert an existing workflow to BMAD compliant format
+**[C]onvert existing** - Convert an existing workflow to compliant format
 
 Please select: [F]rom scratch / [C]onvert existing"
 

@@ -349,7 +349,7 @@
         {{story_points}}
 
         ---
-        *Synced from BMAD story file: {{story_file}}*
+        *Synced from story file: {{story_file}}*
         EOF
         )" \
           --label "type:story" --label "status:ready-for-dev" \

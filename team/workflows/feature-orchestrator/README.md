@@ -2,7 +2,7 @@
 
 **Version**: 1.0.0
 **Created**: 2026-02-08
-**Module**: BMAD Core
+**Module**: the core system
 
 ## Overview
 
@@ -225,7 +225,7 @@ User: "I need JWT authentication, a user dashboard, and comprehensive tests"
 - YAML parse fails
 - Options: Retry / Fix / Partial / Skip
 
-## Integration with BMAD Workflows
+## Integration with Workflows
 
 ### Upstream (What triggers orchestrator)
 - User direct request (complex/multi-feature)
@@ -323,6 +323,6 @@ Questions or issues? Check:
 
 ---
 
-**Built with**: BMAD Core 6.0.0-alpha.23
+**Built with**: the core system 6.0.0-alpha.23
 **Pattern**: Sequential Subprocess Coordination
 **Status**: Production Ready ✅

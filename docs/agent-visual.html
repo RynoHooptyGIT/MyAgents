@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BMAD v6 Agent Team Visual</title>
+<title>My Dev Team — Agent Visual</title>
 <style>
   :root {
     --bg: #0d1117;
@@ -344,8 +344,8 @@
 <body>
 
 <div class="header">
-  <h1>BMAD v6 Agent Team</h1>
-  <div class="subtitle">27 Specialist Agents Across 4 Modules</div>
+  <h1>My Dev Team</h1>
+  <div class="subtitle">27 Specialist AI Agents</div>
   <div class="stats-bar" id="stats-bar"></div>
 </div>
 
@@ -368,11 +368,11 @@ var AGENTS = [
   {
     name: "Athena", title: "Project Oracle", icon: "\uD83D\uDD2E", module: "BMM",
     category: "Orchestration", catIcon: "\uD83C\uDFAF", catDesc: "Central project command and lifecycle enforcement",
-    role: "Chief orchestrator who combines sprint-state intelligence with workflow execution. Translates high-level directives into the correct BMAD workflow sequence.",
+    role: "Chief orchestrator who combines sprint-state intelligence with workflow execution. Translates high-level directives into the correct workflow sequence.",
     domain: "Project orchestration, lifecycle enforcement, sprint state management",
     when: "Every session. Mandatory \u2014 reads sprint state, presents project brief, enforces create-story \u2192 dev-story \u2192 code-review \u2192 ship lifecycle.",
     style: "Mission-control command style. Opens with current state, presents the plan, then executes.",
-    cmd: "/bmad:bmm:agents:oracle", phase: "all"
+    cmd: "/team:oracle", phase: "all"
   },
   {
     name: "Mary", title: "Business Analyst", icon: "\uD83D\uDCCA", module: "BMM",
@@ -381,7 +381,7 @@ var AGENTS = [
     domain: "Business analysis, market research, competitive analysis, requirements",
     when: "When creating product briefs, analyzing market dynamics, performing competitive research, or translating business needs into specifications.",
     style: "Speaks with the excitement of a treasure hunter \u2014 thrilled by every clue, energized when patterns emerge.",
-    cmd: "/bmad:bmm:agents:analyst", phase: "analysis"
+    cmd: "/team:analyst", phase: "analysis"
   },
   {
     name: "John", title: "Product Manager", icon: "\uD83D\uDCCB", module: "BMM",
@@ -390,7 +390,7 @@ var AGENTS = [
     domain: "PRD creation, user interviews, requirement discovery, stakeholder alignment",
     when: "When creating or editing a PRD, conducting user research, defining product requirements, or making prioritization decisions.",
     style: "Asks 'WHY?' relentlessly like a detective on a case. Direct and data-sharp, cuts through fluff.",
-    cmd: "/bmad:bmm:agents:pm", phase: "planning"
+    cmd: "/team:pm", phase: "planning"
   },
   {
     name: "Winston", title: "Architect", icon: "\uD83C\uDFD7\uFE0F", module: "BMM",
@@ -399,7 +399,7 @@ var AGENTS = [
     domain: "System architecture, distributed systems, cloud infrastructure, API design",
     when: "When designing system architecture, making technology decisions, reviewing scalability patterns, or creating architecture documents.",
     style: "Calm, pragmatic tones, balancing 'what could be' with 'what should be.' Embraces boring technology for stability.",
-    cmd: "/bmad:bmm:agents:architect", phase: "solutioning"
+    cmd: "/team:architect", phase: "solutioning"
   },
   {
     name: "Sally", title: "UX Designer", icon: "\uD83C\uDFA8", module: "BMM",
@@ -408,7 +408,7 @@ var AGENTS = [
     domain: "User experience design, interaction design, user research, UI patterns",
     when: "When creating UX design documents, defining user journeys, planning interaction patterns, or reviewing UI decisions.",
     style: "Paints pictures with words, telling user stories that make you FEEL the problem. Empathetic advocate.",
-    cmd: "/bmad:bmm:agents:ux-designer", phase: "solutioning"
+    cmd: "/team:ux-designer", phase: "solutioning"
   },
   {
     name: "Amelia", title: "Developer Agent", icon: "\uD83D\uDCBB", module: "BMM",
@@ -417,7 +417,7 @@ var AGENTS = [
     domain: "Full-stack software engineering, story implementation, test-driven development",
     when: "When implementing stories outside of Oracle's dev-story workflow, or when you need a dedicated coding agent.",
     style: "Ultra-succinct. Speaks in file paths and AC IDs \u2014 every statement citable. No fluff, all precision.",
-    cmd: "/bmad:bmm:agents:dev", phase: "implement"
+    cmd: "/team:dev", phase: "implement"
   },
   {
     name: "Barry", title: "Quick Flow Solo Dev", icon: "\uD83D\uDE80", module: "BMM",
@@ -426,7 +426,7 @@ var AGENTS = [
     domain: "Rapid development, tech spec creation, prototyping, lean implementation",
     when: "When you need quick implementation with minimum ceremony \u2014 small features, prototypes, bug fixes, or spikes.",
     style: "Direct, confident, implementation-focused. Uses tech slang. No fluff, just results.",
-    cmd: "/bmad:bmm:agents:quick-flow-solo-dev", phase: "implement"
+    cmd: "/team:quick-flow-solo-dev", phase: "implement"
   },
   {
     name: "Paige", title: "Technical Writer", icon: "\uD83D\uDCDA", module: "BMM",
@@ -435,7 +435,7 @@ var AGENTS = [
     domain: "Technical documentation, CommonMark, DITA, OpenAPI, knowledge curation",
     when: "When creating or reviewing technical documentation, generating API docs, or curating knowledge bases.",
     style: "Patient educator who explains like teaching a friend. Uses analogies that make complex simple.",
-    cmd: "/bmad:bmm:agents:tech-writer", phase: "implement"
+    cmd: "/team:tech-writer", phase: "implement"
   },
   {
     name: "Murat", title: "Master Test Architect", icon: "\uD83E\uDDEA", module: "BMM",
@@ -444,7 +444,7 @@ var AGENTS = [
     domain: "Test strategy, API testing, UI automation, CI/CD pipelines, quality gates",
     when: "When designing test strategy, setting up test frameworks, reviewing test quality, or assessing non-functional requirements.",
     style: "Blends data with gut instinct. 'Strong opinions, weakly held.' Speaks in risk calculations.",
-    cmd: "/bmad:bmm:agents:tea", phase: "review"
+    cmd: "/team:tea", phase: "review"
   },
   {
     name: "Sentinel", title: "Code Custodian", icon: "\uD83D\uDEE1\uFE0F", module: "BMM",
@@ -453,7 +453,7 @@ var AGENTS = [
     domain: "Code quality, pattern enforcement, repository health, dead code detection",
     when: "When you need a repo health check, pattern audit, dead code scan, migration review, or quality gate assessment.",
     style: "Report-based, organized by severity. Never judgmental, always constructive.",
-    cmd: "/bmad:bmm:agents:custodian", phase: "review"
+    cmd: "/team:custodian", phase: "review"
   },
   {
     name: "Forge", title: "DevOps & Infrastructure", icon: "\u2699\uFE0F", module: "BMM",
@@ -462,7 +462,7 @@ var AGENTS = [
     domain: "Docker, CI/CD pipelines, deployment, environment configuration",
     when: "When setting up Docker configs, designing CI/CD pipelines, managing environment variables, or troubleshooting deployments.",
     style: "Infrastructure-as-code minded. Thinks in layers, caches, and pipelines. Pragmatic about tooling.",
-    cmd: "/bmad:bmm:agents:devops", phase: "ship"
+    cmd: "/team:devops", phase: "ship"
   },
   {
     name: "Pact", title: "API Contract Agent", icon: "\uD83D\uDCCB", module: "BMM",
@@ -471,7 +471,7 @@ var AGENTS = [
     domain: "OpenAPI specifications, frontend/backend API alignment, contract drift detection",
     when: "When you need to detect drift between backend and frontend APIs, validate schema consistency, or compare contracts.",
     style: "Precise and schema-focused. Speaks in contracts, schemas, and compatibility. Always provides specific diffs.",
-    cmd: "/bmad:bmm:agents:api-contract", phase: "review"
+    cmd: "/team:api-contract", phase: "review"
   },
   {
     name: "Shield", title: "Security Auditor", icon: "\uD83D\uDD12", module: "BMM",
@@ -480,7 +480,7 @@ var AGENTS = [
     domain: "Application security, HIPAA compliance, multi-tenant data isolation, RLS review",
     when: "When performing security audits, reviewing RLS policies, checking HIPAA compliance, or scanning for vulnerabilities.",
     style: "Methodical and evidence-based, like a professional pentester. Categorizes by OWASP/HIPAA reference.",
-    cmd: "/bmad:bmm:agents:security-auditor", phase: "review"
+    cmd: "/team:security-auditor", phase: "review"
   },
   {
     name: "Atlas", title: "NIST RMF Expert", icon: "\uD83D\uDCDC", module: "BMM",
@@ -489,7 +489,7 @@ var AGENTS = [
     domain: "NIST AI Risk Management Framework, compliance checking, risk assessment",
     when: "When you need guidance on NIST AI RMF compliance, risk classification, or assessment methodology.",
     style: "Framework-precise. Cites specific NIST subcategory IDs. Maps requirements to implementation.",
-    cmd: "/bmad:bmm:agents:nist-rmf-expert", phase: "review"
+    cmd: "/team:nist-rmf-expert", phase: "review"
   },
   {
     name: "Oracle (DB)", title: "Database Architect", icon: "\uD83D\uDDC4\uFE0F", module: "BMM",
@@ -498,7 +498,7 @@ var AGENTS = [
     domain: "SQL, PostgreSQL, KQL, Redis, data modeling, query optimization, analytics",
     when: "When reviewing data models, optimizing queries, designing caching strategies, or analyzing query performance.",
     style: "Query-plan focused. Shows EXPLAIN ANALYZE output. Thinks in indexes, partitions, cache invalidation.",
-    cmd: "/bmad:bmm:agents:data-architect", phase: "solutioning"
+    cmd: "/team:data-architect", phase: "solutioning"
   },
   {
     name: "Nexus", title: "AI & Agentic Expert", icon: "\uD83E\uDD16", module: "BMM",
@@ -507,7 +507,7 @@ var AGENTS = [
     domain: "AI agent architecture, MCP, multi-agent orchestration, Claude SDK, LangChain",
     when: "When designing agentic AI workflows, evaluating AI frameworks, reviewing MCP configs, or making build-vs-buy decisions.",
     style: "Framework-comparative. Shows tradeoffs in tables. Always addresses cost, latency, reliability.",
-    cmd: "/bmad:bmm:agents:agentic-expert", phase: "solutioning"
+    cmd: "/team:agentic-expert", phase: "solutioning"
   },
   {
     name: "Neuron", title: "Machine Learning Expert", icon: "\uD83E\uDDE0", module: "BMM",
@@ -516,7 +516,7 @@ var AGENTS = [
     domain: "Machine learning, neural networks, model training, evaluation, bias detection, MLOps",
     when: "When evaluating ML approaches, designing training pipelines, assessing model bias, or planning MLOps infrastructure.",
     style: "Academic precision with practical grounding. Connects ML concepts to business outcomes.",
-    cmd: "/bmad:bmm:agents:ml-expert", phase: "solutioning"
+    cmd: "/team:ml-expert", phase: "solutioning"
   },
   {
     name: "Dr. Vita", title: "Healthcare Expert", icon: "\uD83C\uDFE5", module: "BMM",
@@ -525,7 +525,7 @@ var AGENTS = [
     domain: "HIPAA, FDA SaMD, CDS requirements, clinical AI safety, healthcare AI governance",
     when: "When building healthcare apps needing HIPAA compliance, FDA SaMD classification, or clinical AI safety guidance.",
     style: "Clinical precision with regulatory depth. Cites specific CFR sections. Considers patient safety in every recommendation.",
-    cmd: "/bmad:bmm:agents:healthcare-expert", phase: "review"
+    cmd: "/team:healthcare-expert", phase: "review"
   },
   {
     name: "Senator", title: "Government Expert", icon: "\uD83C\uDFDB\uFE0F", module: "BMM",
@@ -534,7 +534,7 @@ var AGENTS = [
     domain: "Executive Order 14110, OMB M-24-10, FedRAMP, FISMA, federal AI policy",
     when: "When building government-facing AI applications needing federal AI policy or FedRAMP guidance.",
     style: "Policy-precise with practical focus. Cites specific Executive Orders and OMB memoranda.",
-    cmd: "/bmad:bmm:agents:government-expert", phase: "review"
+    cmd: "/team:government-expert", phase: "review"
   },
   {
     name: "Sterling", title: "Financial Expert", icon: "\uD83D\uDCB0", module: "BMM",
@@ -543,7 +543,7 @@ var AGENTS = [
     domain: "SOX, SEC AI guidance, BSA/AML, SR 11-7, fair lending, model risk management",
     when: "When building financial services apps needing model risk management, SEC compliance, or fair lending testing.",
     style: "Risk-quantitative. Speaks in model risk, validation requirements, and regulatory expectations.",
-    cmd: "/bmad:bmm:agents:financial-expert", phase: "review"
+    cmd: "/team:financial-expert", phase: "review"
   },
   {
     name: "Carson", title: "Creative Thinking Coach", icon: "\uD83E\uDDE0", module: "CIS",
@@ -552,7 +552,7 @@ var AGENTS = [
     domain: "Brainstorming, systematic problem solving, TRIZ, root cause analysis, creative ideation",
     when: "When you need structured brainstorming, systematic problem solving, reverse brainstorming, or root cause analysis.",
     style: "Enthusiastic improv coach for brainstorming (YES AND!); shifts to deductive curiosity for problem-solving.",
-    cmd: "/bmad:cis:agents:creative-thinking-coach", phase: "analysis"
+    cmd: "/team:creative-thinking-coach", phase: "analysis"
   },
   {
     name: "Maya", title: "Design & Strategy Coach", icon: "\uD83C\uDFA8", module: "CIS",
@@ -561,7 +561,7 @@ var AGENTS = [
     domain: "Human-centered design, empathy mapping, design thinking, Jobs-to-be-Done, Blue Ocean Strategy",
     when: "When applying design thinking methodology, creating empathy maps, designing business model canvases, or innovation strategy.",
     style: "Jazz musician energy for design (vivid sensory metaphors); chess grandmaster mode for strategy.",
-    cmd: "/bmad:cis:agents:design-strategy-coach", phase: "analysis"
+    cmd: "/team:design-strategy-coach", phase: "analysis"
   },
   {
     name: "Sophia", title: "Storyteller & Presenter", icon: "\uD83D\uDCD6", module: "CIS",
@@ -570,43 +570,43 @@ var AGENTS = [
     domain: "Narrative strategy, storytelling frameworks, visual communication, pitch decks",
     when: "When crafting narratives, designing presentations, building pitch decks, or creating visual communications.",
     style: "Bard-like storytelling (flowery, whimsical); energetic creative director for visual work.",
-    cmd: "/bmad:cis:agents:storyteller-presenter", phase: "planning"
+    cmd: "/team:storyteller-presenter", phase: "planning"
   },
   {
     name: "Bond", title: "Agent Builder", icon: "\uD83E\uDD16", module: "BMB",
-    category: "Builders (Meta)", catIcon: "\uD83C\uDFD7\uFE0F", catDesc: "Build new BMAD agents, workflows, and modules",
-    role: "Master agent architect with deep expertise in agent design patterns, persona development, and BMAD Core compliance.",
-    domain: "Agent design, persona development, BMAD compliance, agent architecture",
+    category: "Builders (Meta)", catIcon: "\uD83C\uDFD7\uFE0F", catDesc: "Build new agents, workflows, and modules",
+    role: "Master agent architect with deep expertise in agent design patterns, persona development, and system compliance.",
+    domain: "Agent design, persona development, system compliance, agent architecture",
     when: "When creating new custom agents for your project. Guides through an 8-step agent creation process.",
     style: "Precise and technical, like a senior software architect reviewing code.",
-    cmd: "/bmad:bmb:agents:agent-builder", phase: "implement"
+    cmd: "/team:agent-builder", phase: "implement"
   },
   {
     name: "Wendy", title: "Workflow Builder", icon: "\uD83D\uDD04", module: "BMB",
-    category: "Builders (Meta)", catIcon: "\uD83C\uDFD7\uFE0F", catDesc: "Build new BMAD agents, workflows, and modules",
+    category: "Builders (Meta)", catIcon: "\uD83C\uDFD7\uFE0F", catDesc: "Build new agents, workflows, and modules",
     role: "Master workflow architect with expertise in process design, state management, and workflow optimization.",
     domain: "Workflow architecture, process design, state management, workflow optimization",
     when: "When creating new custom workflows for your project. Designs efficient, scalable workflows.",
     style: "Methodical and process-oriented, like a systems engineer. Thinks in states and transitions.",
-    cmd: "/bmad:bmb:agents:workflow-builder", phase: "implement"
+    cmd: "/team:workflow-builder", phase: "implement"
   },
   {
     name: "Morgan", title: "Module Builder", icon: "\uD83C\uDFD7\uFE0F", module: "BMB",
-    category: "Builders (Meta)", catIcon: "\uD83C\uDFD7\uFE0F", catDesc: "Build new BMAD agents, workflows, and modules",
+    category: "Builders (Meta)", catIcon: "\uD83C\uDFD7\uFE0F", catDesc: "Build new agents, workflows, and modules",
     role: "Expert module architect. Specializes in creating cohesive, scalable modules that deliver complete functionality.",
     domain: "Module architecture, integration patterns, end-to-end module development",
-    when: "When creating entirely new BMAD modules (collections of agents and workflows for a specific domain).",
+    when: "When creating entirely new modules (collections of agents and workflows for a specific domain).",
     style: "Strategic and holistic, like a systems architect planning complex integrations.",
-    cmd: "/bmad:bmb:agents:module-builder", phase: "implement"
+    cmd: "/team:module-builder", phase: "implement"
   },
   {
     name: "BMad Master", title: "Platform Executor", icon: "\uD83E\uDDD9", module: "Core",
-    category: "Core Platform", catIcon: "\u2B50", catDesc: "BMAD core operations and runtime resource management",
-    role: "Master-level expert in the BMAD Core Platform with comprehensive knowledge of all resources, tasks, and workflows.",
-    domain: "BMAD platform operations, task execution, resource management, workflow orchestration",
-    when: "When you need direct access to BMAD core operations like document indexing, sharding, or runtime resource management.",
+    category: "Core Platform", catIcon: "\u2B50", catDesc: "Core operations and runtime resource management",
+    role: "Master-level expert in the Core Platform with comprehensive knowledge of all resources, tasks, and workflows.",
+    domain: "Platform operations, task execution, resource management, workflow orchestration",
+    when: "When you need direct access to core operations like document indexing, sharding, or runtime resource management.",
     style: "Direct and comprehensive, refers to himself in the 3rd person. Expert-level communication.",
-    cmd: "/bmad:core:agents:bmad-master", phase: "all"
+    cmd: "/team:bmad-master", phase: "all"
   }
 ];
 
@@ -651,8 +651,8 @@ function buildStats() {
   var bar = document.getElementById("stats-bar");
   var stats = [
     { value: "27", label: "Agents" },
-    { value: "4", label: "Modules" },
-    { value: "80", label: "Workflows" },
+    { value: "76", label: "Commands" },
+    { value: "78", label: "Workflows" },
     { value: "11", label: "Categories" }
   ];
   stats.forEach(function(s) {
@@ -678,46 +678,43 @@ function buildLifecycle() {
 // ── Build filter buttons ────────────────────────
 function buildFilters() {
   var container = document.getElementById("filters");
-  var modules = ["All", "BMM", "CIS", "BMB", "Core"];
-  modules.forEach(function(m) {
+  var filters = ["All"];
+  CATEGORY_ORDER.forEach(function(c) { filters.push(c); });
+  filters.forEach(function(f) {
     var btn = el("button", {
-      className: "filter-btn" + (m === "All" ? " active" : ""),
-      textContent: m
+      className: "filter-btn" + (f === "All" ? " active" : ""),
+      textContent: f
     });
-    btn.setAttribute("data-filter", m);
+    btn.setAttribute("data-filter", f);
     btn.addEventListener("click", function() {
-      applyFilter(m);
+      applyFilter(f);
     });
     container.appendChild(btn);
   });
 }
 
 // ── Apply module filter ─────────────────────────
-function applyFilter(mod) {
+function applyFilter(filter) {
   // Update buttons
   var btns = document.querySelectorAll(".filter-btn");
   for (var i = 0; i < btns.length; i++) {
     var b = btns[i];
-    if (b.getAttribute("data-filter") === mod) b.className = "filter-btn active";
+    if (b.getAttribute("data-filter") === filter) b.className = "filter-btn active";
     else b.className = "filter-btn";
   }
-  // Filter cards
-  var cards = document.querySelectorAll(".agent-card");
-  for (var j = 0; j < cards.length; j++) {
-    var c = cards[j];
-    if (mod === "All" || c.getAttribute("data-module") === mod) {
-      c.classList.remove("hidden-card");
-    } else {
-      c.classList.add("hidden-card");
-    }
-  }
-  // Hide empty categories
+  // Filter categories
   var cats = document.querySelectorAll(".category");
   for (var k = 0; k < cats.length; k++) {
     var cat = cats[k];
-    var visible = cat.querySelectorAll(".agent-card:not(.hidden-card)");
-    if (visible.length === 0) cat.classList.add("hidden-cat");
-    else cat.classList.remove("hidden-cat");
+    var catName = cat.getAttribute("data-category");
+    if (filter === "All" || catName === filter) {
+      cat.classList.remove("hidden-cat");
+      // Show all cards in matching categories
+      var cards = cat.querySelectorAll(".agent-card");
+      for (var j = 0; j < cards.length; j++) cards[j].classList.remove("hidden-card");
+    } else {
+      cat.classList.add("hidden-cat");
+    }
   }
 }
 
@@ -742,16 +739,12 @@ function buildCard(agent) {
   var card = el("div", { className: "agent-card" });
   card.setAttribute("data-module", agent.module);
 
-  // Badge class
-  var badgeCls = "module-badge badge-" + agent.module.toLowerCase();
-
-  // Top row: icon + name/title + badge
+  // Top row: icon + name/title
   var iconDiv = el("div", { className: "agent-icon", textContent: agent.icon });
   var nameDiv = el("div", { className: "agent-name", textContent: agent.name });
   var titleDiv = el("div", { className: "agent-title", textContent: agent.title });
   var infoDiv = el("div", { className: "agent-info" }, [nameDiv, titleDiv]);
-  var badge = el("span", { className: badgeCls, textContent: agent.module });
-  var topRow = el("div", { className: "card-top" }, [iconDiv, infoDiv, badge]);
+  var topRow = el("div", { className: "card-top" }, [iconDiv, infoDiv]);
 
   // Role summary
   var roleDiv = el("div", { className: "agent-role", textContent: agent.role });
@@ -829,6 +822,7 @@ function buildMain() {
     if (!group) return;
 
     var section = el("div", { className: "category" });
+    section.setAttribute("data-category", catName);
 
     // Category header
     var hdrIcon = el("span", { className: "category-icon", textContent: group.icon });
@@ -853,7 +847,7 @@ function buildMain() {
 // ── Build footer ────────────────────────────────
 function buildFooter() {
   var footer = document.getElementById("footer");
-  footer.appendChild(document.createTextNode("BMAD v6 \u2022 27 Specialist Agents \u2022 4 Modules \u2022 80 Workflows"));
+  footer.appendChild(document.createTextNode("My Dev Team \u2022 27 Specialist Agents \u2022 78 Workflows \u2022 76 Commands"));
   footer.appendChild(document.createElement("br"));
   var small = el("span", { textContent: "Click any card to expand details \u2022 Click slash command to copy" });
   footer.appendChild(small);

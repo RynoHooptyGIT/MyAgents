@@ -1,6 +1,6 @@
 # Ship Workflow
 
-Commit, push, and create a PR — with smart commit messages, story-aware context, and BMAD status updates. Packages completed work into clean commits and well-documented pull requests.
+Commit, push, and create a PR — with smart commit messages, story-aware context, and status updates. Packages completed work into clean commits and well-documented pull requests.
 
 ---
 
@@ -32,7 +32,7 @@ Gather git and project state:
 Check for story context in priority order:
 
 1. **Explicit input**: If a story/spec file path was provided as argument, read it and extract: story key, title, acceptance criteria summary
-2. **BMAD detection**: If `team/config.yaml` exists:
+2. **story detection**: If `team/config.yaml` exists:
    - Search for `output/sprint-status.yaml`
    - Find story with status `in-progress` or `review`
    - Load that story file for context
@@ -43,11 +43,11 @@ Record the context source for use in commit message generation.
 
 ---
 
-## Step 2b: Validate Story Lifecycle (BMAD Gate)
+## Step 2b: Validate Story Lifecycle (Lifecycle Gate)
 
-**Skip this step if:** No BMAD story was detected in Step 2.
+**Skip this step if:** No story was detected in Step 2.
 
-When a BMAD story was found in Step 2, validate its lifecycle state before proceeding:
+When a story was found in Step 2, validate its lifecycle state before proceeding:
 
 1. Read the story file's `Status` field
 2. Cross-reference with `sprint-status.yaml` for the story's current status
@@ -136,14 +136,14 @@ Create commit using HEREDOC syntax for proper formatting. Show the commit result
 
 ---
 
-## Step 6: Update BMAD Tracking
+## Step 6: Update Sprint Tracking
 
 **If `output/sprint-status.yaml` exists AND story context was loaded:**
 - Read the complete sprint-status.yaml
 - Find the story key entry and update status to `done`
 - Add comment with date and summary
 
-**If BMAD story file exists:**
+**If story file exists:**
 - Update story Status to `done`
 - Add Change Log entry with commit summary and date
 
@@ -153,7 +153,7 @@ Create commit using HEREDOC syntax for proper formatting. Show the commit result
 - Close with comment: `gh issue close #NNN --comment "Completed in commit [short-sha]."`
 - Store issue number for PR linking in Step 7
 
-- `[INFO]` If no BMAD tracking found, skip this step silently
+- `[INFO]` If no sprint tracking found, skip this step silently
 
 ## Step 6b: Regenerate Sprint Digest
 
@@ -212,7 +212,7 @@ Message:  [first line of commit message]
 Files:    [count] changed
 Push:     [pushed to origin / local only]
 PR:       [URL / not created / already exists at URL]
-BMAD:     [sprint-status updated / story updated / not applicable]
+Sprint:   [sprint-status updated / story updated / not applicable]
 Issues:   [#NNN closed / not applicable]
 ```
 

@@ -1,12 +1,12 @@
 ---
-description: BMAD Context System - Pre-generated context files for AI agents
+description: Context System - Pre-generated context files for AI agents
 alwaysApply: false
 globs:
   - output/**
   - scripts/context/**
 ---
 
-# BMAD Context System
+# Context System
 
 ## Context Files
 

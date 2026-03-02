@@ -129,7 +129,7 @@ Your workflow has been successfully edited. Here's what was accomplished:
 
 ---
 
-**Thank you for using BMAD Workflow Creator!**
+**Thank you for using Workflow Creator!**
 
 Your edit session for **{workflow_name}** is complete. ✅"
 

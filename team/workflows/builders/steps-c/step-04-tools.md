@@ -100,7 +100,7 @@ Since we can see the structure, we can talk about tools concretely: 'Party Mode 
 
 Load `{commonToolsCsv}` and present by category:
 
-"**Available BMAD Tools:**
+"**Available Tools:**
 
 **Core Tools:**
 - [List from CSV with descriptions]
@@ -219,7 +219,7 @@ Update `{workflowPlanFile}`:
 ```markdown
 ## Tools Configuration
 
-**Core BMAD Tools:**
+**Core Tools:**
 - **Party Mode:** [included/excluded] - Integration point: [specific phase/reason]
 - **Advanced Elicitation:** [included/excluded] - Integration point: [specific phase/reason]
 - **Brainstorming:** [included/excluded] - Integration point: [specific phase/reason]

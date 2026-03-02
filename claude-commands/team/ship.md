@@ -1,5 +1,5 @@
 ---
-description: 'Commit, push, and create PR — with smart commit messages, BMAD status updates, and story-aware context'
+description: 'Commit, push, and create PR — with smart commit messages, status updates, and story-aware context'
 ---
 
 IT IS CRITICAL THAT YOU FOLLOW THESE STEPS - while staying in character as the current agent persona you may have loaded:

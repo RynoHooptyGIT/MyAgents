@@ -4,7 +4,7 @@ This document explains how the system works internally -- the workflow engine, a
 
 ## System Overview
 
-BMAD is a file-driven methodology. There is no runtime, no server, no database. Everything is markdown files, YAML configurations, and XML task definitions that AI coding tools read and execute. The "engine" is the AI model itself, guided by structured instructions.
+This is a file-driven methodology. There is no runtime, no server, no database. Everything is markdown files, YAML configurations, and XML task definitions that AI coding tools read and execute. The "engine" is the AI model itself, guided by structured instructions.
 
 ```
 User Directive
@@ -224,7 +224,7 @@ When the Oracle routes to a specialist agent, it provides the exact slash comman
 
 ## Variable Resolution
 
-BMAD uses a variable system to make workflows and agents portable across projects.
+The system uses a variable system to make workflows and agents portable across projects.
 
 ### System Variables
 
@@ -258,7 +258,7 @@ Config variables are loaded from `config.yaml` and accessed via the `{config_sou
 
 ## Context Generation Pipeline
 
-BMAD uses a context generation system to keep AI agents informed about the current state of the codebase. This is critical for large projects where scanning the entire repo every session would be impractical.
+The system uses a context generation system to keep AI agents informed about the current state of the codebase. This is critical for large projects where scanning the entire repo every session would be impractical.
 
 ### Pipeline Flow
 
@@ -400,7 +400,7 @@ team/
 
 ## Team System
 
-BMAD supports agent teams -- multiple agents working in parallel on different aspects of a task. Teams are defined in `team/manifest.yaml`:
+The system supports agent teams -- multiple agents working in parallel on different aspects of a task. Teams are defined in `team/manifest.yaml`:
 
 ```yaml
 teams:

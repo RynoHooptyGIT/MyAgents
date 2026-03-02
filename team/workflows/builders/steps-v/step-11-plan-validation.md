@@ -52,7 +52,7 @@ First, check if {workflowPlanFile} exists:
 
 **IF plan file does NOT exist:**
 - Skip this validation step
-- Proceed to summary with note: "No plan file found - workflow may have been built without BMAD create-workflow process"
+- Proceed to summary with note: "No plan file found - workflow may have been built without the create-workflow process"
 
 **IF plan file exists:**
 - Load the complete plan file

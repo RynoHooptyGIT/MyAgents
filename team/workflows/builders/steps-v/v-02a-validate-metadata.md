@@ -12,7 +12,7 @@ agentFile: '{agent-file-path}'
 
 ## STEP GOAL
 
-Validate the agent's metadata properties against BMAD standards as defined in agentMetadata.md. Append findings to validation report and auto-advance.
+Validate the agent's metadata properties against system standards as defined in agentMetadata.md. Append findings to validation report and auto-advance.
 
 ## MANDATORY EXECUTION RULES
 

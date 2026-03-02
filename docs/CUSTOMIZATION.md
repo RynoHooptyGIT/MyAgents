@@ -1,6 +1,6 @@
-# BMAD v6 Customization Guide
+# My Dev Team — Customization Guide
 
-BMAD is designed to be extended and customized for your specific project needs. This guide covers adding custom agents, workflows, and modules, customizing existing components, configuring teams, and managing context generation.
+The system is designed to be extended and customized for your specific project needs. This guide covers adding custom agents, workflows, and modules, customizing existing components, configuring teams, and managing context generation.
 
 ---
 
@@ -8,7 +8,7 @@ BMAD is designed to be extended and customized for your specific project needs. 
 
 ### Using the Agent Builder (Recommended)
 
-The easiest way to create a BMAD-compliant agent is through the Agent Builder workflow:
+The easiest way to create a compliant agent is through the Agent Builder workflow:
 
 **Claude Code:**
 ```
@@ -31,7 +31,7 @@ Bond (the Agent Builder) guides you through an 8-step process:
 7. **Build** -- Generate the agent file
 8. **Celebrate** -- Review and finalize
 
-The builder produces a BMAD-compliant agent file with proper structure, activation protocol, persona, menu, and handlers.
+The builder produces a compliant agent file with proper structure, activation protocol, persona, menu, and handlers.
 
 ### Manual Agent Creation
 
@@ -419,7 +419,7 @@ This allows the Oracle to route users to your custom agent when they ask about t
 
 ## Creating Custom Modules
 
-For large-scale customization, create an entirely new BMAD module using the Module Builder:
+For large-scale customization, create an entirely new module using the Module Builder:
 
 **Claude Code:**
 ```
@@ -432,7 +432,7 @@ Morgan (the Module Builder) guides you through creating a complete module with:
 - `workflows/` -- Module-specific workflows
 - `teams/` -- Team configurations
 - `README.md` -- Module documentation
-- Installer script for integration with BMAD core
+- Installer script for integration with the core system
 
 After creation, register the module in `team/manifest.yaml`:
 
@@ -450,7 +450,7 @@ modules:
 ## Best Practices
 
 1. **Prefer customization sidecar files** over editing core agent files. This makes upgrades easier.
-2. **Use the builders** (Bond, Wendy, Morgan) for creating new components. They ensure BMAD compliance.
+2. **Use the builders** (Bond, Wendy, Morgan) for creating new components. They ensure system compliance.
 3. **Register everything** in the manifest CSV files. Unregistered agents and workflows may not be discoverable.
 4. **Create slash commands** for Claude Code users. They significantly improve the workflow.
 5. **Test custom agents** by invoking them and running through their full menu before using in production.

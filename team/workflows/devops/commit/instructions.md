@@ -1,6 +1,6 @@
 # Commit Workflow
 
-Lightweight commit workflow — stage, generate a smart commit message, and commit. No push, no PR, no BMAD tracking updates. Use the Ship workflow for the full release pipeline.
+Lightweight commit workflow — stage, generate a smart commit message, and commit. No push, no PR, no sprint tracking updates. Use the Ship workflow for the full release pipeline.
 
 ---
 

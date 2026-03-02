@@ -1,6 +1,6 @@
 name: ai-decision-framework
 description: "Decision framework for when to use AI vs traditional code"
-author: "BMAD"
+author: "My Dev Team"
 config_source: "{project-root}/team/config.yaml"
 output_folder: "{config_source}:output_folder"
 user_name: "{config_source}:user_name"

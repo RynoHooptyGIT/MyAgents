@@ -1,6 +1,6 @@
 name: query-optimization
 description: "SQL query optimization with EXPLAIN ANALYZE and index strategy"
-author: "BMAD"
+author: "My Dev Team"
 config_source: "{project-root}/team/config.yaml"
 output_folder: "{config_source}:output_folder"
 user_name: "{config_source}:user_name"

@@ -1,6 +1,6 @@
-# BMAD v6 Tool Compatibility
+# My Dev Team — Tool Compatibility
 
-BMAD v6 is designed to work with multiple AI coding tools. This document provides a detailed feature matrix and explains how each tool integrates with BMAD.
+My Dev Team is designed to work with multiple AI coding tools. This document provides a detailed feature matrix and explains how each tool integrates.
 
 ## Feature Matrix
 
@@ -34,7 +34,7 @@ BMAD v6 is designed to work with multiple AI coding tools. This document provide
 
 ## Claude Code (Full Support)
 
-Claude Code has the deepest BMAD integration with native support for every feature.
+Claude Code has the deepest integration with native support for every feature.
 
 ### Oracle Auto-Activation
 
@@ -42,7 +42,7 @@ Claude Code has the deepest BMAD integration with native support for every featu
 
 ### Slash Commands (81 Total)
 
-BMAD installs 81 slash commands in the `claude-commands/` directory (which maps to `.claude/commands/` in the project). These provide direct access to every agent and workflow:
+76 slash commands are installed in the `claude-commands/` directory (which maps to `.claude/commands/` in the project). These provide direct access to every agent and workflow:
 
 ```
 /team:oracle          # Invoke the Oracle
@@ -85,7 +85,7 @@ Enable with the environment variable:
 }
 ```
 
-Agent teams allow multiple BMAD agents to work in parallel on different aspects of a task. Teams are defined in `team/manifest.yaml`. Workflows can invoke teams via `invoke-team` tags. Party mode enables group discussions between agents.
+Agent teams allow multiple agents to work in parallel on different aspects of a task. Teams are defined in `team/manifest.yaml`. Workflows can invoke teams via `invoke-team` tags. Party mode enables group discussions between agents.
 
 ### Settings and Permissions
 
@@ -96,7 +96,7 @@ Agent teams allow multiple BMAD agents to work in parallel on different aspects 
 
 ### MCP Tools
 
-Claude Code supports MCP (Model Context Protocol) tools natively. BMAD workflows can leverage:
+Claude Code supports MCP (Model Context Protocol) tools natively. Workflows can leverage:
 - **Playwright** for browser testing and visual verification
 - **Context7** for up-to-date library documentation
 - Any custom MCP servers defined in the project
@@ -107,7 +107,7 @@ See the [Claude Code IDE Guide](../ide-guides/claude-code.md) for full setup det
 
 ## Cursor (Good Support)
 
-Cursor provides good BMAD support through its `.cursor/rules/` system with `.mdc` files.
+Cursor provides good support through its `.cursor/rules/` system with `.mdc` files.
 
 ### Oracle Auto-Activation
 
@@ -118,7 +118,7 @@ Create `.cursor/rules/000-bmad-oracle.mdc` with `alwaysApply: true`:
 alwaysApply: true
 ---
 
-# BMAD Oracle Activation Protocol
+# Oracle Activation Protocol
 
 At the start of every conversation, load and follow the activation protocol in `team/agents/oracle.md`.
 Load `team/config.yaml` for project settings.
@@ -164,7 +164,7 @@ See the [Cursor IDE Guide](../ide-guides/cursor.md) for full setup details.
 
 ## GitHub Copilot (Partial Support)
 
-GitHub Copilot provides basic BMAD support through its instructions file.
+GitHub Copilot provides basic support through its instructions file.
 
 ### Oracle Auto-Activation
 
@@ -198,7 +198,7 @@ Use `@workspace` to reference project files in Copilot chat. This provides acces
 
 ### Workflow Engine Limitations
 
-Copilot can execute BMAD workflows, but complex multi-step workflows with many file reads, template outputs, and variable resolution may require more manual guidance. The AI may not follow all workflow.xml instructions as precisely as Claude Code.
+Copilot can execute workflows, but complex multi-step workflows with many file reads, template outputs, and variable resolution may require more manual guidance. The AI may not follow all workflow.xml instructions as precisely as Claude Code.
 
 See the [Copilot IDE Guide](../ide-guides/copilot.md) for full setup details.
 
@@ -206,7 +206,7 @@ See the [Copilot IDE Guide](../ide-guides/copilot.md) for full setup details.
 
 ## Generic AI Tools
 
-For AI coding tools not listed above (Windsurf, Aider, Continue, etc.), BMAD can still be used with manual setup:
+For AI coding tools not listed above (Windsurf, Aider, Continue, etc.), the system can still be used with manual setup:
 
 ### Project Instructions File
 
@@ -235,7 +235,7 @@ python scripts/context/generate_all.py --check   # Freshness check
 
 ### What Always Works
 
-Regardless of tool, these BMAD features work everywhere:
+Regardless of tool, these features work everywhere:
 - Agent persona files (readable by any AI)
 - Workflow YAML configurations (parseable by any AI)
 - Sprint-status.yaml tracking

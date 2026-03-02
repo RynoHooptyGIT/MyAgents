@@ -1,5 +1,5 @@
 # My Dev Team — Unified Configuration
-# Merged from BMAD v6 module configs (core, bmb, bmm, cis)
+# Merged from the system v6 module configs (core, bmb, bmm, cis)
 
 # ─── Project Identity ─────────────────────────
 project_name: "{{PROJECT_NAME}}"

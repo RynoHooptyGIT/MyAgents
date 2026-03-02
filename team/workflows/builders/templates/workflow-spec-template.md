@@ -93,4 +93,4 @@ Inputs needed:
 
 ---
 
-_Spec created on {date} via BMAD Module workflow_
+_Spec created on {date} via Module Builder workflow_

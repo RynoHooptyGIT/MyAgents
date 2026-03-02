@@ -149,7 +149,7 @@ stepsCompleted: ['step-01-discovery' or 'step-00-conversion', 'step-02-classific
 - Output format
 
 **Improvements made:**
-- BMAD compliance
+- system compliance
 - Better structure
 - Enhanced collaboration
 - Standards adherence
@@ -158,7 +158,7 @@ stepsCompleted: ['step-01-discovery' or 'step-00-conversion', 'step-02-classific
 
 ### 5. Final Completion Message
 
-"**Thank you for using BMAD Workflow Creator!**
+"**Thank you for using Workflow Creator!**
 
 Your workflow **{new_workflow_name}** is complete and ready to use.
 

@@ -118,7 +118,7 @@ Present enthusiastic celebration:
 "Now that {agent_name} is complete, let's get it installed and ready to use!"
 
 **Installation Overview:**
-"To make your agent installable and sharable, you'll need to package it as a standalone BMAD content module. Here's what you need to know:"
+"To make your agent installable and sharable, you'll need to package it as a standalone content module. Here's what you need to know:"
 
 **Key Steps:**
 1. **Create a module folder:** Name it something descriptive (e.g., `my-custom-stuff`)
@@ -145,8 +145,8 @@ my-custom-stuff/
 **Note:** Your custom module can contain agents, workflows, or both. The `agents/` and `workflows/` folders are siblings alongside `module.yaml`.
 
 **Installation Methods:**
-- **New projects:** The BMAD installer will prompt for local custom modules
-- **Existing projects:** Use "Modify BMAD Installation" to add your module
+- **New projects:** The installer will prompt for local custom modules
+- **Existing projects:** Use "Modify Installation" to add your module
 
 **Full Documentation:**
 "For complete details on packaging, sharing, and installing your custom agent, including all the configuration options and troubleshooting tips, see the official installation guide:"
@@ -184,7 +184,7 @@ See: {installationDocs}
 2. Add module.yaml with `unitary: true`
 3. Place agent in `agents/{agent-name}/` structure
 4. Include sidecar folder for Expert agents
-5. Install via BMAD installer
+5. Install via installer
 ```
 
 Save this content to `{outputFile}` for reference.
@@ -195,7 +195,7 @@ Save this content to `{outputFile}` for reference.
 "Agent creation workflow completed successfully! {agent_name} is ready to be installed and used. Amazing work!"
 
 **Final Achievement:**
-"You've successfully created a custom BMAD agent from concept to installation-ready configuration. The journey from idea to deployable agent is complete!"
+"You've successfully created a custom agent from concept to installation-ready configuration. The journey from idea to deployable agent is complete!"
 
 ### 7. Present MENU OPTIONS
 

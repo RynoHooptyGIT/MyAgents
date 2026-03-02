@@ -100,7 +100,7 @@ Validation checks:
 
 ### 6. Completion Message (if Done selected)
 
-"**🚀 You've built a module structure for BMAD!**"
+"**🚀 You've built a module structure!**"
 
 "**Module:** {moduleName} ({moduleCode})"
 "**Location:** {targetLocation}"

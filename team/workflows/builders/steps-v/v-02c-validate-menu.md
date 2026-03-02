@@ -12,7 +12,7 @@ agentFile: '{agent-file-path}'
 
 ## STEP GOAL
 
-Validate the agent's command menu structure against BMAD standards as defined in agentMenuPatterns.md. Append findings to validation report and auto-advance.
+Validate the agent's command menu structure against system standards as defined in agentMenuPatterns.md. Append findings to validation report and auto-advance.
 
 ## MANDATORY EXECUTION RULES
 

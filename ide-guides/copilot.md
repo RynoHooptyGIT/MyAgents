@@ -1,6 +1,6 @@
-# BMAD v6 -- GitHub Copilot Setup Guide
+# My Dev Team — GitHub Copilot Setup Guide
 
-GitHub Copilot provides partial BMAD support. It can use all BMAD agent personas, workflows, and context files, but lacks slash commands, hooks, and agent teams. This guide covers how to adapt BMAD for the best Copilot experience.
+GitHub Copilot provides partial support. It can use all agent personas, workflows, and context files, but lacks slash commands, hooks, and agent teams. This guide covers how to adapt for the best Copilot experience.
 
 ## Overview
 
@@ -28,7 +28,7 @@ Create `.github/copilot-instructions.md` in your project root. Copilot reads thi
 
 ## MANDATORY: Oracle Agent -- Always Active
 
-This project uses the BMAD Methodology (v6) with an Oracle agent (Athena) as the
+This project uses an Oracle agent (Athena) as the
 always-on orchestrator. The Oracle MUST be activated at the start of EVERY session.
 
 ### Session Start Protocol
@@ -265,6 +265,6 @@ Read output/implementation-artifacts/sprint-status.yaml and summarize:
 
 ## What Works Without Any Setup
 
-Even without the copilot-instructions.md file, you can use BMAD by manually loading agent files and workflow configurations. The methodology is encoded in the files themselves -- any AI that can read markdown and follow instructions can use it.
+Even without the copilot-instructions.md file, you can use the methodology by manually loading agent files and workflow configurations. The methodology is encoded in the files themselves -- any AI that can read markdown and follow instructions can use it.
 
 The setup described above simply automates what you would otherwise do manually: load the Oracle, read config, read sprint status, and follow the lifecycle.

@@ -151,4 +151,4 @@
 
 ---
 
-_brief created on {date} by {user_name} using the BMAD Module workflow_
+_brief created on {date} by {user_name} using the Module workflow_

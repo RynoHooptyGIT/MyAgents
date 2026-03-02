@@ -57,7 +57,7 @@ Common MCP tools:
 
 ### 3. Module Integrations
 
-"**Does this integrate with other BMAD modules?****
+"**Does this integrate with other modules?****
 
 - Uses workflows from other modules?
 - Shares agents or extends them?

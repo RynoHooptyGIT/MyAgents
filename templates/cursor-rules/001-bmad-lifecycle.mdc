@@ -1,9 +1,9 @@
 ---
-description: BMAD Implementation Lifecycle - Enforced story-driven development
+description: Implementation Lifecycle - Enforced story-driven development
 alwaysApply: true
 ---
 
-# BMAD Implementation Lifecycle
+# Implementation Lifecycle
 
 ## Story-Driven Development (No Shortcuts)
 

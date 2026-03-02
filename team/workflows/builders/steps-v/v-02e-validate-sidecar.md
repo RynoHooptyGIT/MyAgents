@@ -14,7 +14,7 @@ sidecarFolder: '{agent-sidecar-folder}'
 
 ## STEP GOAL
 
-Validate the agent's sidecar structure (if Expert type) against BMAD standards as defined in expertValidation.md. Append findings to validation report and auto-advance.
+Validate the agent's sidecar structure (if Expert type) against system standards as defined in expertValidation.md. Append findings to validation report and auto-advance.
 
 ## MANDATORY EXECUTION RULES
 

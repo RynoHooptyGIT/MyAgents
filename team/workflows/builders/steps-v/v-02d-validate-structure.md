@@ -14,7 +14,7 @@ agentFile: '{agent-file-path}'
 
 ## STEP GOAL
 
-Validate the agent's YAML structure and completeness against BMAD standards as defined in agentCompilation.md. Append findings to validation report and auto-advance.
+Validate the agent's YAML structure and completeness against system standards as defined in agentCompilation.md. Append findings to validation report and auto-advance.
 
 ## MANDATORY EXECUTION RULES
 
