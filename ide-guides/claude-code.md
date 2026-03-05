@@ -94,7 +94,7 @@ Invoke any agent directly:
 /team:bmad-master        # Master
 ```
 
-### Workflow Commands (BMM)
+### Workflow Commands
 
 ```
 /team:create-product-brief     # Phase 1: Analysis
@@ -136,7 +136,7 @@ Invoke any agent directly:
 /team:create-excalidraw-wireframe  # Diagrams
 ```
 
-### Workflow Commands (CIS, Core, BMB)
+### Creative, Core & Builder Commands
 
 ```
 /team:design-thinking      # Creative Innovation

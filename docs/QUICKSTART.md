@@ -124,7 +124,7 @@ Start a session with the Oracle agent:
 /team:oracle
 ```
 
-**Cursor:** The Oracle activates automatically via the `000-bmad-oracle.mdc` rule with `alwaysApply: true`.
+**Cursor:** The Oracle activates automatically via the `000-oracle.mdc` rule with `alwaysApply: true`.
 
 **Copilot:** Ask the AI:
 > Load the agent from `team/agents/oracle.md` and follow its activation protocol.

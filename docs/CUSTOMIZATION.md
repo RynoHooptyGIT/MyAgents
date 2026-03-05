@@ -35,11 +35,10 @@ The builder produces a compliant agent file with proper structure, activation pr
 
 ### Manual Agent Creation
 
-Create a new `.md` file in the appropriate module's `agents/` directory:
+Create a new `.md` file in `team/agents/`:
 
 ```
-team/agents/my-agent.md      # For project-specific agents
-team/agents/my-agent.md      # For creative/innovation agents
+team/agents/my-agent.md
 ```
 
 Follow this structure:
@@ -92,15 +91,15 @@ You must fully embody this agent's persona and follow all activation instruction
 After creating the agent file, add it to `team/agent-manifest.csv`:
 
 ```csv
-"my-agent","PersonaName","Agent Title","...icon...","Role description","Identity description","Communication style","Principles","bmm","team/agents/my-agent.md","team-name"
+"my-agent","PersonaName","Agent Title","...icon...","Role description","Identity description","Communication style","Principles","custom","team/agents/my-agent.md","team-name"
 ```
 
 ### Creating a Slash Command (Claude Code)
 
-Create a corresponding command file in `claude-commands/`:
+Create a corresponding command file in `claude-commands/team/`:
 
 ```
-claude-commands/bmm/agents/my-agent.md
+claude-commands/team/my-agent.md
 ```
 
 Content:
@@ -192,12 +191,12 @@ Generate the analysis based on loaded inputs.
 Add to `team/workflow-manifest.csv`:
 
 ```csv
-"my-workflow","What this workflow does","bmm","team/workflows/my-category/my-workflow/workflow.yaml"
+"my-workflow","What this workflow does","custom","team/workflows/my-category/my-workflow/workflow.yaml"
 ```
 
 ### Creating a Slash Command (Claude Code)
 
-Create `claude-commands/bmm/workflows/my-workflow.md`:
+Create `claude-commands/team/my-workflow.md`:
 
 ```markdown
 Execute this workflow: $ARGUMENTS
@@ -210,11 +209,11 @@ Execute this workflow: $ARGUMENTS
 
 ## Customizing Existing Agents
 
-Each BMM agent has a customization sidecar file in `team/agents/`:
+Each agent can have a customization sidecar file in `team/agents/`:
 
 ```
-team/agents/bmm-dev.customize.yaml
-team/agents/bmm-architect.customize.yaml
+team/agents/dev.customize.yaml
+team/agents/architect.customize.yaml
 ...
 ```
 
@@ -225,7 +224,7 @@ These YAML files allow you to override agent behavior without modifying the core
 - **Communication style adjustments**: Modify how the agent communicates
 - **Domain knowledge**: Add project-specific domain knowledge
 
-Example `bmm-dev.customize.yaml`:
+Example `dev.customize.yaml`:
 
 ```yaml
 # Additional principles for the Developer agent
@@ -438,10 +437,6 @@ After creation, register the module in `team/manifest.yaml`:
 
 ```yaml
 modules:
-  - core
-  - bmb
-  - bmm
-  - cis
   - my-module   # Your custom module
 ```
 

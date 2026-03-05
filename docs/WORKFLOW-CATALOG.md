@@ -459,7 +459,7 @@ All workflows organized by phase and domain. Each entry includes the workflow na
 
 ---
 
-## Creative (CIS)
+## Creative
 
 ### brainstorming
 
@@ -516,7 +516,7 @@ All workflows organized by phase and domain. Each entry includes the workflow na
 
 ### workflow-init
 
-- **Purpose**: Initialize a new BMM project by determining project level (method/enterprise), type (greenfield/brownfield), and creating the appropriate workflow path.
+- **Purpose**: Initialize a new project by determining project level (method/enterprise), type (greenfield/brownfield), and creating the appropriate workflow path.
 - **Inputs**: Project characteristics
 - **Outputs**: Workflow status tracking file
 - **Slash command**: `/team:workflow-init`
@@ -554,7 +554,7 @@ All workflows organized by phase and domain. Each entry includes the workflow na
 
 ---
 
-## Builder Workflows (BMB)
+## Builder Workflows
 
 ### agent (builder)
 

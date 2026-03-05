@@ -53,7 +53,7 @@ Claude Code has the deepest integration with native support for every feature.
 /team:agent-builder   # Build a custom agent
 ```
 
-Commands are organized by module: `bmm/agents/`, `bmm/workflows/`, `bmb/agents/`, `bmb/workflows/`, `cis/agents/`, `cis/workflows/`, `core/agents/`, `core/workflows/`, `core/tasks/`.
+Commands are organized in a flat `claude-commands/team/` directory with a unified `/team:*` namespace.
 
 ### Post-Commit Hooks
 
@@ -111,7 +111,7 @@ Cursor provides good support through its `.cursor/rules/` system with `.mdc` fil
 
 ### Oracle Auto-Activation
 
-Create `.cursor/rules/000-bmad-oracle.mdc` with `alwaysApply: true`:
+Create `.cursor/rules/000-oracle.mdc` with `alwaysApply: true`:
 
 ```markdown
 ---
@@ -155,8 +155,8 @@ python scripts/context/generate_all.py
 
 Create these additional rule files for lifecycle enforcement:
 
-- `.cursor/rules/001-bmad-lifecycle.mdc` -- Implementation lifecycle rules
-- `.cursor/rules/002-bmad-context.mdc` -- Context system configuration
+- `.cursor/rules/001-lifecycle.mdc` -- Implementation lifecycle rules
+- `.cursor/rules/002-context.mdc` -- Context system configuration
 
 See the [Cursor IDE Guide](../ide-guides/cursor.md) for full setup details.
 
