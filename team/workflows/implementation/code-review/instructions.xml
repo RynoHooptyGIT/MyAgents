@@ -147,7 +147,18 @@
       Choose [1], [2], or specify which issue to examine:</ask>
 
     <check if="user chooses 1">
-      <action>Fix all HIGH and MEDIUM issues in the code</action>
+      <!-- RECEIVING REVIEW DISCIPLINE: {project-root}/team/data/discipline/knowledge/receiving-review.md -->
+      <critical>RECEIVING REVIEW DISCIPLINE — Follow this protocol when fixing issues:
+        1. Read ALL findings first — do not implement anything until every item is read
+        2. Group findings by severity: CRITICAL → HIGH → MEDIUM → LOW
+        3. For each finding, identify unclear items and ask about ALL unclear items before implementing ANY
+        4. Implement in priority order: CRITICAL first, then HIGH, then MEDIUM
+        5. For each fix: state the technical requirement ("The issue is X because Y, fix is Z"), make the change, then verify
+        FORBIDDEN: Performative responses. Never say "good point" or "great catch" — state the technical issue and fix it.
+      </critical>
+      <action>Read ALL findings and group by severity before implementing any</action>
+      <action>Implement fixes in priority order: CRITICAL → HIGH → MEDIUM</action>
+      <action>For each fix: state technical requirement, make change, verify with tests</action>
       <action>Add/update tests as needed</action>
       <action>Update File List in story if files changed</action>
       <action>Update story Dev Agent Record with fixes applied</action>

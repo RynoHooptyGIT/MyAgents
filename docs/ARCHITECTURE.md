@@ -367,6 +367,52 @@ The Oracle reads sprint-status.yaml and applies this priority:
 5. **LOW**: Current epic complete but no retrospective -- execute RT
 6. **INFO**: Everything clear -- present brief and ask user
 
+## Engineering Discipline System
+
+The system includes a set of hard enforcement protocols that prevent AI agents from cutting corners during implementation. These are not guidelines — they are mandatory gates with zero tolerance for rationalization.
+
+### Discipline Knowledge Base
+
+Located at `team/data/discipline/`, the knowledge base contains five discipline protocols:
+
+| Discipline | Iron Law | Enforcement |
+|------------|----------|-------------|
+| **Verification** | No completion claims without fresh evidence in the current context | Refuse to mark tasks complete without visible command output |
+| **TDD** | No production code without a failing test first | Delete production code and restart the cycle on violation |
+| **Debugging** | No fixes without root cause investigation first | Halt and escalate after 3 failed attempts |
+| **Receiving Review** | Read every comment, verify the claim, then respond | No performative agreement — restate technically |
+| **Anti-Rationalization** | Even a 1% chance a discipline applies means MUST follow it | Cross-cutting guard against excuse-making |
+
+Each protocol includes an Iron Law, red flag detection, a rationalization defense table, and a hard gate check sequence.
+
+### Engine-Level Enforcement
+
+`team/engine/discipline-gates.xml` provides reusable enforcement gates that workflows invoke via `invoke-task`. Four gates are available: `verification`, `tdd`, `debugging`, and `receiving-review`. Each gate checks compliance and either passes or halts with an explicit violation response.
+
+### Integration Points
+
+- **Dev Agent (Amelia)**: TDD, verification, and debugging disciplines baked into activation, rules, and principles
+- **Oracle Agent (Athena)**: Verification enforcement at all workflow completion checkpoints. Refuses to proceed with stale evidence.
+- **Dev Story Workflow**: Discipline gates at RED phase, GREEN phase, verification, and task completion
+- **Code Review Workflow**: Receiving review discipline when fixing issues — no performative agreement
+- **Ship Workflow**: Verification evidence gate before deployment (fresh test output required)
+- **Story Checklist**: Explicit discipline compliance section required before marking a story complete
+
+### Evidence Standards
+
+Only **fresh evidence** visible in the current session counts:
+
+- "Tests were passing" is NOT evidence
+- "It should work" is NOT evidence
+- Exit code alone is NOT evidence
+- Only full command output visible after the final code change qualifies
+
+### Discipline Override
+
+Disciplines can be overridden only by explicit user instruction. All overrides are logged as `[DISCIPLINE-OVERRIDE]` in workflow output.
+
+---
+
 ## Directory Structure
 
 All agents and workflows are organized in a flat `team/` directory:
@@ -390,11 +436,13 @@ team/
     ... (20+ categories)
   engine/               # Workflow execution engine
     workflow.xml        # Core workflow processor
+    discipline-gates.xml # Engineering discipline enforcement gates
     index-docs.xml      # Document indexing task
     shard-doc.xml       # Document sharding task
     review-adversarial-general.xml  # Adversarial review task
   resources/            # Shared resources (excalidraw helpers)
   data/                 # Project data, knowledge bases, testarch
+    discipline/         # Engineering discipline protocols (TDD, verification, etc.)
   teams/                # Team composition files
 ```
 

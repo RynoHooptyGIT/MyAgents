@@ -66,6 +66,8 @@ See [docs/TOOL-COMPATIBILITY.md](docs/TOOL-COMPATIBILITY.md) for a detailed feat
 
 **Context Files** (`output/context/`) are auto-generated summaries of your codebase -- module index, API endpoints, database schema, code patterns, and sprint digest. A post-commit hook keeps them fresh.
 
+**Engineering Disciplines** (`team/data/discipline/`) are hard enforcement protocols that prevent AI agents from cutting corners. Five disciplines (TDD, verification, debugging, receiving review, anti-rationalization) are enforced via engine-level gates at every critical checkpoint. No completion claims without fresh evidence. No production code without a failing test. No fixes without root cause investigation. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#engineering-discipline-system).
+
 ## Documentation
 
 | Document | Description |
@@ -90,9 +92,9 @@ my-dev-team/
     agent-manifest.csv      # Agent registry
     agents/                 # All 27 agents (flat)
     workflows/              # All workflows by category
-    engine/                 # Workflow execution engine (workflow.xml)
+    engine/                 # Workflow execution engine + discipline gates
     resources/              # Shared resources (excalidraw helpers)
-    data/                   # Project data and knowledge bases
+    data/                   # Project data, knowledge bases, discipline protocols
     teams/                  # Team composition files
   claude-commands/team/     # 76 slash commands for Claude Code
   output/                   # Generated artifacts and context

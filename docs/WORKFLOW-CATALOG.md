@@ -76,14 +76,14 @@ All workflows organized by phase and domain. Each entry includes the workflow na
 
 ### dev-story
 
-- **Purpose**: Execute a story by implementing tasks/subtasks, writing tests, validating against acceptance criteria, and updating the story file.
+- **Purpose**: Execute a story by implementing tasks/subtasks, writing tests, validating against acceptance criteria, and updating the story file. Enforces engineering discipline gates at every critical checkpoint: TDD (failing test before code), verification (fresh evidence for all completion claims), and debugging (hypothesis-first, escalate at 3 failures).
 - **Inputs**: Story file, project-context.md, codebase
-- **Outputs**: Implemented code, tests, updated story file with task completion markers
+- **Outputs**: Implemented code, tests, updated story file with task completion markers, discipline compliance checklist
 - **Slash command**: `/team:dev-story`
 
 ### code-review
 
-- **Purpose**: Perform an adversarial Senior Developer code review that finds 3-10 specific problems in every story. Challenges code quality, test coverage, architecture compliance, security, and performance. Can auto-fix with user approval.
+- **Purpose**: Perform an adversarial Senior Developer code review that finds 3-10 specific problems in every story. Challenges code quality, test coverage, architecture compliance, security, and performance. Can auto-fix with user approval. Enforces receiving review discipline — all findings read before implementing any, grouped by severity, no performative agreement.
 - **Inputs**: Implemented story, story file, project-context.md
 - **Outputs**: Review findings, applied fixes, story status updated to `done` when passing
 - **Slash command**: `/team:code-review`
@@ -147,7 +147,7 @@ All workflows organized by phase and domain. Each entry includes the workflow na
 
 ### ship
 
-- **Purpose**: Commit changes, push to remote branch, and create a pull request with proper description and labels.
+- **Purpose**: Commit changes, push to remote branch, and create a pull request with proper description and labels. Includes a verification evidence gate — fresh test output must exist in the current session before shipping. Can be overridden with `[DISCIPLINE-OVERRIDE]` logging.
 - **Inputs**: Completed and reviewed story, branch state
 - **Outputs**: Git commit, remote push, GitHub PR
 - **Slash command**: `/team:ship`

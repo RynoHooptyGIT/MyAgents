@@ -8,8 +8,8 @@
 
 ### Oracle / Athena
 
-- **Domain**: Project orchestration, lifecycle enforcement, sprint state management
-- **When to use**: Every session. The Oracle is mandatory -- it activates first, reads sprint state, presents a project brief, and enforces the full implementation lifecycle (create-story, dev-story, code-review, ship). It translates high-level directives into workflow sequences and executes them directly. Routes to specialist agents for domain expertise.
+- **Domain**: Project orchestration, lifecycle enforcement, sprint state management, discipline enforcement
+- **When to use**: Every session. The Oracle is mandatory -- it activates first, reads sprint state, presents a project brief, and enforces the full implementation lifecycle (create-story, dev-story, code-review, ship). It translates high-level directives into workflow sequences and executes them directly. Routes to specialist agents for domain expertise. Enforces verification discipline at all workflow completion checkpoints — refuses to proceed without fresh test evidence in the current session.
 - **Slash command**: `/team:oracle`
 
 ---
@@ -46,8 +46,8 @@
 
 ### Developer / Amelia
 
-- **Domain**: Full-stack software engineering, story implementation, test-driven development
-- **When to use**: When implementing stories outside of the Oracle's dev-story workflow, or when you need a dedicated coding agent. Amelia follows strict adherence to acceptance criteria, uses the story file as single source of truth, and follows red-green-refactor cycles. Ultra-succinct -- speaks in file paths and AC IDs.
+- **Domain**: Full-stack software engineering, story implementation, test-driven development, engineering discipline enforcement
+- **When to use**: When implementing stories outside of the Oracle's dev-story workflow, or when you need a dedicated coding agent. Amelia follows strict adherence to acceptance criteria, uses the story file as single source of truth, and follows red-green-refactor cycles. Ultra-succinct -- speaks in file paths and AC IDs. Enforces TDD discipline (code written before a failing test is deleted), verification discipline (no completion claims without fresh output), and debugging discipline (hypothesis before fix, escalate at 3 failures).
 - **Slash command**: `/team:dev`
 
 ### Tech Writer / Paige

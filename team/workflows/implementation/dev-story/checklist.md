@@ -55,6 +55,14 @@ validation-rules:
 - [ ] **Review Follow-ups:** All review follow-up tasks (marked [AI-Review]) completed and corresponding review items marked resolved (if applicable)
 - [ ] **Story Structure Compliance:** Only permitted sections of story file were modified
 
+## 🛡️ Engineering Discipline Compliance
+
+- [ ] **TDD Cycle Verified:** Every task followed red-green-refactor — failing test written before production code, failure output shown, minimal implementation, pass output shown
+- [ ] **No Test-After Code:** No production code was written before its corresponding failing test. If violated at any point, the code was deleted and the cycle restarted.
+- [ ] **Fresh Verification Evidence:** Test command output is visible in the current context for every completion claim. No stale evidence carried forward past code changes.
+- [ ] **Debugging Discipline:** When errors occurred, the 4-phase protocol was followed (read full error → state hypothesis → single fix → verify). No fixes attempted without reading the error first.
+- [ ] **No Rationalization Violations:** No discipline steps were skipped through rationalization. Any overrides were explicitly requested by the user and logged as `[DISCIPLINE-OVERRIDE]`.
+
 ## 🔚 Final Status Verification
 
 - [ ] **Story Status Updated:** Story Status set to "review"

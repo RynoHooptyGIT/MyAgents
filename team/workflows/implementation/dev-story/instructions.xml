@@ -392,13 +392,14 @@
     <action>Review the current task/subtask from the story file - this is your authoritative implementation guide</action>
     <action>Plan implementation following red-green-refactor cycle</action>
 
-    <!-- RED PHASE -->
+    <!-- RED PHASE — TDD Discipline: {project-root}/team/data/discipline/knowledge/tdd.md -->
     <action>Write FAILING tests first for the task/subtask functionality</action>
-    <action>Confirm tests fail before implementation - this validates test correctness</action>
+    <action>Run tests NOW and confirm they FAIL — show the failure output in context. If the test passes immediately: STOP — the test is not testing new behavior. Investigate before proceeding.</action>
+    <critical>If production code was written before a failing test exists, DELETE the production code and restart the cycle. This gate cannot be rationalized away.</critical>
 
-    <!-- GREEN PHASE -->
-    <action>Implement MINIMAL code to make tests pass</action>
-    <action>Run tests to confirm they now pass</action>
+    <!-- GREEN PHASE — Verification Discipline: {project-root}/team/data/discipline/knowledge/verification.md -->
+    <action>Implement MINIMAL code to make tests pass — only what the failing test requires</action>
+    <action>Run tests to confirm they now pass — show FULL test output. Do not claim "tests pass" without showing the run.</action>
     <action>Handle error conditions and edge cases as specified in task/subtask</action>
 
     <!-- REFACTOR PHASE -->
@@ -407,8 +408,17 @@
 
     <action>Document technical approach and decisions in Dev Agent Record → Implementation Plan</action>
 
+    <!-- DEBUGGING DISCIPLINE: {project-root}/team/data/discipline/knowledge/debugging.md -->
+    <critical>When implementation fails or tests fail unexpectedly:
+      1. Read the FULL error message — complete stack trace, all context
+      2. State an explicit hypothesis BEFORE changing any code ("This fails because X, changing Y should fix it because Z")
+      3. Make ONE change matching the hypothesis
+      4. Verify the result
+      Track debug_attempt_count. At 3+ failed fix attempts: HALT — present all hypotheses tried and their outcomes. Recommend escalation options: (a) fundamentally different approach, (b) architect review, (c) manual investigation, (d) minimal reproduction. WAIT for user decision.
+    </critical>
+
     <action if="new dependencies required beyond story specifications">HALT: "Additional dependencies need user approval"</action>
-    <action if="3 consecutive implementation failures occur">HALT and request guidance</action>
+    <action if="debug_attempt_count >= 3">HALT — 3 failed fix attempts reached. Present hypotheses tried, recommend escalation options, WAIT for user decision.</action>
     <action if="required configuration is missing">HALT: "Cannot proceed without necessary configuration files"</action>
 
     <critical>NEVER implement anything not mapped to a specific task/subtask in the story file</critical>
@@ -430,12 +440,25 @@
     <action>Run the new tests to verify implementation correctness</action>
     <action>Run linting and code quality checks if configured in project</action>
     <action>Validate implementation meets ALL story acceptance criteria; enforce quantitative thresholds explicitly</action>
-    <action if="regression tests fail">STOP and fix before continuing - identify breaking changes immediately</action>
-    <action if="new tests fail">STOP and fix before continuing - ensure implementation correctness</action>
+
+    <!-- VERIFICATION DISCIPLINE: {project-root}/team/data/discipline/knowledge/verification.md -->
+    <critical>VERIFICATION DISCIPLINE: Show FULL test output — pass counts, fail counts, test names. Exit code alone is not evidence. "Tests pass" without visible output is a discipline violation. If output is long, show the summary section with counts and any failures.</critical>
+
+    <action if="regression tests fail">STOP and fix before continuing - identify breaking changes immediately. Follow debugging discipline: read full error, state hypothesis, then fix.</action>
+    <action if="new tests fail">STOP and fix before continuing - ensure implementation correctness. Follow debugging discipline: read full error, state hypothesis, then fix.</action>
   </step>
 
   <step n="9" goal="Validate and mark task complete ONLY when fully done">
     <critical>NEVER mark a task complete unless ALL conditions are met - NO LYING OR CHEATING</critical>
+
+    <!-- VERIFICATION GATE: {project-root}/team/data/discipline/knowledge/verification.md -->
+    <critical>VERIFICATION GATE — Before marking ANY task [x], ALL of these must be true:
+      1. Test command was run IN THIS STEP (not carried forward from earlier)
+      2. FULL test output is visible in the current context
+      3. Output shows all tests passing — no failures hidden
+      4. No red-flag phrases: "should work", "probably passes", "tests were passing"
+      If ANY condition is not met: run the test command NOW and show output before proceeding.
+    </critical>
 
     <!-- VALIDATION GATES -->
     <action>Verify ALL tests for this task/subtask ACTUALLY EXIST and PASS 100%</action>

@@ -70,6 +70,25 @@ When a story was found in Step 2, validate its lifecycle state before proceeding
 
 ---
 
+## Step 2c: Verification Evidence Gate
+
+**Discipline reference:** `{project-root}/team/data/discipline/knowledge/verification.md`
+
+Before proceeding to commit, check for fresh test evidence in the current session:
+
+1. **Check context**: Has a test suite been run in this session with full output visible?
+2. **Check evidence**: Does the output show all tests passing (not just an exit code, not just "tests were passing earlier")?
+
+**Gate logic:**
+
+- **Fresh test evidence exists** → `[PASS]` Proceed to Step 3
+- **No fresh test evidence** → `[WARNING]` Display: "⚠️ VERIFICATION DISCIPLINE: No fresh test evidence found in current session. 'Tests were passing' is not evidence."
+  - Ask user: `[1] Run test suite now (recommended)` / `[2] Ship anyway [DISCIPLINE-OVERRIDE]`
+  - If user chooses [1] → Run the project's test suite, show FULL output, then proceed if passing
+  - If user chooses [2] → Proceed but log `[DISCIPLINE-OVERRIDE: verification-gate-skipped]` in the ship report (Step 8)
+
+---
+
 ## Step 3: Security Check
 
 Scan staged and modified files for sensitive content before committing:

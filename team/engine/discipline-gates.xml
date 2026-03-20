@@ -1,0 +1,188 @@
+<!-- Discipline enforcement gates — invocable from any workflow via invoke-task.
+     Reference knowledge: {project-root}/team/data/discipline/knowledge/*.md -->
+
+<task id="team/engine/discipline-gates.xml" name="Discipline Gates">
+  <objective>Enforce hard engineering discipline gates to prevent corner-cutting</objective>
+
+  <inputs>
+    <input name="gate" desc="Which gate to check: verification | tdd | debugging | receiving-review | all" />
+    <input name="context" desc="Current action context — what is being verified, tested, debugged, or reviewed" />
+  </inputs>
+
+  <llm critical="true">
+    <i>You enforce discipline with zero tolerance for rationalization</i>
+    <i>If the agent is constructing reasons to skip a step, that IS the signal to enforce harder</i>
+    <i>Evidence must be FRESH and VISIBLE — past evidence does not carry forward past code changes</i>
+    <i>"Probably fine" is never acceptable — demand proof</i>
+  </llm>
+
+  <gates>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         GATE 1: VERIFICATION
+         Iron Law: No completion claims without fresh verification evidence
+         ════════════════════════════════════════════════════════════════ -->
+    <gate id="verification" name="Verification Evidence Gate">
+      <iron-law>No completion claims without fresh verification evidence in the current context</iron-law>
+
+      <check-sequence>
+        <check n="1">Completion claim identified — what is being claimed as done?</check>
+        <check n="2">Verification command run FRESH — after the last code change, in this session</check>
+        <check n="3">FULL output visible in current context — not truncated, not summarized to just exit code</check>
+        <check n="4">Output CONFIRMS the claim — pass counts match, no failures hidden, no warnings ignored</check>
+      </check-sequence>
+
+      <red-flags>
+        <flag>Claiming tests pass without showing test output</flag>
+        <flag>Referencing test results from before the last code change</flag>
+        <flag>Using exit codes alone as evidence</flag>
+        <flag>Saying "it should work" instead of running verification</flag>
+        <flag>Marking task [x] without verification between last change and the mark</flag>
+      </red-flags>
+
+      <on-violation>
+        <action>REFUSE to mark task complete</action>
+        <action>REFUSE to proceed to next task or workflow step</action>
+        <action>Run the verification command immediately</action>
+        <action>Show FULL output before continuing</action>
+      </on-violation>
+    </gate>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         GATE 2: TDD
+         Iron Law: No production code without a failing test first
+         ════════════════════════════════════════════════════════════════ -->
+    <gate id="tdd" name="TDD Hard Gate">
+      <iron-law>No production code without a failing test first. Delete means delete.</iron-law>
+
+      <check-sequence>
+        <check n="1">Test written BEFORE production code</check>
+        <check n="2">Test FAILED first — failure output shown in context</check>
+        <check n="3">Production code is MINIMAL — only what the failing test requires</check>
+        <check n="4">Test PASSES after production code — pass output shown in context</check>
+        <check n="5">Any refactoring done ONLY with green tests</check>
+      </check-sequence>
+
+      <red-flags>
+        <flag>Production code exists without a corresponding failing test</flag>
+        <flag>Test passes immediately on first run (not testing new behavior)</flag>
+        <flag>More code than the minimum needed to pass the test</flag>
+        <flag>"I'll write the test after" or "Let me get it working first"</flag>
+        <flag>Refactoring while tests are red</flag>
+      </red-flags>
+
+      <on-violation>
+        <action>DELETE the production code that was written before the test</action>
+        <action>Write the failing test first</action>
+        <action>Confirm test failure with visible output</action>
+        <action>Re-implement minimally</action>
+        <action>NO EXCEPTIONS — this gate cannot be rationalized away</action>
+      </on-violation>
+    </gate>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         GATE 3: DEBUGGING
+         Iron Law: No fixes without root cause investigation first
+         ════════════════════════════════════════════════════════════════ -->
+    <gate id="debugging" name="Debugging Discipline Gate">
+      <iron-law>No fixes without root cause investigation first. 3 fails = escalate.</iron-law>
+
+      <check-sequence>
+        <check n="1">Error read COMPLETELY — full message, stack trace, all context</check>
+        <check n="2">Root cause hypothesis stated BEFORE any code change</check>
+        <check n="3">Hypothesis is EXPLICIT — "X fails because Y, changing Z should fix it because W"</check>
+        <check n="4">SINGLE change made matching the hypothesis — not multiple changes at once</check>
+        <check n="5">Result verified after the change — did the fix work?</check>
+      </check-sequence>
+
+      <red-flags>
+        <flag>Changing code immediately after seeing an error</flag>
+        <flag>"Let me try this" without stating what and why</flag>
+        <flag>Making multiple changes at once</flag>
+        <flag>Ignoring stack traces or error context</flag>
+        <flag>Repeating the same approach that already failed</flag>
+      </red-flags>
+
+      <on-violation>
+        <action>STOP code changes</action>
+        <action>Read the FULL error message</action>
+        <action>State hypothesis explicitly before proceeding</action>
+      </on-violation>
+
+      <escalation trigger="debug_attempt_count >= 3">
+        <action>HALT implementation immediately</action>
+        <action>Present ALL hypotheses attempted and their outcomes</action>
+        <action>Recommend escalation options:
+          (a) Fundamentally different approach
+          (b) Architect review
+          (c) Manual investigation with additional tooling
+          (d) Minimal reproduction to isolate the problem</action>
+        <action>WAIT for user decision — do NOT continue without explicit instruction</action>
+      </escalation>
+    </gate>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         GATE 4: RECEIVING REVIEW
+         Iron Law: Read every comment, verify the claim, only then respond
+         ════════════════════════════════════════════════════════════════ -->
+    <gate id="receiving-review" name="Receiving Review Discipline Gate">
+      <iron-law>Read every comment, verify the claim, only then respond. No performative agreement.</iron-law>
+
+      <check-sequence>
+        <check n="1">ALL review items read before implementing ANY</check>
+        <check n="2">Unclear items identified and clarified with reviewer</check>
+        <check n="3">Each item restated as TECHNICAL requirement — not "good point" but "The issue is X because Y, fix is Z"</check>
+        <check n="4">Items grouped and ordered by severity: CRITICAL → HIGH → MEDIUM → LOW</check>
+        <check n="5">Implementation proceeds in priority order, one item at a time</check>
+        <check n="6">Each fix verified individually before moving to next</check>
+      </check-sequence>
+
+      <red-flags>
+        <flag>Responding "good point" or "great catch" without verifying the claim</flag>
+        <flag>Implementing fixes as you read instead of reading all first</flag>
+        <flag>Skipping LOW severity items</flag>
+        <flag>Agreeing without restating the technical issue</flag>
+        <flag>Cherry-picking easy fixes and leaving hard ones</flag>
+      </red-flags>
+
+      <on-violation>
+        <action>STOP implementing fixes</action>
+        <action>Go back to step 1 — read ALL remaining items</action>
+        <action>Re-prioritize before continuing</action>
+        <action>Restate each item technically — NEVER use performative language</action>
+      </on-violation>
+    </gate>
+
+  </gates>
+
+  <!-- ══════════════════════════════════════════════════════════════════
+       CROSS-CUTTING: ANTI-RATIONALIZATION RULES
+       These apply to ALL gates above
+       ══════════════════════════════════════════════════════════════════ -->
+  <anti-rationalization>
+    <rule id="one-percent">If there is even a 1% chance a discipline applies to the current action, follow it</rule>
+    <rule id="cost-asymmetry">Cost of unnecessary discipline = minutes. Cost of skipped discipline = hours or broken software.</rule>
+    <rule id="no-self-exemption">Expertise does not exempt you from discipline. Experts follow discipline MORE consistently.</rule>
+    <rule id="escalate-over-skip">When in doubt, escalate to the user rather than skipping the discipline step</rule>
+    <rule id="override-logging">If discipline is overridden by explicit user instruction, log as [DISCIPLINE-OVERRIDE] with reason</rule>
+
+    <rationalization-detection>
+      <thought trap="true">"This is just a simple change"</thought>
+      <thought trap="true">"I already know this works"</thought>
+      <thought trap="true">"This discipline doesn't apply here"</thought>
+      <thought trap="true">"Following this would waste time"</thought>
+      <thought trap="true">"I can skip this step just this once"</thought>
+      <thought trap="true">"The user is in a hurry"</thought>
+      <thought trap="true">"This is overkill"</thought>
+      <thought trap="true">"I'll come back to this later"</thought>
+      <thought trap="true">"I'm being too careful"</thought>
+    </rationalization-detection>
+  </anti-rationalization>
+
+  <halt-conditions>
+    <condition>HALT if gate check fails and violation action cannot be completed</condition>
+    <condition>HALT if debug_attempt_count reaches 3 without resolution</condition>
+    <condition>HALT if anti-rationalization override detected without explicit user instruction</condition>
+  </halt-conditions>
+
+</task>

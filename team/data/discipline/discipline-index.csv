@@ -1,0 +1,6 @@
+id,name,description,tags,fragment_file
+verification,Verification Discipline,"No completion claims without fresh verification evidence in current context","verification,evidence,completion,testing,ship",knowledge/verification.md
+tdd,TDD Discipline,"No production code without a failing test first — delete and restart on violation","tdd,testing,red-green-refactor,implementation",knowledge/tdd.md
+debugging,Debugging Discipline,"No fixes without root cause investigation — 3 fails means escalate","debugging,troubleshooting,errors,implementation",knowledge/debugging.md
+receiving-review,Receiving Review Discipline,"Read every comment and verify the claim — no performative agreement","review,code-review,feedback,collaboration",knowledge/receiving-review.md
+anti-rationalization,Anti-Rationalization Discipline,"Cross-cutting enforcement: even 1% chance a discipline applies means MUST follow it","meta,enforcement,discipline,all",knowledge/anti-rationalization.md
