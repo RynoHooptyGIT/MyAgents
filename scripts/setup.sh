@@ -162,6 +162,18 @@ cp "$TEAM_ROOT/scripts/context/context-config.yaml" "$TARGET_DIR/scripts/context
 cp "$TEAM_ROOT/scripts/context/context-config.example.yaml" "$TARGET_DIR/scripts/context/context-config.example.yaml"
 echo -e "  ${GREEN}✓${NC} Context generators installed (edit scripts/context/context-config.yaml)"
 
+# Update script and upstream tracking
+cp "$TEAM_ROOT/scripts/team-update.sh" "$TARGET_DIR/scripts/team-update.sh"
+chmod +x "$TARGET_DIR/scripts/team-update.sh"
+
+# VERSION file
+cp "$TEAM_ROOT/VERSION" "$TARGET_DIR/VERSION"
+
+# Store upstream path for future updates
+echo "$TEAM_ROOT" > "$TARGET_DIR/.team-upstream"
+
+echo -e "  ${GREEN}✓${NC} Update script installed (run: bash scripts/team-update.sh)"
+
 # ── Step 5: Create output directory structure ────────────────────
 echo -e "${CYAN}[5/6] Creating output directory structure...${NC}"
 mkdir -p "$TARGET_DIR/output/planning-artifacts"
@@ -200,20 +212,22 @@ if [ "$TOOL_CHOICE" != "5" ]; then
     echo "     ${YELLOW}CLAUDE.md${NC} → 'Critical Technical Rules' section"
 fi
 echo ""
-echo "  3. Start a session — the Oracle activates automatically:"
+echo "  3. Start Tanto (your project commander):"
 if [ "$TOOL_CHOICE" != "5" ]; then
-    echo "     ${YELLOW}/team:oracle${NC}"
+    echo "     ${YELLOW}/team:tanto${NC}  — then say 'let's ride' for full scan & plan"
 fi
 echo ""
-echo "  4. Initialize sprint tracking:"
-echo "     Oracle → ${YELLOW}SP${NC} (Sprint Planning)"
+echo "  4. Or onboard a new venture:"
+if [ "$TOOL_CHOICE" != "5" ]; then
+    echo "     ${YELLOW}/team:tanto${NC}  — then say 'new venture' for CEO deep-dive"
+fi
 echo ""
-echo "  5. Create your first story:"
-echo "     Oracle → ${YELLOW}CS${NC} (Create Story)"
+echo "  5. Pull future updates:"
+echo "     ${YELLOW}bash scripts/team-update.sh${NC}"
 echo ""
 echo -e "${BLUE}Documentation:${NC}"
-echo "  - Quick start:    docs/QUICKSTART.md"
-echo "  - Architecture:   docs/ARCHITECTURE.md"
-echo "  - Agent catalog:  docs/AGENT-CATALOG.md"
-echo "  - Workflow catalog: docs/WORKFLOW-CATALOG.md"
+echo "  - Quick start:      docs/QUICKSTART.md"
+echo "  - Architecture:     docs/ARCHITECTURE.md"
+echo "  - Agent catalog:    docs/AGENT-CATALOG.md"
+echo "  - Workflow catalog:  docs/WORKFLOW-CATALOG.md"
 echo ""

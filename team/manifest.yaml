@@ -44,6 +44,7 @@ teams:
   project-dev:
     name: "{project_name} Core Development"
     members:
+      - tanto
       - oracle
       - custodian
       - architect
@@ -54,6 +55,7 @@ teams:
       - "{project_name} feature development lifecycle"
       - "Sprint planning and execution"
       - "Code quality and repo health"
+      - "Full project scan and agent deployment"
   project-specialists:
     name: "{project_name} Technical Specialists"
     members:
@@ -84,6 +86,7 @@ teams:
   project-full:
     name: "{project_name} Full Team"
     members:
+      - tanto
       - oracle
       - custodian
       - architect

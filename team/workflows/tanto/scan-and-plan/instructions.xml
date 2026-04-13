@@ -1,0 +1,269 @@
+<instructions id="scan-and-plan" name="Tanto Scan and Plan">
+  <objective>Scan the entire project, analyze gaps, assign agents to work, build per-agent memory files, and produce a master battle plan</objective>
+
+  <llm critical="true">
+    <mandate>This workflow runs in YOLO mode by default — no user confirmation between steps</mandate>
+    <mandate>Read ALL files completely — never use offset/limit</mandate>
+    <mandate>Every agent assignment must be justified by evidence from the scan</mandate>
+    <mandate>Memory files must contain actionable context, not generic summaries</mandate>
+  </llm>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 1: PROJECT DISCOVERY                         -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="1" goal="Ensure context is fresh and gather all project intelligence">
+    <action>Display: "⚔️ PHASE 1: RECONNAISSANCE — Scanning the battlefield..."</action>
+
+    <action>Check if {project-root}/scripts/context/generate_all.py exists</action>
+    <check if="generate_all.py exists">
+      <action>Run: python {project-root}/scripts/context/generate_all.py --check</action>
+      <check if="context files are stale or missing">
+        <action>Run: python {project-root}/scripts/context/generate_all.py</action>
+        <action>Display: "Context files regenerated."</action>
+      </check>
+    </check>
+
+    <action>Read {project-root}/output/project-context.md (if exists) — store as {project_context_content}</action>
+    <action>Read {project-root}/output/context/module-index.md (if exists) — store as {module_index_content}</action>
+    <action>Read {project-root}/output/context/api-index.md (if exists) — store as {api_index_content}</action>
+    <action>Read {project-root}/output/context/schema-digest.md (if exists) — store as {schema_digest_content}</action>
+    <action>Read {project-root}/output/context/patterns.md (if exists) — store as {patterns_content}</action>
+    <action>Read {project-root}/output/context/sprint-digest.md (if exists) — store as {sprint_digest_content}</action>
+    <action>Read {implementation_artifacts}/sprint-status.yaml — store as {sprint_status_content}</action>
+
+    <invoke-protocol name="discover_inputs"/>
+
+    <action>Scan the top-level project directory structure using ls to understand the codebase layout</action>
+    <action>If src/ or app/ or lib/ directories exist, scan their structure one level deep</action>
+    <action>Read {project-root}/team/agent-manifest.csv — store as {agent_roster}</action>
+    <action>Read {project-root}/team/manifest.yaml — store as {team_definitions}</action>
+    <action>Check {project-root}/team/_memory/ for any existing agent memory files</action>
+
+    <action>Display summary: "Recon complete. [X] context files loaded, [Y] planning artifacts found, [Z] stories tracked."</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 2: GAP ANALYSIS                              -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="2" goal="Analyze everything found and categorize work needed">
+    <action>Display: "⚔️ PHASE 2: ANALYSIS — Identifying targets..."</action>
+
+    <action>Analyze all gathered intelligence and categorize findings into these work domains:
+
+    DOMAIN CATEGORIES:
+    ┌─────────────────────────┬───────────────────────────────────────────────────────┐
+    │ Domain                  │ What to look for                                      │
+    ├─────────────────────────┼───────────────────────────────────────────────────────┤
+    │ ARCHITECTURE            │ Missing architecture docs, unresolved design          │
+    │                         │ decisions, scalability concerns, tech debt patterns    │
+    ├─────────────────────────┼───────────────────────────────────────────────────────┤
+    │ IMPLEMENTATION          │ Stories in backlog/ready-for-dev, features planned     │
+    │                         │ but not started, incomplete implementations            │
+    ├─────────────────────────┼───────────────────────────────────────────────────────┤
+    │ TESTING                 │ Missing test coverage, stories without tests,          │
+    │                         │ test architecture gaps, CI/CD test pipeline gaps       │
+    ├─────────────────────────┼───────────────────────────────────────────────────────┤
+    │ SECURITY                │ Missing security reviews, OWASP concerns,             │
+    │                         │ authentication/authorization gaps, data exposure       │
+    ├─────────────────────────┼───────────────────────────────────────────────────────┤
+    │ DOCUMENTATION           │ Missing docs, stale docs, API docs, user guides       │
+    ├─────────────────────────┼───────────────────────────────────────────────────────┤
+    │ DEVOPS                  │ CI/CD gaps, deployment concerns, environment issues,   │
+    │                         │ Docker/container needs, monitoring gaps                │
+    ├─────────────────────────┼───────────────────────────────────────────────────────┤
+    │ DATA                    │ Schema gaps, migration needs, query optimization,      │
+    │                         │ caching strategy, data modeling issues                 │
+    ├─────────────────────────┼───────────────────────────────────────────────────────┤
+    │ API                     │ Contract drift, missing endpoints, versioning issues,  │
+    │                         │ OpenAPI spec gaps                                      │
+    ├─────────────────────────┼───────────────────────────────────────────────────────┤
+    │ COMPLIANCE              │ NIST RMF gaps, HIPAA concerns, regulatory needs,       │
+    │                         │ industry-specific requirements                         │
+    ├─────────────────────────┼───────────────────────────────────────────────────────┤
+    │ UX                      │ Missing UX designs, user flow gaps, accessibility,     │
+    │                         │ usability concerns                                     │
+    ├─────────────────────────┼───────────────────────────────────────────────────────┤
+    │ PRODUCT                 │ Missing PRD sections, unclear requirements,            │
+    │                         │ stakeholder alignment gaps                             │
+    ├─────────────────────────┼───────────────────────────────────────────────────────┤
+    │ AI/ML                   │ Model architecture needs, training pipeline gaps,      │
+    │                         │ evaluation methodology, MLOps needs                    │
+    ├─────────────────────────┼───────────────────────────────────────────────────────┤
+    │ CREATIVE                │ Branding needs, presentation needs, storytelling gaps  │
+    └─────────────────────────┴───────────────────────────────────────────────────────┘
+
+    For each domain, produce:
+    - FINDINGS: What specifically was found (cite files, line numbers, artifact names)
+    - PRIORITY: CRITICAL / HIGH / MEDIUM / LOW
+    - WORK ITEMS: Specific tasks that need doing
+    - DEPENDENCIES: What must happen first
+
+    Skip any domain where no findings exist — don't pad the report.
+    </action>
+
+    <action>Display the gap analysis as a clean table:
+    "TARGET ACQUISITION:
+    | # | Domain | Priority | Findings | Work Items |
+    |---|--------|----------|----------|------------|
+    "
+    </action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 3: AGENT ASSIGNMENT                          -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="3" goal="Map each work item to the best agent(s) from the roster">
+    <action>Display: "⚔️ PHASE 3: SQUAD ASSIGNMENT — Deploying the team..."</action>
+
+    <action>Using the gap analysis from Phase 2 and the agent roster from agent-manifest.csv, assign agents to work items:
+
+    ASSIGNMENT RULES:
+    1. Match work domains to agent expertise:
+       - ARCHITECTURE → Winston (Architect)
+       - IMPLEMENTATION → Amelia (Dev) for coding, Athena/Tanto for lifecycle
+       - TESTING → Murat (Tea - Test Architect)
+       - SECURITY → Shield (Security Auditor)
+       - DOCUMENTATION → Paige (Tech Writer)
+       - DEVOPS → Forge (DevOps)
+       - DATA → Oracle (Data Architect)
+       - API → Pact (API Contract)
+       - COMPLIANCE → Atlas (NIST RMF), Dr. Vita (Healthcare), Senator (Government), Sterling (Financial) — as applicable
+       - UX → Sally (UX Designer)
+       - PRODUCT → John (PM), Mary (Analyst)
+       - AI/ML → Nexus (Agentic Expert), Neuron (ML Expert) — as applicable
+       - CREATIVE → Carson (Creative Coach), Maya (Design Coach), Sophia (Storyteller) — as applicable
+
+    2. Each work item gets a PRIMARY agent (does the work) and optional SUPPORT agents (consult)
+    3. Order assignments by priority: CRITICAL → HIGH → MEDIUM → LOW
+    4. Identify PARALLEL work (items with no dependencies on each other)
+    5. Identify SEQUENTIAL work (items that must happen in order)
+    6. Flag any items that need TEAM coordination (multiple agents working together)
+    </action>
+
+    <action>Display agent assignments:
+    "SQUAD DEPLOYMENT:
+    | Agent | Role | Assignments | Priority | Invoke |
+    |-------|------|-------------|----------|--------|
+
+    EXECUTION ORDER:
+    Phase 1 (Parallel): [agents that can work simultaneously]
+    Phase 2 (Sequential): [agents that depend on Phase 1]
+    Phase 3 (Sequential): [agents that depend on Phase 2]
+    ...
+    "
+    </action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 4: MEMORY BUILDING                           -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="4" goal="Create mission briefing (memory) files for each assigned agent">
+    <action>Display: "⚔️ PHASE 4: MISSION BRIEFINGS — Arming the squad..."</action>
+
+    <action>For EACH agent that received assignments in Phase 3, create a memory file at:
+    {project-root}/team/_memory/{agent-name}/mission.md
+
+    Create the directory {project-root}/team/_memory/{agent-name}/ if it doesn't exist.
+
+    Each mission.md file MUST contain:
+
+    ```markdown
+    ---
+    agent: {agent-display-name} ({agent-name})
+    generated: {date}
+    generated_by: Tanto scan-and-plan
+    priority: {highest priority of their assignments}
+    ---
+
+    # Mission Briefing: {agent-display-name}
+
+    ## Project Context
+    [2-3 sentences about the project relevant to THIS agent's domain]
+    [Key technologies, patterns, or constraints they need to know]
+
+    ## Your Assignments
+    [Numbered list of specific work items assigned to this agent]
+    [Each item includes: description, priority, acceptance criteria, dependencies]
+
+    ### Assignment 1: [title]
+    - **Priority:** [CRITICAL/HIGH/MEDIUM/LOW]
+    - **Description:** [What needs to be done]
+    - **Key Files:** [Specific files/directories relevant to this work]
+    - **Acceptance Criteria:** [How we know it's done]
+    - **Dependencies:** [What must happen first, or "None"]
+    - **Invoke:** [The slash command to start, e.g., /team:architect]
+
+    ## Key Files and Directories
+    [List of specific files this agent needs to read/modify]
+
+    ## Constraints
+    [Project-specific constraints relevant to this agent]
+    [Patterns they must follow from project-context.md or patterns.md]
+
+    ## Coordination
+    [Which other agents they need to coordinate with]
+    [What they produce that other agents consume]
+    ```
+
+    CRITICAL: Memory files must contain SPECIFIC, ACTIONABLE content from the scan.
+    NOT "review the architecture" but "the API layer in src/routes/ lacks input validation on 3 endpoints: /users, /auth, /data"
+    </action>
+
+    <action>Also create/update the Tanto memory file at {project-root}/team/_memory/tanto/latest-scan.md:
+    ```markdown
+    ---
+    scan_date: {date}
+    agents_deployed: [list of agent names]
+    total_work_items: [count]
+    critical_items: [count]
+    ---
+
+    # Latest Scan Results
+    [Summary of findings, assignments, and plan]
+    [This file is read on next activation for continuity]
+    ```
+    </action>
+
+    <action>Display: "Mission briefings created for [N] agents. Memory files saved to team/_memory/"</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 5: MASTER PLAN                               -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="5" goal="Generate and save the master battle plan">
+    <action>Display: "⚔️ PHASE 5: BATTLE PLAN — Assembling the master plan..."</action>
+
+    <template-output>
+    Generate the master plan using the template, filling every section with findings from Phases 1-4.
+    Save to {planning_artifacts}/master-plan.md
+    </template-output>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 6: PRESENT AND AWAIT ORDERS                  -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="6" goal="Present the plan summary and await user direction">
+    <action>Display the executive summary:
+
+    "⚔️ PLAN READY | {date}
+    ═══════════════════════════════════════════════
+
+    SCOPE: [X] work items across [Y] domains
+    SQUAD: [Z] agents deployed with mission briefings
+    TIMELINE: [N] execution phases
+
+    TOP 3 PRIORITIES:
+    1. [Highest priority item] → [Agent] via [command]
+    2. [Second priority item] → [Agent] via [command]
+    3. [Third priority item] → [Agent] via [command]
+
+    RECOMMENDED FIRST MOVE: [specific action]
+
+    Master plan saved to: {planning_artifacts}/master-plan.md
+    Agent memories saved to: team/_memory/
+    ═══════════════════════════════════════════════
+
+    Your call, {user_name}. Pick a target or say NA for next action."
+    </action>
+  </step>
+</instructions>

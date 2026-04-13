@@ -1,5 +1,5 @@
 installation:
-  version: 1.0.0
+  version: 7.0.0
   installDate: {{INSTALL_DATE}}
   lastUpdated: {{INSTALL_DATE}}
 ides:
@@ -39,6 +39,7 @@ teams:
   core-dev:
     name: "Core Development"
     members:
+      - tanto
       - oracle
       - custodian
       - architect
@@ -49,6 +50,7 @@ teams:
       - "Feature development lifecycle"
       - "Sprint planning and execution"
       - "Code quality and repo health"
+      - "Full project scan and agent deployment"
   specialists:
     name: "Technical Specialists"
     members:
@@ -79,6 +81,7 @@ teams:
   full-team:
     name: "Full Team"
     members:
+      - tanto
       - oracle
       - custodian
       - architect

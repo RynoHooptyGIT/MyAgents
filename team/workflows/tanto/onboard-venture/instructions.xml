@@ -1,0 +1,171 @@
+<instructions id="onboard-venture" name="Tanto Venture Onboarding">
+  <objective>Deep-dive with the CEO to understand a new company, product, or effort — then create the foundational briefing that every agent will operate from</objective>
+
+  <llm critical="true">
+    <mandate>This workflow is INTERACTIVE — Tanto asks, CEO answers, Tanto probes deeper</mandate>
+    <mandate>Do NOT rush — the quality of this onboarding determines the quality of ALL downstream work</mandate>
+    <mandate>Every question should build on the CEO's previous answers</mandate>
+    <mandate>Security and compliance implications must be surfaced early</mandate>
+  </llm>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 1: THE VISION                                 -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="1" goal="Understand what we're building and why">
+    <action>Display: "⚔️ VENTURE ONBOARDING — Let's understand your vision, {user_name}."</action>
+    <action>Display: "I'm going to ask you a series of questions. Answer at whatever level of detail you have — I'll dig deeper where it matters."</action>
+
+    <ask>What are we building? Give me the elevator pitch — what is this company/product/effort?</ask>
+    <ask>What problem does this solve? Who feels this pain most acutely?</ask>
+    <ask>Why now? What's changed that makes this the right time?</ask>
+    <ask>What's the business model? How does this make money (or save money, or create value)?</ask>
+    <ask>Who are the competitors? What exists today that people use instead?</ask>
+    <ask>What's your unfair advantage? Why will YOU win this?</ask>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 2: THE USERS                                  -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="2" goal="Understand the target users and their world">
+    <action>Display: "⚔️ Now let's understand your users."</action>
+
+    <ask>Who is the primary user? Describe them — their role, their day, their frustrations.</ask>
+    <ask>Are there secondary users or stakeholders who aren't the primary user but matter?</ask>
+    <ask>What does success look like for the user? When they use this, what changes for them?</ask>
+    <ask>What's the user's technical sophistication? Are they developers, business users, consumers?</ask>
+    <ask>Any accessibility requirements or constraints for the user base?</ask>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 3: THE PRODUCT                                -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="3" goal="Understand the product scope and priorities">
+    <action>Display: "⚔️ Let's scope the product."</action>
+
+    <ask>What are the MUST-HAVE features for launch? The absolute minimum viable product.</ask>
+    <ask>What are the NICE-TO-HAVE features? Things you want but can live without initially.</ask>
+    <ask>What's explicitly OUT OF SCOPE? Things you do NOT want to build (at least not now).</ask>
+    <ask>Any existing code, designs, or prototypes we're building on? Or is this greenfield?</ask>
+    <ask>What platforms? Web, mobile, desktop, API, CLI — where does this live?</ask>
+    <ask>Any specific technology preferences or constraints? Languages, frameworks, cloud providers?</ask>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 4: SECURITY AND COMPLIANCE                    -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="4" goal="Understand security and compliance requirements early">
+    <action>Display: "⚔️ Security and compliance — we handle this upfront, not as an afterthought."</action>
+
+    <ask>What kind of data will this handle? Personal data, financial data, health data, proprietary data?</ask>
+    <ask>Any regulatory requirements? HIPAA, SOC 2, GDPR, PCI-DSS, FedRAMP, NIST, industry-specific?</ask>
+    <ask>Who are the threat actors? Who would want to attack this and why?</ask>
+    <ask>Multi-tenant or single-tenant? How is data isolated between customers?</ask>
+    <ask>Any specific security requirements from customers, partners, or insurers?</ask>
+
+    <action>Based on answers, flag which compliance agents will be needed:
+    - Health data → Deploy Dr. Vita (Healthcare Expert) and Shield (Security Auditor)
+    - Government data → Deploy Senator (Government Expert) and Atlas (NIST RMF)
+    - Financial data → Deploy Sterling (Financial Expert) and Shield
+    - PII/GDPR → Deploy Shield at minimum
+    - No special requirements → Deploy Shield for baseline security review
+    </action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 5: THE TEAM AND APPROACH                      -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="5" goal="Understand how the CEO wants to work">
+    <action>Display: "⚔️ How do you want to run this operation?"</action>
+
+    <ask>What's your timeline? Any hard deadlines or milestones?</ask>
+    <ask>How involved do you want to be in day-to-day decisions vs. strategic direction only?</ask>
+    <ask>Any team members (human or otherwise) already involved that I should know about?</ask>
+    <ask>What's your risk tolerance? Move fast and break things, or careful and methodical?</ask>
+    <ask>What does v1 success look like? When do we celebrate?</ask>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 6: SYNTHESIZE AND BRIEF                       -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="6" goal="Synthesize everything into the venture brief and cascade to agents">
+    <action>Display: "⚔️ Synthesizing your vision into the venture brief..."</action>
+
+    <template-output>
+    Generate the complete venture brief from all CEO answers.
+    This is THE foundational document — every agent's work traces back to this.
+    </template-output>
+
+    <action>Update {project-root}/team/config.yaml with:
+    - project_name: {venture_name}
+    - user_name: {user_name} (if not already set)
+    </action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 7: CASCADE TO TEAM                            -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="7" goal="Create initial mission briefings for relevant agents based on the venture">
+    <action>Display: "⚔️ Briefing the team on the new mission..."</action>
+
+    <action>Based on the venture brief, determine which agents are immediately relevant.
+
+    Create mission briefings (team/_memory/{agent-name}/mission.md) for each:
+
+    ALWAYS DEPLOY:
+    - Winston (Architect) → Initial architecture decisions based on venture requirements
+    - John (PM) → PRD creation from the venture brief
+    - Sally (UX Designer) → Initial UX research and user flow design
+    - Amelia (Dev) → Technology stack setup and project scaffolding
+    - Murat (Tea) → Test strategy and framework setup
+    - Shield (Security Auditor) → Security architecture review
+    - Paige (Tech Writer) → Documentation structure and standards
+
+    DEPLOY IF APPLICABLE (based on Phase 4 answers):
+    - Atlas (NIST RMF) → If NIST compliance needed
+    - Dr. Vita (Healthcare) → If health data involved
+    - Senator (Government) → If government sector
+    - Sterling (Financial) → If financial data involved
+    - Forge (DevOps) → If infrastructure/deployment is complex
+    - Pact (API Contract) → If API-first or microservices architecture
+    - Nexus (Agentic Expert) → If AI/agentic features planned
+    - Neuron (ML Expert) → If ML/model training involved
+    - Oracle (Data Architect) → If complex data modeling needed
+
+    Each mission briefing must reference the venture brief and include SPECIFIC first tasks.
+    </action>
+
+    <action>Write Tanto's own briefing to team/_memory/tanto/venture-context.md with:
+    - Venture name and summary
+    - Key decisions made
+    - Agents deployed
+    - CEO's priorities and risk tolerance
+    - Timeline and milestones
+    - What to surface to CEO vs. handle autonomously
+    </action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 8: RECOMMENDED NEXT STEPS                     -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="8" goal="Present the recommended execution plan to the CEO">
+    <action>Display: "⚔️ VENTURE ONBOARDED | {venture_name}
+    ═══════════════════════════════════════════════
+
+    Venture brief saved to: {planning_artifacts}/venture-brief-{venture_name}-{date}.md
+    Agents briefed: [list of agents with mission briefings]
+
+    RECOMMENDED NEXT STEPS (in order):
+    1. [First recommendation — typically PRD creation with John (PM)]
+    2. [Second — typically Architecture with Winston]
+    3. [Third — typically UX research with Sally]
+    4. [Fourth — typically Sprint Planning with Tanto]
+    5. [Fifth — typically first story creation]
+
+    Say [LR] to run a full scan now that the venture is onboarded.
+    Or pick an agent to start with.
+
+    Your company, your call, {user_name}.
+    ═══════════════════════════════════════════════"
+    </action>
+  </step>
+</instructions>

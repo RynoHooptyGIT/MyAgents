@@ -1,0 +1,61 @@
+name: scan-and-plan
+description: "Full project scan, gap analysis, agent assignment, memory building, and master plan generation"
+author: "Tanto"
+
+# Critical variables from config
+config_source: "{project-root}/team/config.yaml"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+planning_artifacts: "{config_source}:planning_artifacts"
+implementation_artifacts: "{config_source}:implementation_artifacts"
+output_folder: "{config_source}:output_folder"
+
+# Workflow components
+installed_path: "{project-root}/team/workflows/tanto/scan-and-plan"
+template: "{installed_path}/template.md"
+instructions: "{installed_path}/instructions.xml"
+
+# Variables and inputs
+variables:
+  sprint_status: "{implementation_artifacts}/sprint-status.yaml"
+  project_context: "{output_folder}/project-context.md"
+  module_index: "{output_folder}/context/module-index.md"
+  api_index: "{output_folder}/context/api-index.md"
+  schema_digest: "{output_folder}/context/schema-digest.md"
+  patterns: "{output_folder}/context/patterns.md"
+  sprint_digest: "{output_folder}/context/sprint-digest.md"
+  agent_manifest: "{project-root}/team/agent-manifest.csv"
+  team_manifest: "{project-root}/team/manifest.yaml"
+  memory_dir: "{project-root}/team/_memory"
+
+# Project artifacts to scan
+input_file_patterns:
+  prd:
+    description: "Product Requirements Documents"
+    whole: "{planning_artifacts}/*prd*.md"
+    sharded: "{planning_artifacts}/*prd*/*.md"
+    load_strategy: "FULL_LOAD"
+  architecture:
+    description: "Architecture documents"
+    whole: "{planning_artifacts}/*architecture*.md"
+    sharded: "{planning_artifacts}/*architecture*/*.md"
+    load_strategy: "FULL_LOAD"
+  epics:
+    description: "Epic and story definitions"
+    whole: "{planning_artifacts}/*epic*.md"
+    sharded: "{planning_artifacts}/*epic*/*.md"
+    load_strategy: "FULL_LOAD"
+  ux:
+    description: "UX design documents"
+    whole: "{planning_artifacts}/*ux*.md"
+    sharded: "{planning_artifacts}/*ux*/*.md"
+    load_strategy: "FULL_LOAD"
+  stories:
+    description: "Existing story files"
+    whole: "{implementation_artifacts}/stories/*.md"
+    load_strategy: "FULL_LOAD"
+
+default_output_file: "{planning_artifacts}/master-plan.md"
+
+standalone: true

@@ -1,0 +1,169 @@
+<instructions id="issue-triage" name="Tanto Issue Triage">
+  <objective>Detect issues across the project, triage them, assign agents, and track resolution — with CEO escalation for major findings</objective>
+
+  <llm critical="true">
+    <mandate>Security issues are ALWAYS triaged first regardless of other priorities</mandate>
+    <mandate>Every issue gets an owner (agent) and a clear action</mandate>
+    <mandate>Major issues (architecture changes, new efforts) trigger CEO approval gate</mandate>
+    <mandate>Reference security-gate.xml for security-specific triage</mandate>
+  </llm>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 1: COLLECT SIGNALS                            -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="1" goal="Gather all signals of issues from across the project">
+    <action>Display: "⚔️ ISSUE TRIAGE — Scanning for problems..."</action>
+
+    <action>CHECK SOURCE 1 — Agent Communications:
+    Read all files in team/_memory/_comms/findings/
+    Read all files in team/_memory/_comms/requests/
+    Identify unprocessed items (no processed: true in frontmatter)
+    </action>
+
+    <action>CHECK SOURCE 2 — Sprint State:
+    Read sprint-status.yaml
+    Flag: stories stuck in-progress for multiple sessions
+    Flag: stories in review for too long
+    Flag: stories with no story file
+    Flag: completed stories that skipped code review
+    Flag: completed epics without retrospectives
+    </action>
+
+    <action>CHECK SOURCE 3 — Codebase Health:
+    If project-context.md exists, read it for known issues
+    Run context generation freshness check
+    Check for TODO/FIXME/HACK comments in source code (if src/ exists)
+    Check for failing tests (if test runner is configured)
+    Check for linting errors (if linter is configured)
+    </action>
+
+    <action>CHECK SOURCE 4 — Security Scan:
+    Reference team/engine/security-gate.xml universal checklist
+    Scan for hardcoded secrets (strings matching API key patterns, passwords in config)
+    Check for dependencies with known vulnerabilities (if package manager exists)
+    Check for files that should be gitignored but aren't (.env, credentials, keys)
+    </action>
+
+    <action>CHECK SOURCE 5 — Documentation Gaps:
+    Check if README exists and is up to date
+    Check if API docs exist for all endpoints (if api-index.md exists)
+    Check if architecture docs match actual codebase structure
+    </action>
+
+    <action>CHECK SOURCE 6 — Agent Memory Staleness:
+    Check team/_memory/ for agent mission files
+    Flag missions that reference completed or changed work
+    Flag agents with no mission who should have one
+    </action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 2: CLASSIFY AND PRIORITIZE                    -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="2" goal="Classify each issue and assign priority">
+    <action>Display: "⚔️ Classifying issues..."</action>
+
+    <action>For each issue found, classify:
+
+    TYPE:
+    - 🔴 SECURITY — Vulnerability, exposure, compliance gap
+    - 🟠 BUG — Something broken that was previously working
+    - 🟡 DESIGN — Missing or incomplete design/architecture
+    - 🔵 BUILD — Feature or capability that needs to be created
+    - ⚪ DEBT — Technical debt, refactoring, cleanup
+    - 📄 DOCS — Missing or stale documentation
+
+    PRIORITY (using these criteria):
+    - CRITICAL: Security vulnerabilities, data loss risks, blocking all progress
+    - HIGH: Broken functionality, blocking specific stories, compliance gaps
+    - MEDIUM: Design gaps, missing tests, stale documentation
+    - LOW: Tech debt, minor cleanup, nice-to-have improvements
+
+    CEO ESCALATION:
+    - If fixing this requires architecture changes → CEO approval needed
+    - If fixing this requires new effort (not in current sprint) → CEO approval needed
+    - If this is a security incident → CEO must be informed
+    - Otherwise → agents can handle autonomously
+    </action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 3: ASSIGN AGENTS                              -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="3" goal="Assign each issue to the right agent with clear instructions">
+    <action>Display: "⚔️ Assigning the squad..."</action>
+
+    <action>For each issue, determine the best agent:
+
+    ASSIGNMENT RULES:
+    - 🔴 SECURITY → Shield (Security Auditor) as primary, Dev as secondary for fixes
+    - 🟠 BUG → Dev (Amelia) as primary, Tea (Murat) for test coverage
+    - 🟡 DESIGN → Architect (Winston) or UX Designer (Sally) depending on domain
+    - 🔵 BUILD → Dev (Amelia) through the full lifecycle (CS → DS → CR → SH)
+    - ⚪ DEBT → Custodian (Sentinel) for analysis, Dev for implementation
+    - 📄 DOCS → Tech Writer (Paige)
+
+    For each assignment, create:
+    1. Clear task description
+    2. Specific files/areas to investigate
+    3. Acceptance criteria (how we know it's fixed)
+    4. Security considerations
+    5. Dependencies on other issues
+    </action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 4: UPDATE MEMORIES AND COMMS                  -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="4" goal="Update agent mission briefings and communication channels">
+    <action>Display: "⚔️ Updating mission briefings..."</action>
+
+    <action>For each assigned agent:
+    1. Update or create team/_memory/{agent-name}/mission.md with new assignments
+    2. If the agent already has a mission, APPEND new issues — don't overwrite existing assignments
+    3. Mark priority clearly so the agent knows what to tackle first
+    </action>
+
+    <action>Mark all processed communications as processed:
+    - Update frontmatter in team/_memory/_comms/findings/ files
+    - Update frontmatter in team/_memory/_comms/requests/ files
+    </action>
+
+    <action>If any CEO escalation items exist, prepare proposals using the CEO Approval Gate:
+    - Reference team/engine/ceo-approval.xml
+    - Create proposals in team/_memory/_comms/proposals/
+    </action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 5: PRESENT TRIAGE REPORT                      -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="5" goal="Present the triage summary to the CEO">
+    <action>Display the triage report:
+
+    "⚔️ ISSUE TRIAGE REPORT | {date}
+    ═══════════════════════════════════════════════
+
+    ISSUES FOUND: [total count]
+    🔴 Security: [count]  🟠 Bugs: [count]  🟡 Design: [count]
+    🔵 Build: [count]  ⚪ Debt: [count]  📄 Docs: [count]
+
+    CRITICAL/HIGH ISSUES:
+    | # | Type | Issue | Agent | Action | CEO? |
+    |---|------|-------|-------|--------|------|
+    [table of critical and high priority issues]
+
+    MEDIUM/LOW ISSUES:
+    [summary count, not full table — CEO doesn't need to review these]
+
+    REQUIRING YOUR APPROVAL:
+    [list of items that need CEO sign-off, with proposal references]
+
+    AGENTS DEPLOYED:
+    [which agents got updated mission briefings]
+
+    ═══════════════════════════════════════════════
+    Next: Address critical issues first. Say NA for next action."
+    </action>
+  </step>
+</instructions>

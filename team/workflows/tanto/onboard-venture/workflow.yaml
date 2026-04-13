@@ -1,0 +1,28 @@
+name: onboard-venture
+description: "Deep-dive CEO interaction to understand a new company or effort, then cascade the vision to all agents"
+author: "Tanto"
+
+# Critical variables from config
+config_source: "{project-root}/team/config.yaml"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+planning_artifacts: "{config_source}:planning_artifacts"
+implementation_artifacts: "{config_source}:implementation_artifacts"
+output_folder: "{config_source}:output_folder"
+
+# Workflow components
+installed_path: "{project-root}/team/workflows/tanto/onboard-venture"
+template: "{installed_path}/template.md"
+instructions: "{installed_path}/instructions.xml"
+
+# Variables
+variables:
+  venture_name: ""
+  venture_type: ""
+  memory_dir: "{project-root}/team/_memory"
+  agent_manifest: "{project-root}/team/agent-manifest.csv"
+
+default_output_file: "{planning_artifacts}/venture-brief-{{venture_name}}-{{date}}.md"
+
+standalone: true
