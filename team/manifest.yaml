@@ -35,10 +35,12 @@ teams:
     name: "Dev Team"
     members:
       - dev
+      - frontend-dev
       - tea
       - tech-writer
     best_for:
       - "Parallel implementation"
+      - "Frontend UI engineering"
       - "Test coverage review"
       - "Documentation generation"
   project-dev:
@@ -50,6 +52,7 @@ teams:
       - architect
       - ux-designer
       - dev
+      - frontend-dev
       - tea
     best_for:
       - "{project_name} feature development lifecycle"
@@ -92,6 +95,7 @@ teams:
       - architect
       - ux-designer
       - dev
+      - frontend-dev
       - tea
       - security-auditor
       - nist-rmf-expert

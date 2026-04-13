@@ -1,0 +1,121 @@
+<instructions id="spec-review" name="Spec Review — Technical Specification Gate">
+  <objective>Produce a technical specification that bridges the story (WHAT) to implementation (HOW). The spec must be approved before dev-story can begin.</objective>
+
+  <llm critical="true">
+    <mandate>Stories define WHAT to build. Specs define HOW to build it. Both are required.</mandate>
+    <mandate>No implementation without an approved spec. This gate is non-negotiable.</mandate>
+    <mandate>Reference {project-root}/team/engine/rationalization-shield.xml for anti-rationalization checks</mandate>
+  </llm>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- ANTI-RATIONALIZATION: Excuses for skipping specs    -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <rationalization-defense>
+    <table>
+      <row excuse="This story is too simple for a spec" reality="Simple stories with specs take 10 minutes. Simple stories without specs cause rework."/>
+      <row excuse="I already know how to build this" reality="Knowledge is not documentation. Write it down so others can review it."/>
+      <row excuse="The story file IS the spec" reality="Stories define WHAT and acceptance criteria. Specs define HOW — components, data model, slices."/>
+      <row excuse="This will slow us down" reality="Rework from missing specs slows you down 3-5x more. Measure twice, cut once."/>
+      <row excuse="I'll document after implementation" reality="Post-hoc docs describe what was built, not what should be built. The spec prevents wrong turns."/>
+      <row excuse="The architect already reviewed this" reality="Review without a written spec is verbal agreement. Write it down."/>
+    </table>
+  </rationalization-defense>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 1: SPECIFY                                    -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="1" goal="Analyze the story and surface all technical decisions">
+    <action>Load the story file from {story_file}. Read it completely.</action>
+    <action>Load {project_context} if it exists — this is the authoritative reference for patterns and structure.</action>
+    <action>Invoke protocol: discover_inputs (load architecture and PRD docs if available)</action>
+
+    <action>For each acceptance criterion in the story, identify:</action>
+    <action>  - Which components/files will be affected</action>
+    <action>  - What data model changes are needed (migrations, RLS policies, indexes)</action>
+    <action>  - What API changes are needed (new endpoints, modified contracts, schema changes)</action>
+    <action>  - What testing approach is required</action>
+
+    <action>Surface hidden assumptions — things the story takes for granted that could go wrong:</action>
+    <action>  - Dependencies on other stories or features not yet built</action>
+    <action>  - Assumptions about existing API behavior or data shapes</action>
+    <action>  - Performance implications at scale</action>
+    <action>  - Edge cases not covered by acceptance criteria</action>
+
+    <template-output section="objective">Generate the Objective section of the spec</template-output>
+    <template-output section="components-affected">Generate Components Affected with specific file paths</template-output>
+    <template-output section="data-model-changes">Generate Data Model Changes (or mark N/A)</template-output>
+    <template-output section="api-changes">Generate API Changes (or mark N/A)</template-output>
+    <template-output section="testing-strategy">Generate Testing Strategy</template-output>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 2: PLAN — Break into implementation slices    -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="2" goal="Break the spec into thin vertical implementation slices">
+    <action>Slice the work VERTICALLY, not horizontally. Each slice should deliver a thin end-to-end piece of functionality.</action>
+    <action>Target ~100 lines per slice. If a slice exceeds 200 lines, split it.</action>
+
+    <action>For each slice, define:</action>
+    <action>  - What it delivers (user-visible behavior or internal contract)</action>
+    <action>  - Files to create or modify</action>
+    <action>  - Dependencies on other slices</action>
+    <action>  - Estimated size: XS (1 file), S (2-3 files), M (4-5 files), L (6-7 files), XL (8+ files — must be split)</action>
+
+    <action>Order slices by dependency graph — foundational slices first, UI/integration slices last.</action>
+    <action>Identify which slices can be parallelized.</action>
+
+    <template-output section="implementation-slices">Generate ordered implementation slices</template-output>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 3: VALIDATE — Cross-check and security scan  -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="3" goal="Validate spec against project standards and security requirements">
+    <action>Cross-check against {project_context} patterns. Flag any deviations with justification.</action>
+    <action>Verify every acceptance criterion from the story is covered by at least one implementation slice.</action>
+    <action>Load {security_gate} and run the universal security checklist against proposed changes:</action>
+    <action>  - Input validation: Are all new inputs validated?</action>
+    <action>  - Authorization: Are data access patterns properly scoped?</action>
+    <action>  - Data exposure: Could any new API response leak sensitive data?</action>
+    <action>  - Secrets: Are any new secrets/credentials needed? How managed?</action>
+    <action>  - Injection: Are all new queries parameterized?</action>
+
+    <action>Define boundaries:</action>
+    <action>  - ALWAYS DO: Things that must happen regardless of implementation choices</action>
+    <action>  - ASK FIRST: Decisions that need stakeholder input before proceeding</action>
+    <action>  - NEVER DO: Anti-patterns and out-of-scope changes to explicitly avoid</action>
+
+    <template-output section="boundaries">Generate Boundaries (Always Do / Ask First / Never Do)</template-output>
+    <template-output section="security-considerations">Generate Security Considerations</template-output>
+    <template-output section="open-questions">Generate Open Questions (anything unresolved)</template-output>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PHASE 4: APPROVE — Gate before implementation       -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="4" goal="Present spec for approval" critical="true">
+    <action>Present the complete spec document for review.</action>
+    <action>The spec MUST be explicitly approved before dev-story workflow can begin.</action>
+
+    <ask>
+      Spec is complete. Review and choose:
+      [A] Approve — spec is ready for implementation
+      [R] Revise — send back with specific feedback
+      [E] Escalate — needs CEO or architect review
+    </ask>
+
+    <check if="response is A">
+      <action>Mark spec as APPROVED with date and reviewer</action>
+      <action>Save final spec to output file</action>
+      <action>Report: Spec approved. Ready for /team:dev (dev-story workflow).</action>
+    </check>
+    <check if="response is R">
+      <action>Collect feedback and revise the relevant sections</action>
+      <goto step="4"/>
+    </check>
+    <check if="response is E">
+      <action>Write escalation request to team/_memory/_comms/requests/ for Tanto</action>
+      <action>Report: Spec escalated for review. Awaiting approval before implementation can begin.</action>
+    </check>
+  </step>
+</instructions>

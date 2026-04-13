@@ -1,0 +1,41 @@
+name: spec-review
+description: "Technical specification gate — ensures stories have a proper spec before implementation begins"
+author: "Architect"
+
+# Critical variables from config
+config_source: "{project-root}/team/config.yaml"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+planning_artifacts: "{config_source}:planning_artifacts"
+implementation_artifacts: "{config_source}:implementation_artifacts"
+output_folder: "{config_source}:output_folder"
+
+# Workflow components
+installed_path: "{project-root}/team/workflows/spec-review"
+template: "{installed_path}/template.md"
+instructions: "{installed_path}/instructions.xml"
+
+# Variables and inputs
+variables:
+  story_file: "{implementation_artifacts}/stories/{{story_id}}.md"
+  project_context: "{output_folder}/project-context.md"
+  security_gate: "{project-root}/team/engine/security-gate.xml"
+  rationalization_shield: "{project-root}/team/engine/rationalization-shield.xml"
+
+# Project artifacts to load
+input_file_patterns:
+  architecture:
+    description: "Architecture documents"
+    whole: "{planning_artifacts}/*architecture*.md"
+    sharded: "{planning_artifacts}/*architecture*/*.md"
+    load_strategy: "INDEX_GUIDED"
+  prd:
+    description: "Product Requirements Documents"
+    whole: "{planning_artifacts}/*prd*.md"
+    sharded: "{planning_artifacts}/*prd*/*.md"
+    load_strategy: "INDEX_GUIDED"
+
+default_output_file: "{implementation_artifacts}/specs/{{date}}-{{story_id}}-spec.md"
+
+standalone: true
