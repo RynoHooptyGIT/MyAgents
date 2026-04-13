@@ -1,0 +1,167 @@
+<instructions id="checkpoint-preview" name="Checkpoint Preview — Human-in-the-Loop Review">
+  <objective>Guide a human through reviewing a code change — from purpose and context into details — so they can make an informed decision about whether to ship, rework, or dig deeper.</objective>
+
+  <llm critical="true">
+    <mandate>Every code reference must use CWD-relative path:line format (e.g., src/auth/middleware.ts:42) so it is clickable in IDE terminals</mandate>
+    <mandate>Present entire output for each step in a single coherent message — no drip-feeding</mandate>
+    <mandate>Adapted from BMAD v6.3.0 bmad-checkpoint-preview skill</mandate>
+  </llm>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 1: ORIENTATION                                 -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="1" goal="Identify the change and provide orientation">
+    <action>Display: [Orientation] → Walkthrough → Detail Pass → Testing</action>
+
+    <action>Find the review target using this cascade (stop at first match):</action>
+    <action>1. EXPLICIT: Did the user pass a PR, commit SHA, branch, or spec file?
+       - PR → resolve via `gh pr view`. If fails, ask for SHA or branch.
+       - Commit or branch → use directly.
+       - Spec file → check frontmatter for baseline_commit.</action>
+    <action>2. CONVERSATION: Do recent messages reveal what the user wants reviewed?</action>
+    <action>3. SPRINT STATUS: Check {sprint_status} for stories with status "review".
+       - Exactly one → suggest it and confirm.
+       - Multiple → present as numbered options.
+       - None → fall through.</action>
+    <action>4. GIT STATE: Check current branch and HEAD. Confirm with user.</action>
+    <action>5. ASK: If nothing found, ask what changed and why.</action>
+
+    <action>Once identified, enrich with complementary artifacts:
+       - If you have a spec, look for baseline_commit to determine diff baseline.
+       - If you have a commit/branch, check {implementation_artifacts} for a matching spec.</action>
+
+    <action>Produce INTENT SUMMARY:
+       - From spec: display Intent section verbatim.
+       - From other sources: distill to 200 tokens max. Format: > **Intent:** {summary}</action>
+
+    <action>Produce SURFACE AREA STATS from git diff:
+       N files changed · M modules touched · ~L lines of logic · B boundary crossings · P new public interfaces
+       Omit any metric you cannot compute.</action>
+
+    <template-output section="orientation">Present orientation: intent summary + surface area stats</template-output>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 2: WALKTHROUGH                                 -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="2" goal="Organize by concern for design judgment">
+    <action>Display: Orientation → [Walkthrough] → Detail Pass → Testing</action>
+
+    <action>Organize the change by CONCERN — cohesive design intents (e.g., "input validation", "API contract") — NOT by file.
+       One file may appear under multiple concerns. One concern may span multiple files.</action>
+
+    <action>If a spec has a Suggested Review Order, use those stops grouped by concern.
+       Otherwise, read the diff and identify concerns by:
+       - Functional groupings (what user-visible behavior does each cluster support?)
+       - Architectural layers (does the change cross boundaries?)
+       - Design decisions (where did the author choose between alternatives?)</action>
+
+    <action>Order concerns top-down: highest-level intent first, supporting implementation later.
+       The reader should never encounter a reference before seeing its context.</action>
+
+    <action>For each concern, produce:
+       1. HEADING — short phrase naming the design intent
+       2. WHY — 1-2 sentences: what problem, why this approach
+       3. STOPS — path:line + brief phrase (under 15 words per stop)</action>
+
+    <action>Target 2-5 concerns. Single-concern is fine. More than 7 = signal scope is too large.</action>
+
+    <template-output section="walkthrough">Present the full concern-organized walkthrough</template-output>
+
+    <action>End with: "Take your time — click through the stops, read the diff, trace the logic. Say **next** when ready for risk spots."</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 3: DETAIL PASS                                 -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="3" goal="Surface highest-risk spots for human judgment">
+    <action>Display: Orientation → Walkthrough → [Detail Pass] → Testing</action>
+
+    <action>Scan the diff for 2-5 spots where a mistake would have the highest BLAST RADIUS.
+       Not the most complex code — the code where being WRONG costs the most.</action>
+
+    <action>Risk categories to detect:
+       [auth] — authentication, authorization, session, token, access control
+       [public API] — new/changed endpoints, exports, public methods
+       [schema] — database migrations, schema changes, data model
+       [billing] — payment, pricing, subscription, metering
+       [infra] — deployment, CI/CD, env vars, config
+       [security] — input validation, sanitization, crypto, secrets, CORS
+       [config] — feature flags, environment-dependent behavior, defaults
+       [other] — concurrency, data privacy, backwards compatibility</action>
+
+    <action>Sequence by blast radius (how much breaks if wrong), not by diff order.
+       If more than 5 qualify, show top 5 and note how many omitted.</action>
+
+    <action>If no risk spots exist, say: "No high-risk spots found — the diff speaks for itself."
+       Do NOT invent findings.</action>
+
+    <template-output section="risk-spots">Present risk spots as: path:line — [tag] reason-phrase</template-output>
+
+    <action>Offer: "dig into [area]" for targeted correctness-focused deep dive, or "next" for testing suggestions.</action>
+
+    <check if="user says dig into [area]">
+      <action>Read all code locations in diff relevant to that area in full context (not just hunks).</action>
+      <action>Shift to CORRECTNESS MODE: trace edge cases, boundary conditions, error handling, race conditions, resource leaks.</action>
+      <action>Present findings. If nothing concerning: "Looked closely at [area] — solid implementation."</action>
+      <action>Return to closing menu.</action>
+    </check>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 4: TESTING                                     -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="4" goal="Suggest ways to manually observe the change working">
+    <action>Display: Orientation → Walkthrough → Detail Pass → [Testing]</action>
+
+    <action>This is EXPERIENTIAL, not analytical. Don't duplicate CI or test suites.
+       Suggest manual observations that build confidence no automated test provides.</action>
+
+    <action>Scan diff and spec for observable behavior:
+       - UI changes (screens, layouts, interactions, error states)
+       - CLI/terminal output (new commands, changed output)
+       - API responses (new endpoints, changed payloads)
+       - State changes (database records, file system, config)
+       - Error paths (bad input, missing dependencies, edge conditions)</action>
+
+    <action>For each (target 2-5), provide:
+       - What to do (specific action)
+       - What to expect (observable result)
+       - Why bother (one phrase connecting to change intent — omit if obvious)</action>
+
+    <action>If no observable behavior: "This change is internal — no user-visible behavior to observe."</action>
+
+    <template-output section="testing">Present testing suggestions</template-output>
+
+    <action>End with: "You've seen the change and how to verify it. When you're ready to make a call, just say so."</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 5: WRAP-UP                                     -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="5" goal="Capture the human's decision">
+    <action>Display: Orientation → Walkthrough → Detail Pass → Testing → [Wrap-Up]</action>
+
+    <ask>Review complete. What's the call?
+       [A] Approve — ship it
+       [R] Rework — back to the drawing board
+       [D] Discuss — something's still on your mind</ask>
+
+    <check if="response is A">
+      <action>Acknowledge. If reviewing a PR, offer to approve via `gh pr review --approve` (confirm before executing).</action>
+    </check>
+    <check if="response is R">
+      <action>Ask what went wrong — approach, spec, or implementation? Help draft actionable feedback tied to path:line locations.</action>
+    </check>
+    <check if="response is D">
+      <action>Open conversation. After discussion, return to this decision prompt.</action>
+    </check>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- EARLY EXIT (applies to all steps)                   -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <early-exit>
+    If at any point the human signals they want to make a decision (e.g., "ship it", "needs rework", "I'm done"), confirm their intent and jump to step 5.
+  </early-exit>
+</instructions>

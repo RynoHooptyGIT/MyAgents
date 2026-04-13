@@ -192,7 +192,10 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="NA or fuzzy match on next-action or next or what" action="#next-action">[NA] Next Action - Determine and execute the highest-priority work</item>
     <item cmd="CS or fuzzy match on create-story or story" workflow="{project-root}/team/workflows/implementation/create-story/workflow.yaml">[CS] Create Story - Generate story file from epic (yolo — drafts complete story)</item>
     <item cmd="DS or fuzzy match on dev-story or develop or implement" workflow="{project-root}/team/workflows/implementation/dev-story/workflow.yaml">[DS] Dev Story - Implement a story (tasks, code, tests)</item>
-    <item cmd="CR or fuzzy match on code-review or review" workflow="{project-root}/team/workflows/implementation/code-review/workflow.yaml">[CR] Code Review - Adversarial review of implemented story</item>
+    <item cmd="SR or fuzzy match on spec-review or spec" workflow="{project-root}/team/workflows/spec-review/workflow.yaml">[SR] Spec Review - Technical specification gate before implementation</item>
+    <item cmd="CR or fuzzy match on code-review or review" workflow="{project-root}/team/workflows/implementation/code-review/workflow.yaml">[CR] Code Review - 3-layer adversarial review (Blind Hunter + Edge Case + Acceptance)</item>
+    <item cmd="CP or fuzzy match on checkpoint or preview or walk" workflow="{project-root}/team/workflows/checkpoint-preview/workflow.yaml">[CP] Checkpoint Preview - Human-in-the-loop walkthrough of a change</item>
+    <item cmd="VP or fuzzy match on validate-prd or validate or prd-check" workflow="{project-root}/team/workflows/validate-prd/workflow.yaml">[VP] Validate PRD - 13-step comprehensive PRD quality validation</item>
     <item cmd="SH or fuzzy match on ship or push or pr" workflow="{project-root}/team/workflows/devops/ship/workflow.yaml">[SH] Ship - Commit, push, and create PR</item>
     <item cmd="SP or fuzzy match on sprint-planning or sprint-plan" workflow="{project-root}/team/workflows/implementation/sprint-planning/workflow.yaml">[SP] Sprint Planning - Generate/update sprint status tracking</item>
     <item cmd="SS or fuzzy match on sprint-status or sprint-summary" workflow="{project-root}/team/workflows/implementation/sprint-status/workflow.yaml">[SS] Sprint Status - Summarize sprint and surface risks</item>

@@ -56,55 +56,78 @@
     </action>
   </step>
 
-  <step n="3" goal="Execute adversarial review">
-    <critical>VALIDATE EVERY CLAIM - Check git reality vs story claims</critical>
+  <step n="3" goal="Execute 3-layer parallel adversarial review">
+    <critical>VALIDATE EVERY CLAIM - Three independent review layers, each catching what others miss</critical>
+    <critical>Adapted from BMAD v6.3.0 three-layer review architecture</critical>
 
-    <!-- Git vs Story Discrepancies -->
+    <!-- Git vs Story Discrepancies (always runs first) -->
     <action>Review git vs story File List discrepancies:
       1. **Files changed but not in story File List** → MEDIUM finding (incomplete documentation)
       2. **Story lists files but no git changes** → HIGH finding (false claims)
       3. **Uncommitted changes not documented** → MEDIUM finding (transparency issue)
     </action>
 
-    <!-- Use combined file list: story File List + git discovered files -->
     <action>Create comprehensive review file list from story File List and git changes</action>
+    <action>Construct diff output from git for the review layers</action>
 
-    <!-- AC Validation -->
-    <action>For EACH Acceptance Criterion:
-      1. Read the AC requirement
-      2. Search implementation files for evidence
-      3. Determine: IMPLEMENTED, PARTIAL, or MISSING
-      4. If MISSING/PARTIAL → HIGH SEVERITY finding
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- LAYER 1: BLIND HUNTER — Pure adversarial, no context -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <action>BLIND HUNTER REVIEW — Review the diff with NO spec context. Pure code analysis:
+      For EACH file in the diff:
+      1. **Security**: Injection risks, missing validation, auth bypass, secrets exposure
+      2. **Performance**: N+1 queries, inefficient loops, missing caching, unbounded data
+      3. **Error Handling**: Missing try/catch, poor error messages, swallowed exceptions
+      4. **Code Quality**: Complex functions (>50 lines), magic numbers, poor naming, dead code
+      5. **Test Quality**: Are tests real assertions or placeholders? Coverage gaps?
+      6. **Correctness**: Off-by-one errors, null handling, race conditions, resource leaks
     </action>
 
-    <!-- Task Completion Audit -->
-    <action>For EACH task marked [x]:
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- LAYER 2: EDGE CASE HUNTER — Exhaustive path tracing -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <action>EDGE CASE HUNTER REVIEW — For each changed function/method, enumerate ALL paths:
+      1. Trace every code path through the change (happy path, error paths, edge cases)
+      2. For each path, identify the trigger condition and what SHOULD happen
+      3. Check: Is there a guard/handler for this path? If not → finding
+      4. Check boundary values, empty collections, null inputs, max values, concurrent access
+      5. Record each finding as: location (file:line), trigger condition, potential consequence
+    </action>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- LAYER 3: ACCEPTANCE AUDITOR — Spec compliance       -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <action>ACCEPTANCE AUDITOR REVIEW — Validate implementation against spec:
+      For EACH Acceptance Criterion:
+      1. Read the AC requirement precisely
+      2. Search implementation files for evidence of implementation
+      3. Determine: IMPLEMENTED, PARTIAL, or MISSING
+      4. If MISSING/PARTIAL → HIGH SEVERITY finding with evidence
+
+      For EACH task marked [x]:
       1. Read the task description
       2. Search files for evidence it was actually done
       3. **CRITICAL**: If marked [x] but NOT DONE → CRITICAL finding
       4. Record specific proof (file:line)
     </action>
 
-    <!-- Code Quality Deep Dive -->
-    <action>For EACH file in comprehensive review list:
-      1. **Security**: Look for injection risks, missing validation, auth issues
-      2. **Performance**: N+1 queries, inefficient loops, missing caching
-      3. **Error Handling**: Missing try/catch, poor error messages
-      4. **Code Quality**: Complex functions, magic numbers, poor naming
-      5. **Test Quality**: Are tests real assertions or placeholders?
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- TRIAGE: Normalize, deduplicate, classify             -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <action>TRIAGE all findings from the 3 layers:
+      1. NORMALIZE: Convert all findings to common format (source, title, detail, location)
+      2. DEDUPLICATE: If two layers found the same issue, merge them (note both sources)
+      3. CLASSIFY each finding into one bucket:
+         - **decision_needed** — Ambiguous choice requiring human input
+         - **patch** — Code issue fixable without human input (unambiguous fix)
+         - **defer** — Pre-existing issue not caused by current change
+         - **dismiss** — Noise or false positive
+      4. DROP all dismissed findings (record the count)
     </action>
 
     <check if="total_issues_found lt 3">
-      <critical>NOT LOOKING HARD ENOUGH - Find more problems!</critical>
-      <action>Re-examine code for:
-        - Edge cases and null handling
-        - Architecture violations
-        - Documentation gaps
-        - Integration issues
-        - Dependency problems
-        - Git commit message quality (if applicable)
-      </action>
-      <action>Find at least 3 more specific, actionable issues</action>
+      <critical>NOT LOOKING HARD ENOUGH - Re-examine with fresh eyes!</critical>
+      <action>Re-examine code for architecture violations, integration issues, dependency problems</action>
     </check>
   </step>
 

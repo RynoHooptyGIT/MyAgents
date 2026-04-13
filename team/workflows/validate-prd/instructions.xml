@@ -1,0 +1,203 @@
+<instructions id="validate-prd" name="Validate PRD — 13-Step Comprehensive Validation">
+  <objective>Validate a PRD against quality standards using 13 systematic checks. Produces a validation report with pass/fail per check, findings, and recommended fixes. Adapted from BMAD v6.3.0 bmad-validate-prd.</objective>
+
+  <llm critical="true">
+    <mandate>A PRD defines WHAT to build, not HOW. Implementation leakage is a validation failure.</mandate>
+    <mandate>Requirements must be SMART: Specific, Measurable, Attainable, Relevant, Traceable</mandate>
+    <mandate>Every finding must include: what's wrong, where (section/requirement ID), and how to fix it</mandate>
+  </llm>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 1: DISCOVERY                                   -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="1" goal="Discover and load the PRD">
+    <action>Find the PRD to validate:
+       1. User provided a path → use it
+       2. Scan {planning_artifacts} for *prd*.md files
+       3. If multiple found → present options and ask user
+       4. If none found → HALT and inform user</action>
+    <action>Load the complete PRD file</action>
+    <action>Load product brief from {planning_artifacts}/*brief*.md if it exists (for coverage check)</action>
+    <action>Load project-context.md if it exists (for domain detection)</action>
+    <action>Initialize validation report with PRD filename, date, and empty findings list</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 2: FORMAT DETECTION                            -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="2" goal="Classify PRD format and structure">
+    <action>Classify the PRD format:
+       - STANDARD: Matches expected template structure (Executive Summary, FR sections, NFR sections, etc.)
+       - VARIANT: Has most sections but different organization or naming
+       - NON-STANDARD: Significantly different structure (may still be valid)</action>
+    <action>For NON-STANDARD PRDs, run a parity check: identify which expected sections are missing and whether their content exists under different headings</action>
+    <action>Record finding: format classification and any structural gaps</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 3: DENSITY VALIDATION                          -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="3" goal="Check information density — no filler">
+    <action>Scan for low-density content:
+       - Filler phrases ("it is important to note that", "as previously mentioned")
+       - Redundant restating of the same requirement in different sections
+       - Vague platitudes ("user-friendly", "scalable", "robust") without specific criteria
+       - Excessive boilerplate that doesn't add information</action>
+    <action>Score density: HIGH (minimal filler), MEDIUM (some filler), LOW (significant padding)</action>
+    <action>Record specific filler instances with locations</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 4: BRIEF COVERAGE                              -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="4" goal="Verify PRD covers product brief content" optional="true">
+    <check if="product brief was loaded">
+      <action>Map each key point from the product brief to a corresponding PRD section/requirement</action>
+      <action>Identify brief points that are NOT addressed in the PRD</action>
+      <action>Identify PRD content that goes beyond the brief (may indicate scope creep or healthy elaboration)</action>
+      <action>Record coverage percentage and uncovered items</action>
+    </check>
+    <check if="no product brief found">
+      <action>Skip this check — note in report as "N/A — no product brief available"</action>
+    </check>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 5: MEASURABILITY                               -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="5" goal="Validate FRs and NFRs are measurable and testable">
+    <action>For each functional requirement (FR):
+       - Can it be tested with a pass/fail criteria? If not → flag
+       - Does it specify observable behavior? If vague → flag
+       - Does it have acceptance criteria or link to one?</action>
+    <action>For each non-functional requirement (NFR):
+       - Does it have a specific, measurable threshold? (e.g., "response time under 200ms" vs "fast")
+       - Is the measurement method defined or obvious?
+       - Is the threshold achievable and verifiable?</action>
+    <action>Score: percentage of requirements that are measurable</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 6: TRACEABILITY                                -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="6" goal="Verify traceability chain from summary through FRs">
+    <action>Check: Does the Executive Summary → Goals → FRs form a coherent chain?
+       - Every goal should map to at least one FR
+       - Every FR should trace back to a goal or user need
+       - No orphan FRs (requirements that serve no stated goal)
+       - No orphan goals (goals with no implementing FRs)</action>
+    <action>Record traceability gaps</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 7: IMPLEMENTATION LEAKAGE                      -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="7" goal="Check for WHAT vs HOW violations">
+    <action>Scan for implementation leakage:
+       - Specific technology choices that should be in architecture doc (e.g., "use PostgreSQL", "implement with React")
+       - Algorithm specifications that constrain implementation unnecessarily
+       - Database schema details that belong in architecture
+       - API endpoint paths or payload formats (unless the API IS the product)
+       - Code-level patterns or class names</action>
+    <action>Exception: If the PRD is for a developer tool, API, or SDK, some technical specificity is appropriate</action>
+    <action>Record leakage instances with locations</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 8: DOMAIN COMPLIANCE                           -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="8" goal="Check regulated industry requirements">
+    <action>Detect domain from PRD content and project-context.md:
+       - Healthcare → HIPAA, FDA SaMD, clinical safety requirements
+       - Financial → SOX, PCI-DSS, fair lending, model risk
+       - Government → FedRAMP, FISMA, EO 14110, accessibility (Section 508)
+       - Education → FERPA, COPPA
+       - General → GDPR/privacy, accessibility (WCAG)</action>
+    <action>For detected domain, verify PRD includes required compliance sections:
+       - Are regulatory requirements explicitly stated?
+       - Are compliance NFRs measurable?
+       - Are required certifications/audits mentioned?</action>
+    <action>If no regulated domain detected, verify basic privacy and accessibility are addressed</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 9: SMART SCORING                               -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="9" goal="Score requirements against SMART criteria">
+    <action>For each FR, score on 5 dimensions (0-2 each, max 10):
+       - Specific: Is the requirement unambiguous? (0=vague, 1=somewhat, 2=precise)
+       - Measurable: Can completion be objectively verified? (0=no, 1=partially, 2=yes)
+       - Attainable: Is it achievable within reasonable scope? (0=unrealistic, 1=stretch, 2=achievable)
+       - Relevant: Does it trace to a stated goal/need? (0=orphan, 1=loosely, 2=directly)
+       - Traceable: Can it be tracked from goal → FR → implementation? (0=no, 1=partially, 2=yes)</action>
+    <action>Flag any FR scoring below 6/10 as needs improvement</action>
+    <action>Calculate average SMART score across all FRs</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 10: HOLISTIC QUALITY                           -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="10" goal="Multi-perspective quality assessment">
+    <action>Evaluate from 4 perspectives:
+       1. DEVELOPER: Can I build this without ambiguity? Are edge cases addressed?
+       2. QA ENGINEER: Can I write tests for every requirement? Are acceptance criteria clear?
+       3. PRODUCT OWNER: Does this capture the actual user need? Is scope appropriate?
+       4. SECURITY ENGINEER: Are security requirements explicit? Are threat vectors considered?</action>
+    <action>Assign overall quality rating: EXCELLENT / GOOD / NEEDS WORK / INSUFFICIENT</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 11: COMPLETENESS                               -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="11" goal="Check for template variables and empty sections">
+    <action>Scan for:
+       - Unresolved template variables ({{placeholder}}, [TBD], TODO, etc.)
+       - Empty or stub sections (headers with no content)
+       - Missing required frontmatter fields
+       - Broken internal references (links to sections that don't exist)</action>
+    <action>Record all completeness gaps</action>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 12: VALIDATION REPORT                          -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="12" goal="Present comprehensive validation report">
+    <action>Compile all findings into a structured report:</action>
+
+    <template-output section="validation-report">
+      ## PRD Validation Report
+      **PRD:** {prd_file} | **Date:** {date} | **Validator:** PM Agent
+
+      ### Summary
+      | Check | Result | Score |
+      |-------|--------|-------|
+      | Format Detection | {pass/warn/fail} | — |
+      | Information Density | {HIGH/MEDIUM/LOW} | — |
+      | Brief Coverage | {X}% | — |
+      | Measurability | {X}% measurable | — |
+      | Traceability | {pass/warn/fail} | — |
+      | Implementation Leakage | {X} instances | — |
+      | Domain Compliance | {pass/warn/fail} | — |
+      | SMART Score | {avg}/10 | — |
+      | Holistic Quality | {rating} | — |
+      | Completeness | {pass/warn/fail} | — |
+
+      ### Findings (by priority)
+      [CRITICAL findings first, then HIGH, MEDIUM, LOW]
+
+      ### Recommended Fixes
+      [Actionable fixes for each finding]
+    </template-output>
+  </step>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- STEP 13: NEXT ACTIONS                               -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <step n="13" goal="Present options for next steps">
+    <ask>Validation complete. What next?
+       [F] Fix — apply recommended fixes to the PRD
+       [R] Re-validate — run validation again after manual edits
+       [A] Accept — PRD is good enough, proceed to architecture
+       [E] Export — save validation report to {planning_artifacts}/prd-validation-{date}.md</ask>
+  </step>
+</instructions>
