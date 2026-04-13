@@ -6,3 +6,5 @@ receiving-review,Receiving Review Discipline,"Read every comment and verify the 
 anti-rationalization,Anti-Rationalization Discipline,"Cross-cutting enforcement: even 1% chance a discipline applies means MUST follow it","meta,enforcement,discipline,all",knowledge/anti-rationalization.md
 security-awareness,Security Awareness Discipline,"Every agent is a security agent — universal checklist on every action","security,owasp,coding-standards,all",../../engine/security-gate.xml
 ceo-approval,CEO Approval Discipline,"Major efforts require formal CEO approval — no exceptions","approval,governance,ceo,major-effort",../../engine/ceo-approval.xml
+context-engineering,Context Engineering Discipline,"Feed the right information at the right time — 5-level hierarchy with trust levels","context,loading,trust,hierarchy,all",knowledge/context-engineering.md
+source-verification,Source Verification Discipline,"Confidence is not evidence — verify every framework decision against official docs","verification,docs,framework,api,implementation",knowledge/source-verification.md

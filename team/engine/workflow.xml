@@ -46,6 +46,14 @@
     <step n="2" title="Process Each Instruction Step in Order">
       <iterate>For each step in instructions:</iterate>
 
+      <substep n="1.5" title="Rationalization Shield Check" critical="true">
+        <mandate>Before executing ANY step, check {project-root}/team/engine/rationalization-shield.xml gate points</mandate>
+        <check>Am I about to skip a discipline? → Check the rationalization tables. If constructing reasons to skip, that IS the signal to follow.</check>
+        <check>Am I about to mark something complete? → Run verification discipline first.</check>
+        <check>Am I using a framework API? → Run source-verification discipline first.</check>
+        <check>Am I loading context? → Follow context-engineering hierarchy.</check>
+      </substep>
+
       <substep n="2a" title="Handle Step Attributes">
         <check>If optional="true" and NOT #yolo → Ask user to include</check>
         <check>If if="condition" → Evaluate condition</check>

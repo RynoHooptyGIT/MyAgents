@@ -57,6 +57,7 @@
     <agent name="tech-writer" responsibility="Document security requirements in user-facing docs. Never include internal URLs, credentials, or system architecture details in public docs."/>
     <agent name="pm" responsibility="Include security requirements in every PRD. Consider threat scenarios in user stories. Non-functional security requirements are first-class."/>
     <agent name="ux-designer" responsibility="Design secure user flows. No security info in URLs. Proper session timeout UX. Clear permission denied states."/>
+    <agent name="frontend-dev" responsibility="XSS prevention is priority #1. Sanitize all rendered content. CSP headers. No unsafe innerHTML without DOMPurify sanitization. CORS configuration. Secure cookie flags. Input validation on all form fields."/>
     <agent name="custodian" responsibility="Scan for security anti-patterns in repo. Flag hardcoded secrets, missing input validation, disabled security features."/>
   </agent-responsibilities>
 
