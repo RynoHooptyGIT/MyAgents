@@ -114,7 +114,7 @@
       <goto step="4"/>
     </check>
     <check if="response is E">
-      <action>Write escalation request to team/_memory/_comms/requests/ for Tanto</action>
+      <action>Write escalation request to team/_memory/_comms/requests/ for Maestro</action>
       <action>Report: Spec escalated for review. Awaiting approval before implementation can begin.</action>
     </check>
   </step>

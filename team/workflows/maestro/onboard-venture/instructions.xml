@@ -1,8 +1,8 @@
-<instructions id="onboard-venture" name="Tanto Venture Onboarding">
+<instructions id="onboard-venture" name="Maestro Venture Onboarding">
   <objective>Deep-dive with the CEO to understand a new company, product, or effort — then create the foundational briefing that every agent will operate from</objective>
 
   <llm critical="true">
-    <mandate>This workflow is INTERACTIVE — Tanto asks, CEO answers, Tanto probes deeper</mandate>
+    <mandate>This workflow is INTERACTIVE — Maestro asks, CEO answers, Maestro probes deeper</mandate>
     <mandate>Do NOT rush — the quality of this onboarding determines the quality of ALL downstream work</mandate>
     <mandate>Every question should build on the CEO's previous answers</mandate>
     <mandate>Security and compliance implications must be surfaced early</mandate>
@@ -134,7 +134,7 @@
     Each mission briefing must reference the venture brief and include SPECIFIC first tasks.
     </action>
 
-    <action>Write Tanto's own briefing to team/_memory/tanto/venture-context.md with:
+    <action>Write Maestro's own briefing to team/_memory/maestro/venture-context.md with:
     - Venture name and summary
     - Key decisions made
     - Agents deployed
@@ -158,7 +158,7 @@
     1. [First recommendation — typically PRD creation with John (PM)]
     2. [Second — typically Architecture with Winston]
     3. [Third — typically UX research with Sally]
-    4. [Fourth — typically Sprint Planning with Tanto]
+    4. [Fourth — typically Sprint Planning with Maestro]
     5. [Fifth — typically first story creation]
 
     Say [LR] to run a full scan now that the venture is onboarded.

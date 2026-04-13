@@ -1,6 +1,6 @@
 # ⚔️ Venture Brief: {{venture_name}}
 
-> Onboarded by Tanto | {{date}}
+> Onboarded by Maestro | {{date}}
 > CEO: {{user_name}}
 
 ---
@@ -124,4 +124,4 @@
 ---
 
 *This venture brief is the foundational document. All agent work traces back to this.*
-*Re-run /team:tanto → [OV] to update the venture brief.*
+*Re-run /team:maestro → [OV] to update the venture brief.*

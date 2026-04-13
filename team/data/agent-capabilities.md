@@ -17,7 +17,7 @@ Every agent MUST operate with security awareness. This is not optional.
 - Run the universal security checklist mentally on every action
 - Flag security concerns immediately — write to team/_memory/_comms/findings/ with [SECURITY] prefix
 - Self-fix minor security issues in your own work
-- Escalate complex security issues to Tanto for Shield (Security Auditor) deployment
+- Escalate complex security issues to Maestro for Shield (Security Auditor) deployment
 
 **Iron Rule:** Security is everyone's job. "I'm not the security agent" is never acceptable.
 
@@ -25,7 +25,7 @@ Every agent MUST operate with security awareness. This is not optional.
 
 ## 2. Inter-Agent Communication
 
-Agents communicate through file-based messaging with Tanto as the hub.
+Agents communicate through file-based messaging with Maestro as the hub.
 
 **Protocol Reference:** {project-root}/team/engine/agent-comms.xml
 
@@ -34,18 +34,18 @@ Agents communicate through file-based messaging with Tanto as the hub.
 2. Create a markdown file in the appropriate team/_memory/_comms/ subdirectory
 3. Use the naming convention: {date}-{your-agent-name}-{type}-{slug}.md
 4. Include proper frontmatter with from, to, date, priority fields
-5. Tanto will read and distribute during next triage
+5. Maestro will read and distribute during next triage
 
 **How to Receive Messages:**
 1. On activation, check your mission briefing at team/_memory/{your-agent-name}/mission.md
-2. Tanto updates your briefing with messages from other agents
+2. Maestro updates your briefing with messages from other agents
 3. Address any blocking requests before starting new work
 
 **Communication Rules:**
-- All communication routes through Tanto
+- All communication routes through Maestro
 - Security findings are NEVER deferred
 - Write handoff documents when completing assigned work
-- Don't contradict another agent's findings without Tanto mediation
+- Don't contradict another agent's findings without Maestro mediation
 
 ---
 
@@ -104,7 +104,7 @@ Hooks are shell commands that execute automatically in response to Claude Code e
 
 ## 4. Spawning Helper Agents
 
-Agents can request Tanto to spawn specialized helper sub-agents for tasks that exceed their scope or need parallel attention.
+Agents can request Maestro to spawn specialized helper sub-agents for tasks that exceed their scope or need parallel attention.
 
 **When to Spawn a Helper:**
 - A task requires expertise outside your domain
@@ -113,14 +113,14 @@ Agents can request Tanto to spawn specialized helper sub-agents for tasks that e
 - You need a short-lived specialist for a one-off task
 
 **How to Request a Helper:**
-1. Write a request to team/_memory/_comms/requests/ addressed to Tanto
+1. Write a request to team/_memory/_comms/requests/ addressed to Maestro
 2. Specify:
    - **Helper purpose:** What the helper should do
    - **Scope:** Exactly what files/areas the helper can work on
    - **Duration:** One-off task or ongoing
    - **Permissions:** What the helper should be allowed to do
    - **Output:** Where the helper should write results
-3. Tanto evaluates the request and spawns the helper if appropriate
+3. Maestro evaluates the request and spawns the helper if appropriate
 
 **Helper Spawn Rules:**
 - Helpers inherit the security baseline — no exceptions
@@ -128,10 +128,10 @@ Agents can request Tanto to spawn specialized helper sub-agents for tasks that e
 - Helpers write results to a specified output location
 - Helpers cannot approve their own work — it goes back to the requesting agent
 - Helper spawning for MAJOR efforts requires CEO approval
-- Tanto tracks all active helpers and their status
+- Maestro tracks all active helpers and their status
 
 **Helper Agent Template:**
-When Tanto spawns a helper, it uses this context:
+When Maestro spawns a helper, it uses this context:
 ```
 You are a helper agent spawned by {requesting_agent}.
 Your task: {specific task description}
@@ -152,7 +152,7 @@ All agents operate under a CEO oversight model.
 **Key Rules:**
 - Major efforts, new features, architecture changes, and strategic decisions require CEO approval
 - Bug fixes, approved story work, and documentation within scope are autonomous
-- When in doubt, ask Tanto to check with the CEO
+- When in doubt, ask Maestro to check with the CEO
 - Never reframe major work as minor to avoid the approval gate
 - The CEO is the final authority on what the company builds
 
@@ -180,7 +180,7 @@ Every agent MUST follow the context hierarchy when loading and trusting informat
 - Before any action, check the context hierarchy
 - Before any framework API call, verify against official docs (cite source)
 - When context conflicts, higher-level wins
-- When confused, STOP and surface the confusion to the user or Tanto
+- When confused, STOP and surface the confusion to the user or Maestro
 - Never silently resolve conflicting context
 
 **Discipline Reference:** {project-root}/team/data/discipline/knowledge/context-engineering.md
@@ -209,9 +209,9 @@ Every agent should check for and follow their mission briefing.
 
 **On Activation:**
 1. Check if team/_memory/{your-agent-name}/mission.md exists
-2. If it exists, read it FIRST — it contains your assignments and context from Tanto
+2. If it exists, read it FIRST — it contains your assignments and context from Maestro
 3. Follow the assignments in priority order
-4. If no mission briefing exists, await instructions from Tanto or the user
+4. If no mission briefing exists, await instructions from Maestro or the user
 
 **On Completion:**
 1. Update your mission briefing with results

@@ -1,6 +1,6 @@
 name: issue-triage
 description: "Detect issues across the project, prioritize them, and assign agents to fix, design, or build"
-author: "Tanto"
+author: "Maestro"
 
 # Critical variables from config
 config_source: "{project-root}/team/config.yaml"
@@ -12,7 +12,7 @@ implementation_artifacts: "{config_source}:implementation_artifacts"
 output_folder: "{config_source}:output_folder"
 
 # Workflow components
-installed_path: "{project-root}/team/workflows/tanto/issue-triage"
+installed_path: "{project-root}/team/workflows/maestro/issue-triage"
 instructions: "{installed_path}/instructions.xml"
 template: false
 

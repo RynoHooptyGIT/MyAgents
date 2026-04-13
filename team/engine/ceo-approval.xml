@@ -46,7 +46,7 @@
     <template>
     ┌─────────────────────────────────────────────────────┐
     │ ⚔️ PROPOSAL FOR CEO APPROVAL                        │
-    │ Submitted by: {agent_name} via Tanto                │
+    │ Submitted by: {agent_name} via Maestro                │
     │ Date: {date}                                        │
     │ Priority: {CRITICAL / HIGH / MEDIUM / LOW}          │
     ├─────────────────────────────────────────────────────┤
@@ -126,8 +126,8 @@
       </check>
       <check if="[D] Deferred">
         <action>Record deferral with revisit date (ask CEO when to revisit)</action>
-        <action>Save to {project-root}/team/_memory/tanto/deferred-proposals.md</action>
-        <action>Tanto will resurface deferred proposals on their revisit date</action>
+        <action>Save to {project-root}/team/_memory/maestro/deferred-proposals.md</action>
+        <action>Maestro will resurface deferred proposals on their revisit date</action>
       </check>
     </step>
   </flow>

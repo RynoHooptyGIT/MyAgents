@@ -212,14 +212,14 @@ if [ "$TOOL_CHOICE" != "5" ]; then
     echo "     ${YELLOW}CLAUDE.md${NC} → 'Critical Technical Rules' section"
 fi
 echo ""
-echo "  3. Start Tanto (your project commander):"
+echo "  3. Start Maestro (your project commander):"
 if [ "$TOOL_CHOICE" != "5" ]; then
-    echo "     ${YELLOW}/team:tanto${NC}  — then say 'let's ride' for full scan & plan"
+    echo "     ${YELLOW}/team:maestro${NC}  — then say 'let's ride' for full scan & plan"
 fi
 echo ""
 echo "  4. Or onboard a new venture:"
 if [ "$TOOL_CHOICE" != "5" ]; then
-    echo "     ${YELLOW}/team:tanto${NC}  — then say 'new venture' for CEO deep-dive"
+    echo "     ${YELLOW}/team:maestro${NC}  — then say 'new venture' for CEO deep-dive"
 fi
 echo ""
 echo "  5. Pull future updates:"

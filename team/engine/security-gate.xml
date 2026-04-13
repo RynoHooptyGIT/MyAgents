@@ -69,19 +69,19 @@
       Agent notices a minor security issue in their own work.
       → Fix it immediately. Note in handoff document.
     </level>
-    <level n="2" name="Flag to Tanto">
+    <level n="2" name="Flag to Maestro">
       Agent notices a security issue outside their scope.
       → Write a [SECURITY] finding to team/_memory/_comms/findings/.
-      → Tanto triages and assigns to appropriate agent.
+      → Maestro triages and assigns to appropriate agent.
     </level>
     <level n="3" name="Escalate to Shield">
       Agent encounters a complex security concern needing expert analysis.
-      → Flag to Tanto with recommendation to deploy Shield (Security Auditor).
-      → Tanto invokes /team:security-auditor with the finding.
+      → Flag to Maestro with recommendation to deploy Shield (Security Auditor).
+      → Maestro invokes /team:security-auditor with the finding.
     </level>
     <level n="4" name="CEO Alert">
       CRITICAL security vulnerability, data breach risk, or compliance violation.
-      → Tanto immediately surfaces to CEO via the CEO Approval Gate.
+      → Maestro immediately surfaces to CEO via the CEO Approval Gate.
       → ALL work on affected component HALTS until CEO acknowledges.
     </level>
   </escalation>

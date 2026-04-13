@@ -32,7 +32,7 @@ If `scripts/team-update.sh` does not exist, inform the user:
 After the script completes:
 1. Show what was updated (new agents, modified workflows, protocol changes)
 2. Show what was preserved (config, memories, customizations)
-3. Suggest running `/team:tanto` to activate with the latest changes
-4. If Tanto is already active, suggest `[LR]` to re-scan with updated capabilities
+3. Suggest running `/team:maestro` to activate with the latest changes
+4. If Maestro is already active, suggest `[LR]` to re-scan with updated capabilities
 
 </update-protocol>

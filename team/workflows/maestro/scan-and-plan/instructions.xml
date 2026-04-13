@@ -1,4 +1,4 @@
-<instructions id="scan-and-plan" name="Tanto Scan and Plan">
+<instructions id="scan-and-plan" name="Maestro Scan and Plan">
   <objective>Scan the entire project, analyze gaps, assign agents to work, build per-agent memory files, and produce a master battle plan</objective>
 
   <llm critical="true">
@@ -120,7 +120,7 @@
     ASSIGNMENT RULES:
     1. Match work domains to agent expertise:
        - ARCHITECTURE → Winston (Architect)
-       - IMPLEMENTATION → Amelia (Dev) for coding, Athena/Tanto for lifecycle
+       - IMPLEMENTATION → Amelia (Dev) for coding, Athena/Maestro for lifecycle
        - TESTING → Murat (Tea - Test Architect)
        - SECURITY → Shield (Security Auditor)
        - DOCUMENTATION → Paige (Tech Writer)
@@ -171,7 +171,7 @@
     ---
     agent: {agent-display-name} ({agent-name})
     generated: {date}
-    generated_by: Tanto scan-and-plan
+    generated_by: Maestro scan-and-plan
     priority: {highest priority of their assignments}
     ---
 
@@ -209,7 +209,7 @@
     NOT "review the architecture" but "the API layer in src/routes/ lacks input validation on 3 endpoints: /users, /auth, /data"
     </action>
 
-    <action>Also create/update the Tanto memory file at {project-root}/team/_memory/tanto/latest-scan.md:
+    <action>Also create/update the Maestro memory file at {project-root}/team/_memory/maestro/latest-scan.md:
     ```markdown
     ---
     scan_date: {date}

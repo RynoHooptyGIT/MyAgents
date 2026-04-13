@@ -1,6 +1,6 @@
 name: onboard-venture
 description: "Deep-dive CEO interaction to understand a new company or effort, then cascade the vision to all agents"
-author: "Tanto"
+author: "Maestro"
 
 # Critical variables from config
 config_source: "{project-root}/team/config.yaml"
@@ -12,7 +12,7 @@ implementation_artifacts: "{config_source}:implementation_artifacts"
 output_folder: "{config_source}:output_folder"
 
 # Workflow components
-installed_path: "{project-root}/team/workflows/tanto/onboard-venture"
+installed_path: "{project-root}/team/workflows/maestro/onboard-venture"
 template: "{installed_path}/template.md"
 instructions: "{installed_path}/instructions.xml"
 

@@ -359,5 +359,5 @@ echo ""
 AGENT_COUNT=$(tail -n +2 "$PROJECT_ROOT/team/agent-manifest.csv" | wc -l | tr -d ' ')
 echo -e "  Agents: ${YELLOW}${AGENT_COUNT}${NC}"
 echo ""
-echo -e "  ${DIM}Run /team:tanto to activate with the latest changes.${NC}"
+echo -e "  ${DIM}Run /team:maestro to activate with the latest changes.${NC}"
 echo ""

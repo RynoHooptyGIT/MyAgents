@@ -1,4 +1,4 @@
-<instructions id="issue-triage" name="Tanto Issue Triage">
+<instructions id="issue-triage" name="Maestro Issue Triage">
   <objective>Detect issues across the project, triage them, assign agents, and track resolution — with CEO escalation for major findings</objective>
 
   <llm critical="true">
