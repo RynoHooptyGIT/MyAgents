@@ -1,0 +1,151 @@
+<task id="team/engine/agent-comms.xml" name="Inter-Agent Communication Protocol">
+  <objective>Enable structured communication between agents through file-based message passing with Tanto as the command hub</objective>
+
+  <llm critical="true">
+    <mandate>ALL inter-agent communication flows through Tanto — no agent-to-agent direct messaging without Tanto's awareness</mandate>
+    <mandate>Messages must be actionable — no status-only messages without a request or deliverable</mandate>
+    <mandate>Security-sensitive findings ALWAYS get flagged with [SECURITY] prefix</mandate>
+  </llm>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- COMMUNICATION MODEL                                 -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <model>
+    <principle>Tanto is the hub — all communication routes through Tanto</principle>
+    <principle>Agents write to their own memory space and the shared comms channel</principle>
+    <principle>Tanto reads all agent outputs and creates coordinated briefings</principle>
+    <principle>Agents can REQUEST information from other agents via Tanto</principle>
+
+    <directory-structure>
+      {project-root}/team/_memory/_comms/
+      ├── proposals/          # CEO approval proposals (managed by ceo-approval.xml)
+      ├── findings/           # Agent findings that affect other agents
+      ├── requests/           # Requests from one agent to another
+      ├── handoffs/           # Work handoff documents between agents
+      └── broadcasts/         # Messages for the entire team
+    </directory-structure>
+  </model>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- MESSAGE TYPES                                       -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <message-types>
+
+    <type name="finding" dir="findings/">
+      <desc>Agent discovered something that another agent needs to know</desc>
+      <format>
+        ---
+        from: {agent_name}
+        to: {target_agent_name} OR "all"
+        date: {date}
+        priority: {CRITICAL/HIGH/MEDIUM/LOW}
+        domain: {security/architecture/testing/implementation/etc}
+        ---
+        ## Finding: {title}
+        **Context:** {what was the agent doing when they found this}
+        **Finding:** {what was discovered}
+        **Impact:** {why this matters to the target agent}
+        **Recommended Action:** {what should be done}
+      </format>
+      <example>
+        Shield (Security Auditor) finds an SQL injection risk during security review.
+        Writes finding to findings/ addressed to Amelia (Dev) with priority CRITICAL.
+        Tanto reads the finding during next triage and creates a task for Amelia.
+      </example>
+    </type>
+
+    <type name="request" dir="requests/">
+      <desc>Agent needs input, review, or work from another agent</desc>
+      <format>
+        ---
+        from: {agent_name}
+        to: {target_agent_name}
+        date: {date}
+        type: {input-needed/review-needed/work-needed}
+        blocking: {true/false}
+        ---
+        ## Request: {title}
+        **I need:** {specific deliverable or input}
+        **Context:** {why I need this and what I'll do with it}
+        **Deadline:** {when I need it by, or "next session"}
+        **Files:** {relevant file paths}
+      </format>
+    </type>
+
+    <type name="handoff" dir="handoffs/">
+      <desc>Agent completed their part and is handing work to the next agent</desc>
+      <format>
+        ---
+        from: {agent_name}
+        to: {target_agent_name}
+        date: {date}
+        story: {story_key if applicable}
+        ---
+        ## Handoff: {title}
+        **What I did:** {summary of completed work}
+        **What's next:** {what the receiving agent needs to do}
+        **Key files changed:** {list of files}
+        **Watch out for:** {gotchas, edge cases, concerns}
+        **Security notes:** {any security considerations for the next agent}
+      </format>
+    </type>
+
+    <type name="broadcast" dir="broadcasts/">
+      <desc>Message for the entire team — standards changes, project updates, security alerts</desc>
+      <format>
+        ---
+        from: {agent_name}
+        date: {date}
+        priority: {CRITICAL/HIGH/MEDIUM/LOW}
+        type: {alert/update/standard}
+        ---
+        ## {title}
+        {content}
+        **Action required by:** {list of agents} OR "awareness only"
+      </format>
+    </type>
+
+  </message-types>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- TANTO'S ROLE AS HUB                                 -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <hub-protocol>
+    <step n="1" title="On Activation / Scan">
+      <action>Read all files in team/_memory/_comms/findings/, requests/, handoffs/, broadcasts/</action>
+      <action>Identify unprocessed messages (check for processed: true in frontmatter)</action>
+      <action>Prioritize: CRITICAL security findings first, then blocking requests, then handoffs</action>
+    </step>
+
+    <step n="2" title="Triage Messages">
+      <action>For each unprocessed message:
+        - If CRITICAL security finding → flag immediately, may require CEO approval for response
+        - If blocking request → prioritize the target agent's work
+        - If handoff → update the receiving agent's mission briefing
+        - If broadcast → incorporate into all affected agent briefings
+      </action>
+    </step>
+
+    <step n="3" title="Update Agent Briefings">
+      <action>For each affected agent, update their team/_memory/{agent}/mission.md with relevant messages</action>
+      <action>Mark processed messages with: processed: true, processed_date: {date}</action>
+    </step>
+
+    <step n="4" title="Report to CEO">
+      <action>If any CRITICAL findings or CEO-level decisions surfaced, present summary to CEO</action>
+      <action>If blocking requests exist, inform CEO of potential delays</action>
+    </step>
+  </hub-protocol>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- AGENT COMMUNICATION RULES                           -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <rules>
+    <r>Every agent MUST check their mission briefing (team/_memory/{agent}/mission.md) at activation</r>
+    <r>Every agent MUST write a handoff document when completing assigned work</r>
+    <r>Security findings are NEVER deferred — they go to Tanto immediately with [SECURITY] flag</r>
+    <r>Agents MUST NOT start work that contradicts another agent's findings without Tanto mediation</r>
+    <r>When in doubt about scope, agents write a request to Tanto rather than making assumptions</r>
+    <r>All communication files use the naming convention: {date}-{from}-{type}-{slug}.md</r>
+  </rules>
+</task>

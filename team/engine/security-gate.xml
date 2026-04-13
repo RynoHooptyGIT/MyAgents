@@ -1,0 +1,98 @@
+<task id="team/engine/security-gate.xml" name="Security Gate — Universal Security Awareness">
+  <objective>Enforce security-first thinking across ALL agents, not just the security specialist. Every agent is a security agent.</objective>
+
+  <llm critical="true">
+    <mandate>Security is not Shield's job alone — EVERY agent must think security-first</mandate>
+    <mandate>Never trade security for speed. If unsure, flag it.</mandate>
+    <mandate>Reference {project-root}/team/data/security/coding-standards.md for specific standards</mandate>
+  </llm>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- UNIVERSAL SECURITY CHECKLIST                        -->
+  <!-- Every agent runs this mentally on every action       -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <universal-checklist agent="ALL">
+    <check domain="input-validation">
+      Am I handling user input? → Validate, sanitize, parameterize. NEVER trust input.
+    </check>
+    <check domain="authentication">
+      Does this touch auth flows? → Verify session handling, token management, credential storage.
+    </check>
+    <check domain="authorization">
+      Does this access data? → Verify the user/tenant has permission. Check RLS, RBAC, scoping.
+    </check>
+    <check domain="data-exposure">
+      Am I exposing data? → Check for PII leakage, overly broad API responses, logging sensitive data.
+    </check>
+    <check domain="secrets">
+      Are there secrets involved? → NEVER hardcode. Use env vars, secret managers, .env (gitignored).
+    </check>
+    <check domain="dependencies">
+      Am I adding a dependency? → Check for known vulnerabilities, license compatibility, maintenance status.
+    </check>
+    <check domain="error-handling">
+      How do errors surface? → NEVER expose stack traces, internal paths, or system info to users.
+    </check>
+    <check domain="logging">
+      What am I logging? → NEVER log passwords, tokens, PII, or full request bodies with sensitive data.
+    </check>
+    <check domain="injection">
+      Am I building queries/commands? → Parameterize everything. No string concatenation for SQL, shell, or LDAP.
+    </check>
+    <check domain="transport">
+      Is data moving between systems? → HTTPS only. Verify TLS. Check certificate pinning where applicable.
+    </check>
+  </universal-checklist>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- AGENT-SPECIFIC SECURITY RESPONSIBILITIES            -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <agent-responsibilities>
+    <agent name="dev" responsibility="Write secure code. Follow OWASP Top 10. Parameterize all queries. Never expose internals in error messages. Input validation at every boundary."/>
+    <agent name="architect" responsibility="Design for security from the start. Threat model every new component. Defense in depth. Principle of least privilege in all access patterns."/>
+    <agent name="tea" responsibility="Write security-focused test cases. Test for injection, auth bypass, privilege escalation. Include negative test scenarios."/>
+    <agent name="devops" responsibility="Secure the pipeline. No secrets in CI configs. Container scanning. Image pinning. Network policies. Least-privilege IAM."/>
+    <agent name="api-contract" responsibility="Validate all API contracts include auth requirements. Check for data leakage in response schemas. Rate limiting on all endpoints."/>
+    <agent name="data-architect" responsibility="RLS on every table. Encryption at rest. Audit logging for data access. No direct DB access from frontend."/>
+    <agent name="tech-writer" responsibility="Document security requirements in user-facing docs. Never include internal URLs, credentials, or system architecture details in public docs."/>
+    <agent name="pm" responsibility="Include security requirements in every PRD. Consider threat scenarios in user stories. Non-functional security requirements are first-class."/>
+    <agent name="ux-designer" responsibility="Design secure user flows. No security info in URLs. Proper session timeout UX. Clear permission denied states."/>
+    <agent name="custodian" responsibility="Scan for security anti-patterns in repo. Flag hardcoded secrets, missing input validation, disabled security features."/>
+  </agent-responsibilities>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- SECURITY ESCALATION PROTOCOL                        -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <escalation>
+    <level n="1" name="Self-Fix">
+      Agent notices a minor security issue in their own work.
+      → Fix it immediately. Note in handoff document.
+    </level>
+    <level n="2" name="Flag to Tanto">
+      Agent notices a security issue outside their scope.
+      → Write a [SECURITY] finding to team/_memory/_comms/findings/.
+      → Tanto triages and assigns to appropriate agent.
+    </level>
+    <level n="3" name="Escalate to Shield">
+      Agent encounters a complex security concern needing expert analysis.
+      → Flag to Tanto with recommendation to deploy Shield (Security Auditor).
+      → Tanto invokes /team:security-auditor with the finding.
+    </level>
+    <level n="4" name="CEO Alert">
+      CRITICAL security vulnerability, data breach risk, or compliance violation.
+      → Tanto immediately surfaces to CEO via the CEO Approval Gate.
+      → ALL work on affected component HALTS until CEO acknowledges.
+    </level>
+  </escalation>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- CODING STANDARDS ENFORCEMENT                        -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <enforcement>
+    <rule>Before any code review (CR workflow), the reviewer MUST run the universal security checklist against all changed files</rule>
+    <rule>Before any ship (SH workflow), verify no new security warnings were introduced</rule>
+    <rule>New dependencies require a security check: known CVEs, last update date, maintainer reputation</rule>
+    <rule>Any agent creating a hook MUST consider security implications of the hook's commands</rule>
+    <rule>Any agent spawning a helper MUST scope the helper's permissions to minimum necessary</rule>
+  </enforcement>
+</task>

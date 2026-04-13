@@ -1,0 +1,141 @@
+<task id="team/engine/ceo-approval.xml" name="CEO Approval Gate">
+  <objective>Enforce formal CEO approval for major efforts, ideas, and strategic decisions before any work begins</objective>
+
+  <llm critical="true">
+    <mandate>NEVER skip this gate for qualifying work — the CEO's time is valuable but their approval is non-negotiable for major efforts</mandate>
+    <mandate>Proposals must be concise, actionable, and include cost/risk assessment</mandate>
+    <mandate>The CEO can approve, reject, modify, or defer — respect all four outcomes</mandate>
+  </llm>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- CLASSIFICATION: Does this require CEO approval?     -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <classification critical="EVALUATE BEFORE EVERY MAJOR ACTION">
+    <requires-approval>
+      <criterion>New feature or epic that doesn't exist in an approved plan</criterion>
+      <criterion>Architecture change that affects more than 2 system components</criterion>
+      <criterion>Any work estimated at more than 1 sprint of effort</criterion>
+      <criterion>Security posture changes (new auth flows, data exposure changes, permission model changes)</criterion>
+      <criterion>Technology adoption (new frameworks, services, or infrastructure)</criterion>
+      <criterion>Scope changes to approved epics or stories</criterion>
+      <criterion>External integrations (third-party APIs, services, vendors)</criterion>
+      <criterion>Data model changes that affect multiple domains</criterion>
+      <criterion>Any creative or branding direction decisions</criterion>
+      <criterion>Compliance or regulatory approach decisions</criterion>
+      <criterion>Agent team restructuring or new agent creation</criterion>
+      <criterion>Budget implications (paid services, compute costs, licensing)</criterion>
+    </requires-approval>
+
+    <autonomous-work desc="Agents can proceed without CEO approval">
+      <criterion>Bug fixes within existing approved stories</criterion>
+      <criterion>Implementation of tasks within approved stories</criterion>
+      <criterion>Code review and testing of approved work</criterion>
+      <criterion>Documentation updates for existing features</criterion>
+      <criterion>Refactoring that doesn't change behavior or architecture</criterion>
+      <criterion>Sprint ceremonies (status, retrospective, consistency checks)</criterion>
+      <criterion>Security patches for known vulnerabilities in approved code</criterion>
+    </autonomous-work>
+  </classification>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- PROPOSAL FORMAT                                     -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <proposal-format>
+    <mandate>All proposals MUST follow this exact format when presented to the CEO</mandate>
+
+    <template>
+    ┌─────────────────────────────────────────────────────┐
+    │ ⚔️ PROPOSAL FOR CEO APPROVAL                        │
+    │ Submitted by: {agent_name} via Tanto                │
+    │ Date: {date}                                        │
+    │ Priority: {CRITICAL / HIGH / MEDIUM / LOW}          │
+    ├─────────────────────────────────────────────────────┤
+    │                                                     │
+    │ WHAT: [1-2 sentence description of the proposal]    │
+    │                                                     │
+    │ WHY: [Business justification — what problem does    │
+    │       this solve or what opportunity does it seize?] │
+    │                                                     │
+    │ HOW: [High-level approach — not implementation      │
+    │       details, but strategy]                        │
+    │                                                     │
+    │ SCOPE: [What's in, what's out]                      │
+    │                                                     │
+    │ AGENTS NEEDED: [Which team members and roles]       │
+    │                                                     │
+    │ EFFORT: [Estimated sprints / complexity]             │
+    │                                                     │
+    │ RISKS: [Top 2-3 risks with mitigation strategies]   │
+    │                                                     │
+    │ SECURITY IMPACT: [How this affects security posture] │
+    │                                                     │
+    │ DEPENDENCIES: [What must exist or happen first]      │
+    │                                                     │
+    ├─────────────────────────────────────────────────────┤
+    │ CEO ACTION REQUIRED:                                │
+    │   [A] Approve — proceed with this plan              │
+    │   [R] Reject — explain concerns, agent will revise  │
+    │   [M] Modify — specify changes, agent will adjust   │
+    │   [D] Defer — table for later, note when to revisit │
+    └─────────────────────────────────────────────────────┘
+    </template>
+  </proposal-format>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- APPROVAL FLOW                                       -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <flow>
+    <step n="1" title="Classify the Work">
+      <action>Evaluate the proposed work against the classification criteria above</action>
+      <check if="matches autonomous-work criteria">
+        <action>Proceed without CEO approval — note in agent memory that work is within approved scope</action>
+        <action>Skip remaining steps</action>
+      </check>
+      <check if="matches requires-approval criteria">
+        <action>HALT all implementation work — prepare a formal proposal</action>
+      </check>
+    </step>
+
+    <step n="2" title="Prepare Proposal">
+      <action>Gather all relevant context about the proposed work</action>
+      <action>Format the proposal using the template above</action>
+      <action>Save proposal to {project-root}/team/_memory/_comms/proposals/{date}-{proposal-slug}.md</action>
+    </step>
+
+    <step n="3" title="Present to CEO">
+      <action>Display the formatted proposal to the CEO</action>
+      <action>WAIT for CEO response — do NOT proceed until one of [A], [R], [M], [D] is received</action>
+    </step>
+
+    <step n="4" title="Process CEO Decision">
+      <check if="[A] Approved">
+        <action>Record approval in proposal file with timestamp</action>
+        <action>Update agent memory with approved scope</action>
+        <action>Proceed with implementation planning</action>
+        <action>Broadcast to relevant agents: "CEO approved: {proposal title}"</action>
+      </check>
+      <check if="[R] Rejected">
+        <action>Record rejection with CEO's reasoning</action>
+        <action>Notify originating agent of rejection</action>
+        <action>Ask CEO if they want a revised proposal or to drop the idea entirely</action>
+      </check>
+      <check if="[M] Modified">
+        <action>Record modifications specified by CEO</action>
+        <action>Revise proposal to incorporate changes</action>
+        <action>Re-present modified proposal for confirmation</action>
+      </check>
+      <check if="[D] Deferred">
+        <action>Record deferral with revisit date (ask CEO when to revisit)</action>
+        <action>Save to {project-root}/team/_memory/tanto/deferred-proposals.md</action>
+        <action>Tanto will resurface deferred proposals on their revisit date</action>
+      </check>
+    </step>
+  </flow>
+
+  <red-flags>
+    <flag>Agent attempting to start major work without checking this gate</flag>
+    <flag>Scope creep — work expanding beyond what was originally approved</flag>
+    <flag>Agent reframing major work as "minor" to avoid approval</flag>
+    <flag>Multiple small proposals that collectively represent one large unapproved effort</flag>
+  </red-flags>
+</task>
