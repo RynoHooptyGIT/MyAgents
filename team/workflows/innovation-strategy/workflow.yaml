@@ -1,7 +1,7 @@
 # Innovation Strategy Workflow Configuration
 name: "innovation-strategy"
 description: "Identify disruption opportunities and architect business model innovation. This workflow guides strategic analysis of markets, competitive dynamics, and business model innovation to uncover sustainable competitive advantages and breakthrough opportunities."
-author: "BMad"
+author: "My Dev Team"
 
 # Critical variables load from config_source
 config_source: "{project-root}/team/config.yaml"

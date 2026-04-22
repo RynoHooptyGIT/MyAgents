@@ -34,7 +34,7 @@ Provide satisfying agent farewells and conclude the party mode session with grat
 
 Begin exit process with warm acknowledgment:
 
-"What an incredible collaborative session! Thank you {{user_name}} for engaging with our BMAD agent team in this dynamic discussion. Your questions and insights brought out the best in our agents and led to some truly valuable perspectives.
+"What an incredible collaborative session! Thank you {{user_name}} for engaging with our My Dev Team agents in this dynamic discussion. Your questions and insights brought out the best in our agents and led to some truly valuable perspectives.
 
 **Before we wrap up, let a few of our agents say goodbye...**"
 
@@ -115,7 +115,7 @@ Execute final workflow termination:
 
 "[PARTY MODE WORKFLOW COMPLETE]
 
-Thank you for using BMAD Party Mode for collaborative multi-agent discussions!"
+Thank you for using My Dev Team Party Mode for collaborative multi-agent discussions!"
 
 ## SUCCESS METRICS:
 
@@ -154,6 +154,6 @@ After farewell sequence and final closure:
 - Multi-agent collaboration demonstrated value and effectiveness
 - Workflow ready for next party mode session activation
 
-Congratulations on facilitating a successful multi-agent collaborative discussion through BMAD Party Mode! 🎉
+Congratulations on facilitating a successful multi-agent collaborative discussion through My Dev Team Party Mode! 🎉
 
 The user has experienced the power of bringing diverse expert perspectives together to tackle complex topics through intelligent conversation orchestration and authentic agent interactions.

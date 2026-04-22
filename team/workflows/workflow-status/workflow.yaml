@@ -1,7 +1,7 @@
 # Workflow Status - Master Router and Status Tracker
 name: workflow-status
 description: 'Lightweight status checker - answers "what should I do now?" for any agent. Reads YAML status file for workflow tracking. Use workflow-init for new projects.'
-author: "BMad"
+author: "My Dev Team"
 
 # Critical variables from config
 config_source: "{project-root}/team/config.yaml"
@@ -25,6 +25,6 @@ template: "{installed_path}/workflow-status-template.yaml"
 path_files: "{installed_path}/paths/"
 
 # Output configuration - reads existing status
-default_output_file: "{planning_artifacts}/bmm-workflow-status.yaml"
+default_output_file: "{planning_artifacts}/workflow-status.yaml"
 
 standalone: true

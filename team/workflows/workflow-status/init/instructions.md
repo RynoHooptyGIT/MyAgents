@@ -3,12 +3,12 @@
 <critical>The workflow execution engine is governed by: {project-root}/team/engine/workflow.xml</critical>
 <critical>You MUST have already loaded and processed: workflow-init/workflow.yaml</critical>
 <critical>Communicate in {communication_language} with {user_name}</critical>
-<critical>This workflow handles BOTH new projects AND legacy projects following the BMad Method</critical>
+<critical>This workflow handles BOTH new projects AND legacy projects</critical>
 
 <workflow>
 
 <step n="1" goal="Scan for existing work">
-<output>Welcome to BMad Method, {user_name}!</output>
+<output>Welcome to My Dev Team, {user_name}!</output>
 
 <action>Perform comprehensive scan for existing work:
 
@@ -110,7 +110,7 @@ Choice [1/2]:</ask>
 
 <ask>Planning approach:
 
-1. **BMad Method** - Full planning for complex projects
+1. **Standard Method** - Full planning for complex projects
 2. **Enterprise Method** - Extended planning with security/DevOps
 
 Choice [1/2]:</ask>
@@ -167,11 +167,11 @@ Continue with software workflows? (y/n)</output>
 </step>
 
 <step n="5" goal="Guided setup - select track">
-<output>Based on your project, here are your BMad Method planning options:
+<output>Based on your project, here are your planning options:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-**1. BMad Method** 🎯 {{#if recommended}}(RECOMMENDED){{/if}}
+**1. Standard Method** 🎯 {{#if recommended}}(RECOMMENDED){{/if}}
 
 - Full planning: PRD + UX + Architecture
 - Best for: Products, platforms, complex features
@@ -192,9 +192,9 @@ Load the **quick-flow-solo-dev** agent instead - use Quick Flow agent for faster
 💡 Architecture creates focused solution design from your codebase, keeping AI agents on track.
 {{/if}}</output>
 
-<ask>Which BMad Method approach fits best?
+<ask>Which approach fits best?
 
-1. BMad Method {{#if recommended}}(recommended){{/if}}
+1. Standard Method {{#if recommended}}(recommended){{/if}}
 2. Enterprise Method
 3. Help me decide
 4. Switch to Quick Flow (use quick-flow-solo-dev agent)
@@ -275,7 +275,7 @@ Enter numbers (e.g., "1,2" or "none"): </ask>
 
 <step n="7" goal="Detect track from artifacts" if="continuing_existing OR migrating_legacy">
 <action>Analyze artifacts to detect track:
-- Has PRD → BMad Method
+- Has PRD → Standard Method
 - Has Security/DevOps → Enterprise Method
 - Has tech-spec only → Suggest switching to quick-flow-solo-dev agent
 </action>
@@ -283,9 +283,9 @@ Enter numbers (e.g., "1,2" or "none"): </ask>
 <output>Detected: **{{detected_track}}** based on {{found_artifacts}}</output>
 <ask>Correct? (y/n)</ask>
 
-<ask if="n">Which BMad Method track instead?
+<ask if="n">Which track instead?
 
-1. BMad Method
+1. Standard Method
 2. Enterprise Method
 3. Switch to Quick Flow (use quick-flow-solo-dev agent)
 
@@ -307,7 +307,7 @@ Choice:</ask>
 </step>
 
 <step n="9" goal="Create tracking file">
-<output>Your BMad workflow path:
+<output>Your workflow path:
 
 **Track:** {{selected_track}}
 **Type:** {{field_type}}

@@ -260,7 +260,7 @@ You must fully embody this agent's persona and follow all activation instruction
       | API contract drift | Pact (API Contract) | /team:api-contract |
       | AI/Agentic architecture | Nexus (Agentic Expert) | /team:agentic-expert |
       | ML/model evaluation | Neuron (ML Expert) | /team:ml-expert |
-      | SQL/data/caching | Oracle (Data Architect) | /team:data-architect |
+      | SQL/data/caching | Vault (Data Architect) | /team:data-architect |
       | Healthcare compliance | Dr. Vita (Healthcare) | /team:healthcare-expert |
       | Government regulations | Senator (Government) | /team:government-expert |
       | Financial regulations | Sterling (Financial) | /team:financial-expert |

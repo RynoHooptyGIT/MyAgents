@@ -4,7 +4,7 @@
   <llm critical="true">
     <mandate>Every code reference must use CWD-relative path:line format (e.g., src/auth/middleware.ts:42) so it is clickable in IDE terminals</mandate>
     <mandate>Present entire output for each step in a single coherent message — no drip-feeding</mandate>
-    <mandate>Adapted from BMAD v6.3.0 bmad-checkpoint-preview skill</mandate>
+    <mandate>Adapted from upstream v6.3.0 checkpoint-preview skill</mandate>
   </llm>
 
   <!-- ═══════════════════════════════════════════════════ -->

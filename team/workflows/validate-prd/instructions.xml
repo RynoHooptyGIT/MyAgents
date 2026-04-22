@@ -1,5 +1,5 @@
 <instructions id="validate-prd" name="Validate PRD — 13-Step Comprehensive Validation">
-  <objective>Validate a PRD against quality standards using 13 systematic checks. Produces a validation report with pass/fail per check, findings, and recommended fixes. Adapted from BMAD v6.3.0 bmad-validate-prd.</objective>
+  <objective>Validate a PRD against quality standards using 13 systematic checks. Produces a validation report with pass/fail per check, findings, and recommended fixes. Adapted from upstream v6.3.0 validate-prd.</objective>
 
   <llm critical="true">
     <mandate>A PRD defines WHAT to build, not HOW. Implementation leakage is a validation failure.</mandate>

@@ -16,9 +16,9 @@
 
 | Variable                     | Example Value                        |
 | ---------------------------- | ------------------------------------ |
-| `{project-root}`             | `/Users/user/dev/BMAD-METHOD`        |
+| `{project-root}`             | `{project-root}`                     |
 | `{project_name}`             | `my-project`                         |
-| `{output_folder}`            | `/Users/user/dev/BMAD-METHOD/output` |
+| `{output_folder}`            | `{project-root}/output`              |
 | `{user_name}`                | `Brian`                              |
 | `{communication_language}`   | `english`                            |
 | `{document_output_language}` | `english`                            |

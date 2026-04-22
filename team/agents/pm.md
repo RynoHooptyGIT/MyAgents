@@ -67,7 +67,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="CH or fuzzy match on chat">[CH] Chat with the Agent about anything</item>
     <item cmd="WS or fuzzy match on workflow-status" workflow="{project-root}/team/workflows/workflow-status/workflow.yaml">[WS] Get workflow status or initialize a workflow if not already done (optional)</item>
     <item cmd="PRD or fuzzy match on prd or create-prd or validate-prd or edit-prd" exec="{project-root}/team/workflows/planning/prd/workflow.md">[PRD] Product Requirements Document — Create, Validate, or Edit</item>
-    <item cmd="ES or fuzzy match on epics-stories" exec="{project-root}/team/workflows/solutioning/create-epics-and-stories/workflow.md">[ES] Create Epics and User Stories from PRD (Required for BMad Method flow AFTER the Architecture is completed)</item>
+    <item cmd="ES or fuzzy match on epics-stories" exec="{project-root}/team/workflows/solutioning/create-epics-and-stories/workflow.md">[ES] Create Epics and User Stories from PRD (Required flow AFTER the Architecture is completed)</item>
     <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>

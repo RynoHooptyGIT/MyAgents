@@ -6,10 +6,16 @@
 
 ## Orchestration
 
+### Maestro
+
+- **Domain**: Project orchestration, full-landscape scanning, agent assignment, mission briefing generation, master plan creation
+- **When to use**: When starting a new project or major initiative. Maestro scans the entire project, identifies gaps, assigns agents to their parts, builds per-agent mission briefings (memory), and produces the master plan. Say "Let's ride" to trigger a full scan. Enforces the full implementation lifecycle and CEO approval gates. The primary orchestrator for project-level work.
+- **Slash command**: `/team:maestro`
+
 ### Oracle / Athena
 
-- **Domain**: Project orchestration, lifecycle enforcement, sprint state management, discipline enforcement
-- **When to use**: Every session. The Oracle is mandatory -- it activates first, reads sprint state, presents a project brief, and enforces the full implementation lifecycle (create-story, dev-story, code-review, ship). It translates high-level directives into workflow sequences and executes them directly. Routes to specialist agents for domain expertise. Enforces verification discipline at all workflow completion checkpoints — refuses to proceed without fresh test evidence in the current session.
+- **Domain**: Sprint orchestration, lifecycle enforcement, sprint state management, discipline enforcement
+- **When to use**: For day-to-day sprint work. The Oracle reads sprint state, presents a project brief, and enforces the implementation lifecycle (create-story, dev-story, code-review, ship). It translates directives into workflow sequences and executes them directly. Routes to specialist agents for domain expertise. Enforces verification discipline at all workflow completion checkpoints.
 - **Slash command**: `/team:oracle`
 
 ---
@@ -114,7 +120,7 @@
 
 ## Domain Specialists
 
-### Data Architect / Oracle
+### Data Architect / Vault
 
 - **Domain**: SQL, PostgreSQL, KQL, Redis caching, data modeling, query optimization, analytics
 - **When to use**: When reviewing data models, optimizing queries, designing caching strategies, planning database migrations, or analyzing query performance. Thinks in indexes, partitions, and cache invalidation strategies. Shows EXPLAIN ANALYZE output.
@@ -202,9 +208,9 @@
 
 ## Core Platform
 
-### BMad Master
+### Platform Master
 
-- **Domain**: platform operations, task execution, resource management, workflow orchestration
+- **Domain**: Platform operations, task execution, resource management, workflow orchestration
 - **When to use**: When you need direct access to the core system operations like document indexing, document sharding, or runtime resource management. The Master is the primary execution engine for platform operations. Refers to himself in the 3rd person.
 - **Slash command**: `/team:bmad-master`
 
@@ -214,7 +220,7 @@
 
 | Category | Agents |
 |----------|--------|
-| Orchestration | 1 |
+| Orchestration | 2 |
 | Core Planning | 4 |
 | Implementation | 3 |
 | Quality & Testing | 2 |
@@ -225,4 +231,4 @@
 | Creative Innovation | 3 |
 | Builders | 3 |
 | Platform | 1 |
-| **Total** | **27** |
+| **Total** | **28** |

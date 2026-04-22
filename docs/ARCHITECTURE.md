@@ -1,6 +1,6 @@
 # My Dev Team — Architecture
 
-This document explains how the system works internally -- the workflow engine, agent activation protocol, Oracle orchestration, variable resolution, context generation pipeline, and sprint status tracking.
+This document explains how the system works internally -- the workflow engine, agent activation protocol, Maestro/Oracle orchestration, variable resolution, context generation pipeline, and sprint status tracking.
 
 ## System Overview
 
@@ -10,7 +10,7 @@ This is a file-driven methodology. There is no runtime, no server, no database. 
 User Directive
       |
       v
-Oracle Agent (Athena)
+Maestro (project-level) or Oracle (sprint-level)
       |
       +-- Reads config.yaml (project settings)
       +-- Reads sprint-status.yaml (project state)
@@ -153,9 +153,14 @@ When an agent is invoked (via slash command or direct file reference):
 
 The agent stays in character until dismissed via the exit menu item.
 
-## Oracle Orchestrator
+## Orchestration: Maestro and Oracle
 
-The Oracle (Athena) at `team/agents/oracle.md` is the mandatory first activation for every session. It is not optional -- it must be loaded before any work begins.
+The system has two orchestrators with distinct roles:
+
+- **Maestro** (`team/agents/maestro.md`) — The primary project-level orchestrator. Scans the full project landscape, assigns agents to tasks, builds per-agent mission briefings (memory), produces the master plan, and enforces CEO approval gates. Use Maestro when starting new projects, major initiatives, or when "Let's ride" scanning is needed.
+- **Oracle / Athena** (`team/agents/oracle.md`) — The sprint-level orchestrator. Reads sprint state, presents project briefs, and enforces the implementation lifecycle (create-story → dev-story → code-review → ship). Use Oracle for day-to-day sprint execution.
+
+### Oracle Activation Sequence
 
 ### Oracle Activation Sequence
 
@@ -220,7 +225,7 @@ When the Oracle routes to a specialist agent, it provides the exact slash comman
 | API contract drift | Pact (API Contract) | `/team:api-contract` |
 | AI/Agentic architecture | Nexus (Agentic Expert) | `/team:agentic-expert` |
 | ML/model evaluation | Neuron (ML Expert) | `/team:ml-expert` |
-| SQL/data/caching | Oracle (Data Architect) | `/team:data-architect` |
+| SQL/data/caching | Vault (Data Architect) | `/team:data-architect` |
 
 ## Variable Resolution
 

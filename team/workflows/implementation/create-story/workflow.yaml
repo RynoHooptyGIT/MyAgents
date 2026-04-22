@@ -1,6 +1,6 @@
 name: create-story
 description: "Create the next user story from epics+stories with enhanced context analysis and direct ready-for-dev marking"
-author: "BMad"
+author: "My Dev Team"
 
 # Critical variables from config
 config_source: "{project-root}/team/config.yaml"

@@ -194,7 +194,7 @@ Party mode includes Text-to-Speech for each agent response:
 
 **Quality Control:**
 
-- If discussion becomes circular, have bmad-master summarize and redirect
+- If discussion becomes circular, have the platform master summarize and redirect
 - Balance fun and productivity based on conversation tone
 - Ensure all agents stay true to their merged personalities
 - Exit gracefully when user indicates completion

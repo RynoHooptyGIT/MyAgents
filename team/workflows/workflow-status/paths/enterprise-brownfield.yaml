@@ -1,7 +1,7 @@
-# BMad Enterprise Method - Brownfield
+# Enterprise Method - Brownfield
 # Extended enterprise planning for complex brownfield with security/devops/test (30+ stories typically)
 
-method_name: "BMad Enterprise Method"
+method_name: "Enterprise Method"
 track: "enterprise-bmad-method"
 field_type: "brownfield"
 description: "Enterprise-grade planning for complex brownfield additions with extended requirements"
@@ -98,6 +98,6 @@ phases:
       - id: "sprint-planning"
         required: true
         workflow: "{project-root}/team/workflows/implementation/sprint-planning/workflow.yaml"
-        agent: "sm"
+        agent: "oracle"
         command: "/team:sprint-planning"
         note: "Creates sprint plan - subsequent work tracked there"

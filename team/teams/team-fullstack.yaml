@@ -8,7 +8,7 @@ agents:
   - analyst
   - architect
   - pm
-  - sm
+  - oracle
   - ux-designer
 party: "./default-party.csv"
 capabilities:
@@ -32,4 +32,4 @@ coordination:
 agent_teams_usage:
   when_to_use: "Use agent teams when planning requires parallel exploration of multiple perspectives (requirements, architecture, UX, project management)"
   example_prompt: "Create a fullstack team to design the new authentication system with security and UX considerations"
-  expected_workflow: "PM coordinates, analyst gathers requirements, architect designs system, UX reviews user impact, SM prepares stories"
+  expected_workflow: "PM coordinates, analyst gathers requirements, architect designs system, UX reviews user impact, oracle prepares stories"

@@ -6,7 +6,7 @@ editPlan: '{bmb_creations_output_folder}/edit-plan-{agent-name}.md'
 
 advancedElicitationTask: '{project-root}/team/workflows/advanced-elicitation/workflow.xml'
 partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
-validationWorkflow: '{project-root}/src/modules/bmb/workflows/agent/steps-v/v-01-load-review.md'
+validationWorkflow: '{project-root}/team/workflows/builders/steps-v/v-01-load-review.md'
 ---
 
 # Edit Step 9: Celebration

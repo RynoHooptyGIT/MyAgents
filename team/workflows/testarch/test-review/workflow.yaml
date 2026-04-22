@@ -1,7 +1,7 @@
 # Test Architect workflow: test-review
 name: testarch-test-review
 description: "Review test quality using comprehensive knowledge base and best practices validation"
-author: "BMad"
+author: "My Dev Team"
 
 # Critical variables from config
 config_source: "{project-root}/team/config.yaml"

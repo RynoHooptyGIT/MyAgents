@@ -1,7 +1,7 @@
-# BMad Method - Greenfield
+# Method - Greenfield
 # Full product + architecture planning for greenfield projects (10-50+ stories typically)
 
-method_name: "BMad Method"
+method_name: "Standard Method"
 track: "bmad-method"
 field_type: "greenfield"
 description: "Complete product and system design methodology for greenfield projects"
@@ -95,6 +95,6 @@ phases:
       - id: "sprint-planning"
         required: true
         workflow: "{project-root}/team/workflows/implementation/sprint-planning/workflow.yaml"
-        agent: "sm"
+        agent: "oracle"
         command: "/team:sprint-planning"
         note: "Creates sprint plan - subsequent work tracked there"

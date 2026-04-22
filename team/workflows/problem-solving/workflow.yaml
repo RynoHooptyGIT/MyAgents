@@ -1,7 +1,7 @@
 # Problem Solving Workflow Configuration
 name: "problem-solving"
 description: "Apply systematic problem-solving methodologies to crack complex challenges. This workflow guides through problem diagnosis, root cause analysis, creative solution generation, evaluation, and implementation planning using proven frameworks."
-author: "BMad"
+author: "My Dev Team"
 
 # Critical variables load from config_source
 config_source: "{project-root}/team/config.yaml"

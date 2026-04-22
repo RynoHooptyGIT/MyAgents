@@ -1,7 +1,7 @@
-# BMad Enterprise Method - Greenfield
+# Enterprise Method - Greenfield
 # Extended enterprise planning with security/devops/test for greenfield (30+ stories typically)
 
-method_name: "Enterprise BMad Method"
+method_name: "Enterprise Method"
 track: "enterprise-bmad-method"
 field_type: "greenfield"
 description: "Complete enterprise-grade planning with security, devops, and test strategy"
@@ -95,6 +95,6 @@ phases:
       - id: "sprint-planning"
         required: true
         workflow: "{project-root}/team/workflows/implementation/sprint-planning/workflow.yaml"
-        agent: "sm"
+        agent: "oracle"
         command: "/team:sprint-planning"
         note: "Creates sprint plan - subsequent work tracked there"

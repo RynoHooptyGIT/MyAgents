@@ -10,8 +10,8 @@ outputFile: {bmb_creations_output_folder}/agent-completion-{agent_name}.md
 # Task References
 advancedElicitationTask: '{project-root}/team/workflows/advanced-elicitation/workflow.xml'
 partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
-installationDocs: 'https://github.com/bmad-code-org/BMAD-METHOD/blob/main/docs/modules/bmb-bmad-builder/custom-content-installation.md#standalone-content-agents-workflows-tasks-tools-templates-prompts'
-validationWorkflow: '{project-root}/src/modules/bmb/workflows/agent/steps-v/v-01-load-review.md'
+installationDocs: '' # TODO: replace with local or project-specific installation docs
+validationWorkflow: '{project-root}/team/workflows/builders/steps-v/v-01-load-review.md'
 ---
 
 # Step 8: Celebration and Installation Guidance

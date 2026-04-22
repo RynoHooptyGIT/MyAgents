@@ -58,7 +58,7 @@
 
   <step n="3" goal="Execute 3-layer parallel adversarial review">
     <critical>VALIDATE EVERY CLAIM - Three independent review layers, each catching what others miss</critical>
-    <critical>Adapted from BMAD v6.3.0 three-layer review architecture</critical>
+    <critical>Adapted from upstream v6.3.0 three-layer review architecture</critical>
 
     <!-- Git vs Story Discrepancies (always runs first) -->
     <action>Review git vs story File List discrepancies:

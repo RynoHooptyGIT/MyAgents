@@ -1,7 +1,7 @@
 # Design Thinking Workflow Configuration
 name: "design-thinking"
 description: "Guide human-centered design processes using empathy-driven methodologies. This workflow walks through the design thinking phases - Empathize, Define, Ideate, Prototype, and Test - to create solutions deeply rooted in user needs."
-author: "BMad"
+author: "My Dev Team"
 
 # Critical variables load from config_source
 config_source: "{project-root}/team/config.yaml"

@@ -1,7 +1,7 @@
 # Test Architect workflow: nfr-assess
 name: testarch-nfr
 description: "Assess non-functional requirements (performance, security, reliability, maintainability) before release with evidence-based validation"
-author: "BMad"
+author: "My Dev Team"
 
 # Critical variables from config
 config_source: "{project-root}/team/config.yaml"

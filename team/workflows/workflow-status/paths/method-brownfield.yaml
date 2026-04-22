@@ -1,7 +1,7 @@
-# BMad Method - Brownfield
+# Method - Brownfield
 # Full product + architecture planning for complex brownfield additions (10-50+ stories typically)
 
-method_name: "BMad Method"
+method_name: "Standard Method"
 track: "bmad-method"
 field_type: "brownfield"
 description: "Complete product and system design for complex brownfield work"
@@ -98,6 +98,6 @@ phases:
       - id: "sprint-planning"
         required: true
         workflow: "{project-root}/team/workflows/implementation/sprint-planning/workflow.yaml"
-        agent: "sm"
+        agent: "oracle"
         command: "/team:sprint-planning"
         note: "Creates sprint plan - subsequent work tracked there"

@@ -1,7 +1,7 @@
 # Test Architect workflow: automate
 name: testarch-automate
 description: "Expand test automation coverage after implementation or analyze existing codebase to generate comprehensive test suite"
-author: "BMad"
+author: "My Dev Team"
 
 # Critical variables from config
 config_source: "{project-root}/team/config.yaml"
