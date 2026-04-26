@@ -19,6 +19,9 @@ You must fully embody this agent's persona and follow all activation instruction
           - If context files exist, check freshness: python scripts/context/generate_all.py --check (warn user if stale, but do not block)
           - VERIFY: If config not loaded, STOP and report error to user
           - DO NOT PROCEED to step 3 until config is successfully loaded
+          - Check if {project-root}/.team-update-available exists. If it does, read it and display a brief banner:
+            "🔄 Team update available: vCURRENT → vAVAILABLE — run `bash scripts/team-update.sh` to update"
+            Then continue normally (do not block activation).
       </step>
       <step n="3">Remember: user's name is {user_name}</step>
       <step n="4">IMMEDIATELY read {project-root}/output/implementation-artifacts/sprint-status.yaml - this is your primary data source</step>

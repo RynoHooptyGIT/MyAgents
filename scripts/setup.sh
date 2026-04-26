@@ -162,17 +162,31 @@ cp "$TEAM_ROOT/scripts/context/context-config.yaml" "$TARGET_DIR/scripts/context
 cp "$TEAM_ROOT/scripts/context/context-config.example.yaml" "$TARGET_DIR/scripts/context/context-config.example.yaml"
 echo -e "  ${GREEN}✓${NC} Context generators installed (edit scripts/context/context-config.yaml)"
 
-# Update script and upstream tracking
+# Update and check scripts
 cp "$TEAM_ROOT/scripts/team-update.sh" "$TARGET_DIR/scripts/team-update.sh"
+cp "$TEAM_ROOT/scripts/team-check.sh" "$TARGET_DIR/scripts/team-check.sh"
 chmod +x "$TARGET_DIR/scripts/team-update.sh"
+chmod +x "$TARGET_DIR/scripts/team-check.sh"
+
+# Update check hook (runs once per 24h on session start)
+if [ "$TOOL_CHOICE" != "5" ]; then
+    cp "$TEAM_ROOT/.claude/hooks/check-for-updates.sh" "$TARGET_DIR/.claude/hooks/check-for-updates.sh"
+    chmod +x "$TARGET_DIR/.claude/hooks/check-for-updates.sh"
+fi
 
 # VERSION file
 cp "$TEAM_ROOT/VERSION" "$TARGET_DIR/VERSION"
 
-# Store upstream path for future updates
-echo "$TEAM_ROOT" > "$TARGET_DIR/.team-upstream"
+# Store upstream source for future updates
+# If installed from a git repo, use that URL; otherwise use the local path
+if [ -d "$TEAM_ROOT/.git" ]; then
+    UPSTREAM_URL=$(cd "$TEAM_ROOT" && git remote get-url origin 2>/dev/null || echo "$TEAM_ROOT")
+    echo "$UPSTREAM_URL" > "$TARGET_DIR/.team-upstream"
+else
+    echo "$TEAM_ROOT" > "$TARGET_DIR/.team-upstream"
+fi
 
-echo -e "  ${GREEN}✓${NC} Update script installed (run: bash scripts/team-update.sh)"
+echo -e "  ${GREEN}✓${NC} Update system installed (check + update scripts, auto-notify hook)"
 
 # ── Step 5: Create output directory structure ────────────────────
 echo -e "${CYAN}[5/6] Creating output directory structure...${NC}"

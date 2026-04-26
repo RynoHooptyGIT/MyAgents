@@ -8,3 +8,7 @@ Thumbs.db
 # Editor directories
 .vscode/
 .idea/
+
+# Project-local update state (not tracked — each install has its own)
+.team-update-available
+.team-last-check

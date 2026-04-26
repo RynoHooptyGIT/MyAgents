@@ -11,6 +11,7 @@
 #   bash scripts/team-update.sh https://github.com/...  # git upstream
 #   bash scripts/team-update.sh --dry-run               # preview only
 #   bash scripts/team-update.sh --force                 # skip confirmation
+#   bash scripts/team-update.sh --check                 # check only, no update
 # =============================================================================
 
 set -e
@@ -29,16 +30,24 @@ NC='\033[0m'
 
 DRY_RUN=false
 FORCE=false
+CHECK_ONLY=false
 UPSTREAM=""
 
 # ── Parse arguments ──────────────────────────────────────────────
 for arg in "$@"; do
     case "$arg" in
-        --dry-run) DRY_RUN=true ;;
-        --force)   FORCE=true ;;
-        *)         UPSTREAM="$arg" ;;
+        --dry-run)  DRY_RUN=true ;;
+        --force)    FORCE=true ;;
+        --check)    CHECK_ONLY=true ;;
+        *)          UPSTREAM="$arg" ;;
     esac
 done
+
+# ── Check-only mode delegates to team-check.sh ──────────────────
+if [ "$CHECK_ONLY" = true ]; then
+    bash "$SCRIPT_DIR/team-check.sh"
+    exit $?
+fi
 
 echo -e "${CYAN}"
 echo "  ⚔️  My Dev Team — Update"
@@ -304,10 +313,21 @@ if [ -d "$UPSTREAM_DIR/scripts/context" ]; then
     cp "$UPSTREAM_DIR/scripts/context/"*.py "$PROJECT_ROOT/scripts/context/" 2>/dev/null || true
 fi
 
-# Copy update script itself
+# Copy update and check scripts
 if [ -f "$UPSTREAM_DIR/scripts/team-update.sh" ]; then
     cp "$UPSTREAM_DIR/scripts/team-update.sh" "$PROJECT_ROOT/scripts/team-update.sh"
     chmod +x "$PROJECT_ROOT/scripts/team-update.sh"
+fi
+if [ -f "$UPSTREAM_DIR/scripts/team-check.sh" ]; then
+    cp "$UPSTREAM_DIR/scripts/team-check.sh" "$PROJECT_ROOT/scripts/team-check.sh"
+    chmod +x "$PROJECT_ROOT/scripts/team-check.sh"
+fi
+
+# Copy update check hook
+if [ -f "$UPSTREAM_DIR/.claude/hooks/check-for-updates.sh" ]; then
+    mkdir -p "$PROJECT_ROOT/.claude/hooks"
+    cp "$UPSTREAM_DIR/.claude/hooks/check-for-updates.sh" "$PROJECT_ROOT/.claude/hooks/check-for-updates.sh"
+    chmod +x "$PROJECT_ROOT/.claude/hooks/check-for-updates.sh"
 fi
 
 # ── Step 6: Update version and manifest ──────────────────────────
@@ -335,6 +355,9 @@ fi
 
 # Store upstream for future updates
 echo "$UPSTREAM" > "$PROJECT_ROOT/.team-upstream"
+
+# Clear update-available marker
+rm -f "$PROJECT_ROOT/.team-update-available"
 
 # ── Cleanup ──────────────────────────────────────────────────────
 rm -rf "$BACKUP_DIR"
