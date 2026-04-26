@@ -66,7 +66,7 @@ UPSTREAM_FILE="$PROJECT_ROOT/.team-upstream"
 
 if [ -z "$UPSTREAM" ]; then
     if [ -f "$UPSTREAM_FILE" ]; then
-        UPSTREAM=$(cat "$UPSTREAM_FILE" | head -1 | tr -d '[:space:]')
+        UPSTREAM=$(head -1 "$UPSTREAM_FILE" | sed 's/[[:space:]]*$//')
         echo -e "  Upstream: ${YELLOW}${UPSTREAM}${NC} ${DIM}(from .team-upstream)${NC}"
     else
         echo -e "${RED}ERROR: No upstream specified and no .team-upstream file found.${NC}"
@@ -116,9 +116,9 @@ if [ ! -f "$UPSTREAM_DIR/VERSION" ] || [ ! -d "$UPSTREAM_DIR/team/agents" ]; the
 fi
 
 # ── Version comparison ───────────────────────────────────────────
-UPSTREAM_VERSION=$(cat "$UPSTREAM_DIR/VERSION" | head -1 | tr -d '[:space:]')
+UPSTREAM_VERSION=$(head -1 "$UPSTREAM_DIR/VERSION" | sed 's/[[:space:]]*$//')
 if [ -f "$PROJECT_ROOT/VERSION" ]; then
-    CURRENT_VERSION=$(cat "$PROJECT_ROOT/VERSION" | head -1 | tr -d '[:space:]')
+    CURRENT_VERSION=$(head -1 "$PROJECT_ROOT/VERSION" | sed 's/[[:space:]]*$//')
 else
     CURRENT_VERSION="unknown"
 fi

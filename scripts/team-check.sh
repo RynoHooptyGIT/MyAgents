@@ -39,7 +39,7 @@ if [ ! -f "$PROJECT_ROOT/VERSION" ]; then
     $QUIET || echo "No VERSION file found"
     exit 2
 fi
-CURRENT_VERSION=$(cat "$PROJECT_ROOT/VERSION" | head -1 | tr -d '[:space:]')
+CURRENT_VERSION=$(cat "$PROJECT_ROOT/VERSION" | head -1 | sed 's/[[:space:]]*$//')
 
 # ── Resolve upstream ───────────────────────────────────────────
 UPSTREAM_FILE="$PROJECT_ROOT/.team-upstream"
@@ -47,7 +47,7 @@ if [ ! -f "$UPSTREAM_FILE" ]; then
     $QUIET || echo "No .team-upstream file — cannot check for updates"
     exit 2
 fi
-UPSTREAM=$(cat "$UPSTREAM_FILE" | head -1 | tr -d '[:space:]')
+UPSTREAM=$(cat "$UPSTREAM_FILE" | head -1 | sed 's/[[:space:]]*$//')
 
 # ── Fetch upstream version ─────────────────────────────────────
 UPSTREAM_VERSION=""
@@ -59,18 +59,18 @@ if [[ "$UPSTREAM" == *github.com* ]]; then
 
     # Try 1: GitHub raw content (public repos)
     UPSTREAM_VERSION=$(curl -sf --max-time 5 \
-        "https://raw.githubusercontent.com/${REPO_PATH}/main/VERSION" 2>/dev/null | head -1 | tr -d '[:space:]') || true
+        "https://raw.githubusercontent.com/${REPO_PATH}/main/VERSION" 2>/dev/null | head -1 | sed 's/[[:space:]]*$//') || true
 
     # Try 2: GitHub CLI API (private repos — requires gh auth)
     if [ -z "$UPSTREAM_VERSION" ] && command -v gh &>/dev/null; then
-        UPSTREAM_VERSION=$(gh api "repos/${REPO_PATH}/contents/VERSION" --jq '.content' 2>/dev/null | base64 -d 2>/dev/null | head -1 | tr -d '[:space:]') || true
+        UPSTREAM_VERSION=$(gh api "repos/${REPO_PATH}/contents/VERSION" --jq '.content' 2>/dev/null | base64 -d 2>/dev/null | head -1 | sed 's/[[:space:]]*$//') || true
     fi
 fi
 
 # Fallback: local directory
 if [ -z "$UPSTREAM_VERSION" ] && [ -d "$UPSTREAM" ]; then
     if [ -f "$UPSTREAM/VERSION" ]; then
-        UPSTREAM_VERSION=$(cat "$UPSTREAM/VERSION" | head -1 | tr -d '[:space:]')
+        UPSTREAM_VERSION=$(cat "$UPSTREAM/VERSION" | head -1 | sed 's/[[:space:]]*$//')
     fi
 fi
 
