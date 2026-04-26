@@ -35,6 +35,13 @@
         <note>Data files (csv, json) → Store paths only, load on-demand when instructions reference them</note>
       </substep>
 
+      <substep n="1b.1" title="Search Project Learnings">
+        <action>If {project-root}/team/engine/learnings.xml exists, invoke the learnings-search protocol</action>
+        <action>Pass context: workflow name, input file patterns, any story/epic identifiers</action>
+        <action>If relevant learnings found, display them to the user before proceeding</action>
+        <note>This surfaces prior patterns and pitfalls before work begins</note>
+      </substep>
+
       <substep n="1c" title="Initialize Output" if="template-workflow">
         <action>Resolve default_output_file path with all variables and {{date}}</action>
         <action>Create output directory if doesn't exist</action>
@@ -56,6 +63,11 @@
 
       <substep n="2a" title="Handle Step Attributes">
         <check>If optional="true" and NOT #yolo → Ask user to include</check>
+        <check>If optional="true" and #yolo → Apply auto-decision principles:
+          - Does this step add completeness or coverage? (P1) → Include
+          - Is this step cosmetic or low-value for the current phase? → Skip
+          - Classify as mechanical (auto-decide) or taste (record for final gate)
+        </check>
         <check>If if="condition" → Evaluate condition</check>
         <check>If for-each="item" → Repeat step for each item</check>
         <check>If repeat="n" → Repeat step n times</check>
@@ -75,6 +87,11 @@
           <tag>message-teammate xml tag → Send message to specific teammate</tag>
           <tag>broadcast-team xml tag → Send message to all team members</tag>
           <tag>goto step="x" → Jump to specified step</tag>
+          <tag>ask xml tag in #yolo mode → Classify the question using auto-decision discipline:
+            - MECHANICAL: Auto-answer using the 6 principles, continue silently
+            - TASTE: Auto-answer using principles, record {question, chosen_answer, alternative, reasoning} in taste_decisions list
+            - USER_CHALLENGE: Present to user with recommendation framing, WAIT for response
+          </tag>
         </execute-tags>
       </substep>
 
@@ -83,41 +100,99 @@
           <mandate>Generate content for this section</mandate>
           <mandate>Save to file (Write first time, Edit subsequent)</mandate>
           <action>Display generated content</action>
-          <ask> [a] Advanced Elicitation, [c] Continue, [p] Party-Mode, [y] YOLO the rest of this document only. WAIT for response. <if
-              response="a">
-              <action>Start the advanced elicitation workflow {project-root}/team/workflows/advanced-elicitation/workflow.xml</action>
-            </if>
-            <if
-              response="c">
-              <action>Continue to next step</action>
-            </if>
-            <if response="p">
-              <action>Start the party-mode workflow {project-root}/team/workflows/party-mode/workflow.yaml</action>
-            </if>
-            <if
-              response="y">
-              <action>Enter #yolo mode for the rest of the workflow</action>
-            </if>
-          </ask>
+          <check if="NOT #yolo">
+            <ask> [a] Advanced Elicitation, [c] Continue, [p] Party-Mode, [y] YOLO the rest of this document only. WAIT for response. <if
+                response="a">
+                <action>Start the advanced elicitation workflow {project-root}/team/workflows/advanced-elicitation/workflow.xml</action>
+              </if>
+              <if
+                response="c">
+                <action>Continue to next step</action>
+              </if>
+              <if response="p">
+                <action>Start the party-mode workflow {project-root}/team/workflows/party-mode/workflow.yaml</action>
+              </if>
+              <if
+                response="y">
+                <action>Load auto-decision discipline: {project-root}/team/data/discipline/knowledge/auto-decision.md</action>
+                <action>Initialize taste_decisions list as empty</action>
+                <action>Enter #yolo mode for the rest of the workflow</action>
+              </if>
+            </ask>
+          </check>
+          <check if="#yolo">
+            <action>Content generated and saved — continue to next step (no confirmation needed)</action>
+          </check>
         </if>
       </substep>
 
       <substep n="2d" title="Step Completion">
         <check>If no special tags and NOT #yolo:</check>
         <ask>Continue to next step? (y/n/edit)</ask>
+        <check>If no special tags and #yolo:</check>
+        <action>Continue to next step automatically</action>
       </substep>
     </step>
 
     <step n="3" title="Completion">
       <check>Confirm document saved to output path</check>
+
+      <substep n="3a" title="Capture Learnings" optional="true">
+        <check if="workflow produced review findings, debugging insights, or architectural decisions">
+          <action>If {project-root}/team/engine/learnings.xml exists, invoke the learnings-capture protocol</action>
+          <action>Capture any patterns, pitfalls, decisions, or architecture insights discovered during this workflow</action>
+        </check>
+      </substep>
+
+      <substep n="3b" title="YOLO Final Approval Gate" if="#yolo">
+        <check if="taste_decisions list is not empty">
+          <output>**Auto-Decision Summary (YOLO Mode)**
+
+            **Mechanical decisions:** {{mechanical_count}} (auto-decided silently)
+
+            **Taste decisions requiring your review:**
+            {{#each taste_decision}}
+            {{@index}}. **{{question}}**: Chose "{{chosen_answer}}" because {{reasoning}}.
+               Alternative: "{{alternative}}"
+            {{/each}}
+
+            **Accept all? Or specify which to change:**
+          </output>
+          <ask>Accept all taste decisions? (yes / specify numbers to change)</ask>
+          <check if="user wants changes">
+            <action>Apply user's overrides to the specified taste decisions</action>
+            <action>Re-execute affected sections with the user's choice</action>
+          </check>
+        </check>
+        <check if="taste_decisions list is empty">
+          <output>**YOLO Mode Complete** — All {{mechanical_count}} decisions were mechanical (unambiguous). No taste decisions to review.</output>
+        </check>
+      </substep>
+
       <action>Report workflow completion</action>
     </step>
   </flow>
 
   <execution-modes>
     <mode name="normal">Full user interaction and confirmation of EVERY step at EVERY template output - NO EXCEPTIONS except yolo MODE</mode>
-    <mode name="yolo">Skip all confirmations and elicitation, minimize prompts and try to produce all of the workflow automatically by
-      simulating the remaining discussions with an simulated expert user</mode>
+    <mode name="yolo" desc="Principled Auto-Decision Mode">
+      <mandate>Load {project-root}/team/data/discipline/knowledge/auto-decision.md on activation</mandate>
+      <mandate>Apply the 6 Decision Principles to every intermediate question</mandate>
+      <mandate>Classify every auto-decision as: mechanical, taste, or user-challenge</mandate>
+      <rules>
+        <rule>Mechanical decisions: auto-decide silently, do not ask user</rule>
+        <rule>Taste decisions: auto-decide using principles, record decision + alternative for final gate</rule>
+        <rule>User Challenge decisions: ALWAYS ask the user, even in YOLO mode — frame as recommendation</rule>
+        <rule>Optional steps: apply principles to decide include/skip (do not blindly skip all)</rule>
+        <rule>Template-output: generate content and continue without confirmation</rule>
+        <rule>Ask tags: classify the question, then auto-decide or ask based on classification</rule>
+      </rules>
+      <final-gate>
+        <mandate>At workflow completion, present ALL taste decisions in a single summary</mandate>
+        <mandate>Wait for user confirmation — user can override any taste decision</mandate>
+        <mandate>Only then mark workflow as complete</mandate>
+      </final-gate>
+    </mode>
   </execution-modes>
 
   <supported-tags desc="Instructions can use these tags">
