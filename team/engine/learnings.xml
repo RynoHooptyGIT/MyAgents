@@ -1,0 +1,64 @@
+<task id="team/engine/learnings.xml" name="Project Learnings">
+  <objective>Capture, search, and manage cross-session project learnings</objective>
+
+  <llm critical="true">
+    <mandate>Learnings persist across sessions in JSONL format</mandate>
+    <mandate>Always search before building — check if this pattern was seen before</mandate>
+    <mandate>Each learning entry has: key, type, insight, files, source, ts</mandate>
+  </llm>
+
+  <protocol name="learnings-search" desc="Search project learnings for relevant context">
+    <action>Determine the learnings file path: {project-root}/team/_memory/_learnings/learnings.jsonl</action>
+    <check if="learnings file exists">
+      <action>Read the learnings file</action>
+      <action>Search entries by relevance to the current task context:
+        - Match against file paths being modified
+        - Match against technology/framework keywords
+        - Match against the current workflow type (code-review, dev-story, etc.)
+      </action>
+      <action>Return the top 5 most relevant entries (by recency + relevance)</action>
+      <check if="relevant learnings found">
+        <output>**Prior Learnings (relevant to this task):**
+          {{#each learning}}
+          - **{{key}}** ({{type}}): {{insight}} — _from {{source}}, {{ts}}_
+          {{/each}}
+        </output>
+      </check>
+      <check if="no relevant learnings">
+        <action>Continue silently — no learnings to surface</action>
+      </check>
+    </check>
+    <check if="learnings file does not exist">
+      <action>Continue silently — no learnings yet</action>
+    </check>
+  </protocol>
+
+  <protocol name="learnings-capture" desc="Record a learning from the current workflow">
+    <action>Determine the learnings file path: {project-root}/team/_memory/_learnings/learnings.jsonl</action>
+    <action>Create {project-root}/team/_memory/_learnings/ directory if it does not exist</action>
+    <action>Construct learning entry as JSON:
+      {
+        "key": "{{short-kebab-case-key}}",
+        "type": "{{pattern|pitfall|decision|architecture}}",
+        "insight": "{{one-line description of what was learned}}",
+        "files": ["{{list of relevant file paths}}"],
+        "source": "{{workflow that captured this: code-review, dev-story, etc.}}",
+        "ts": "{{current ISO timestamp}}"
+      }
+    </action>
+    <action>Append the JSON entry as a single line to the learnings JSONL file</action>
+  </protocol>
+
+  <protocol name="learnings-prune" desc="Check learnings for staleness">
+    <action>Read all entries from the learnings JSONL file</action>
+    <action>For each entry with a "files" field:
+      - Check if those files still exist in the project
+      - If ALL referenced files are deleted, mark as STALE
+    </action>
+    <action>For entries with the same "key":
+      - If insights contradict, mark as CONFLICT
+      - The most recent entry wins (latest timestamp)
+    </action>
+    <action>Report stale and conflicting entries for user decision</action>
+  </protocol>
+</task>
