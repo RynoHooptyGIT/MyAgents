@@ -8,3 +8,5 @@ security-awareness,Security Awareness Discipline,"Every agent is a security agen
 ceo-approval,CEO Approval Discipline,"Major efforts require formal CEO approval — no exceptions","approval,governance,ceo,major-effort",../../engine/ceo-approval.xml
 context-engineering,Context Engineering Discipline,"Feed the right information at the right time — 5-level hierarchy with trust levels","context,loading,trust,hierarchy,all",knowledge/context-engineering.md
 source-verification,Source Verification Discipline,"Confidence is not evidence — verify every framework decision against official docs","verification,docs,framework,api,implementation",knowledge/source-verification.md
+learnings,Learnings Discipline,"Search learnings before building — capture learnings after shipping","learnings,memory,patterns,pitfalls,all",knowledge/learnings.md
+auto-decision,Auto-Decision Discipline,"6 principles for principled auto-decisions in YOLO mode — mechanical/taste/user-challenge classification","yolo,auto-decision,principles,workflow,all",knowledge/auto-decision.md

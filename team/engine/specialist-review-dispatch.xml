@@ -1,0 +1,112 @@
+<task id="team/engine/specialist-review-dispatch.xml" name="Specialist Review Dispatch">
+  <objective>Detect which specialist domain reviews are relevant to the current code changes,
+    dispatch them as parallel subagents, and aggregate findings into the main review triage</objective>
+
+  <llm critical="true">
+    <mandate>Dispatch specialists ONLY for domains touched by the diff</mandate>
+    <mandate>Each specialist runs independently — do not serialize</mandate>
+    <mandate>Aggregate all specialist findings into the main triage pipeline</mandate>
+  </llm>
+
+  <flow>
+    <step n="1" title="Detect Relevant Specialists">
+      <action>Analyze the diff and story context to determine which specialists to invoke</action>
+      <action>Apply these detection rules:
+
+        **Security (Shield)** — INVOKE IF any of:
+        - Authentication/authorization code modified (auth, session, token, password, login)
+        - Data access patterns changed (queries, RLS, tenant isolation)
+        - API endpoints added or modified
+        - Environment variables or secrets handling changed
+        - Dependency versions changed
+
+        **API Contract (Pact)** — INVOKE IF any of:
+        - Router/endpoint files modified
+        - Request/response schemas changed
+        - API middleware modified
+        - Frontend service files that call backend APIs modified
+
+        **Test Quality (Murat)** — ALWAYS INVOKE:
+        - Assess test coverage for all changed code
+        - Verify test assertions are meaningful (not placeholders)
+        - Check for missing edge case tests
+
+        **Performance** — INVOKE IF any of:
+        - Database queries added or modified
+        - Loop structures over collections
+        - Caching logic changed
+        - File I/O or network calls added
+        - Data serialization/deserialization changed
+      </action>
+
+      <action>Record the list of specialists to invoke with their rationale</action>
+      <output>**Specialist Reviews:** Dispatching {{specialist_count}} specialist(s): {{specialist_list}}</output>
+    </step>
+
+    <step n="2" title="Dispatch Parallel Specialist Reviews">
+      <action>For each selected specialist, dispatch a subagent with this context:
+        1. The git diff (same diff used by Layer 1-3)
+        2. The story file summary (ACs, tasks, file list)
+        3. The specialist's domain checklist (see below)
+        4. Instruction: "Produce findings in format: {source, title, detail, location, severity}"
+      </action>
+
+      <specialist name="Security (Shield)">
+        <checklist>
+          - Injection risks (SQL, command, XSS, path traversal)
+          - Authentication bypass or weakening
+          - Authorization gaps (missing role checks, broken access control)
+          - Tenant isolation violations (missing tenant_id filtering, RLS gaps)
+          - Secrets exposure (hardcoded keys, tokens in logs, debug endpoints)
+          - OWASP Top 10 relevance assessment
+          - Input validation completeness
+        </checklist>
+      </specialist>
+
+      <specialist name="API Contract (Pact)">
+        <checklist>
+          - Endpoint signature changes (path, method, params, body schema)
+          - Response format changes (added/removed/renamed fields)
+          - Breaking vs non-breaking change classification
+          - Frontend/backend alignment (do callers match the new contract?)
+          - Error response format consistency
+          - OpenAPI spec drift (if spec exists)
+        </checklist>
+      </specialist>
+
+      <specialist name="Test Quality (Murat)">
+        <checklist>
+          - Test coverage: every changed function has at least one test
+          - Assertion quality: tests assert specific outcomes (not just "no error")
+          - Edge cases: boundary values, empty inputs, null handling tested
+          - Integration points: API calls, DB queries, external services mocked appropriately
+          - Test isolation: no shared state between tests, no order dependencies
+          - Regression: prior bug fixes have regression tests
+        </checklist>
+      </specialist>
+
+      <specialist name="Performance">
+        <checklist>
+          - N+1 query detection (loops with DB calls)
+          - Unbounded data fetches (missing LIMIT, pagination)
+          - Missing indexes for new query patterns
+          - Inefficient string/collection operations in hot paths
+          - Cache invalidation correctness
+          - Memory allocation patterns (large objects in loops)
+        </checklist>
+      </specialist>
+
+      <action>Wait for all dispatched specialists to complete</action>
+    </step>
+
+    <step n="3" title="Aggregate Specialist Findings">
+      <action>Collect all findings from all specialists</action>
+      <action>Normalize to common format: {source: "specialist-name", title, detail, location, severity}</action>
+      <action>Deduplicate against existing Layer 1-3 findings:
+        - If a specialist found the same issue as a layer, merge (note both sources)
+        - If a specialist found a NEW issue, add to the findings list
+      </action>
+      <action>Return the aggregated specialist findings for inclusion in the main triage</action>
+    </step>
+  </flow>
+</task>
