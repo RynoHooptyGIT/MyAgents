@@ -43,6 +43,23 @@
     <action>Load {project_context} for coding standards (if exists)</action>
   </step>
 
+  <step n="1b" goal="Search prior learnings for relevant context">
+    <action>Check if {project-root}/team/engine/learnings.xml exists</action>
+    <check if="learnings engine exists">
+      <action>Search learnings for entries matching:
+        - File paths in the story's File List
+        - Technology keywords from the story's technical requirements
+        - Prior code-review findings on the same files
+      </action>
+      <check if="relevant learnings found">
+        <output>**Prior Learnings (relevant to this review):**
+          Review these before proceeding — they may reveal known patterns or recurring issues.
+        </output>
+        <action>Add relevant learnings to the review context for Layer 1-3 analysis</action>
+      </check>
+    </check>
+  </step>
+
   <step n="2" goal="Build review attack plan">
     <action>Extract ALL Acceptance Criteria from story</action>
     <action>Extract ALL Tasks/Subtasks with completion status ([x] vs [ ])</action>
@@ -125,6 +142,19 @@
       4. DROP all dismissed findings (record the count)
     </action>
 
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- SPECIALIST REVIEW: Parallel domain expert dispatch  -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <check if="{project-root}/team/engine/specialist-review-dispatch.xml exists">
+      <action>Load and execute the specialist review dispatch task</action>
+      <action>Pass context: the diff, story file summary, and all Layer 1-3 findings so far</action>
+      <action>Merge specialist findings into the TRIAGE results:
+        - Specialist findings follow the same NORMALIZE → DEDUPLICATE → CLASSIFY pipeline
+        - New specialist findings are added with their specialist source noted
+        - Duplicate findings get "confirmed by specialist" annotation (increases confidence)
+      </action>
+    </check>
+
     <check if="total_issues_found lt 3">
       <critical>NOT LOOKING HARD ENOUGH - Re-examine with fresh eyes!</critical>
       <action>Re-examine code for architecture violations, integration issues, dependency problems</action>
@@ -199,6 +229,18 @@
     <check if="user chooses 3">
       <action>Show detailed explanation with code examples</action>
       <action>Return to fix decision</action>
+    </check>
+  </step>
+
+  <step n="4b" goal="Capture review learnings">
+    <check if="{project-root}/team/engine/learnings.xml exists">
+      <action>Review all findings from this code review session</action>
+      <action>For each finding that reveals a reusable pattern or non-obvious pitfall:
+        - Capture as a learning with type "pattern" or "pitfall"
+        - Include the affected file paths
+        - Set source to "code-review"
+      </action>
+      <action>If the same files have had findings in prior reviews (check learnings), capture an "architecture" learning noting the recurring issue</action>
     </check>
   </step>
 
