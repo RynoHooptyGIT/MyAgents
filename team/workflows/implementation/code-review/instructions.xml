@@ -22,6 +22,15 @@
       metadata</action>
     <action>Parse sections: Story, Acceptance Criteria, Tasks/Subtasks, Dev Agent Record → File List, Change Log</action>
 
+    <!-- Coordination awareness: check if story is actively being developed -->
+    <check if=".agents/claims/ directory exists">
+      <action>Read all .agents/claims/*.yaml files</action>
+      <action>For each claim, check if claim's story_id matches the story being reviewed AND the claim's agent status is "active"</action>
+      <check if="active claim found for this story">
+        <action>Add to review context: "[WARNING: Active Development] Story {story_id} is actively being modified by agent {agent_id}. Findings may be against a moving target — flag time-sensitive issues with higher priority."</action>
+      </check>
+    </check>
+
     <!-- Discover actual changes via git -->
     <action>Check if git repository detected in current directory</action>
     <check if="git repository exists">
@@ -324,6 +333,23 @@ Story **{{story_key}}** has unresolved issues.
 
 Tell the Oracle: `DS` or say "fix the issues"
       </output>
+    </check>
+
+    <!-- Post-review: cross-post architectural findings to coordination layer -->
+    <check if=".agents/decisions/ directory exists">
+      <action>For each CRITICAL or HIGH severity architectural finding in the review:
+        Write to .agents/decisions/{date}-cr-{slug}.yaml:
+          decided_by: {reviewing agent id or "code-review"}
+          story_id: {reviewed story id}
+          date: {today}
+          decision: {finding summary}
+          rationale: {from review analysis}
+          affects_agents: all
+          acknowledged_by: []
+      </action>
+      <action>For each finding that affects files in another agent's owned_paths (from .agents/claims/):
+        Write a request to .agents/requests/ addressed to that agent with type: review-needed
+      </action>
     </check>
   </step>
 
