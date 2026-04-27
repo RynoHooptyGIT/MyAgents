@@ -148,4 +148,19 @@
     <r>When in doubt about scope, agents write a request to Maestro rather than making assumptions</r>
     <r>All communication files use the naming convention: {date}-{from}-{type}-{slug}.md</r>
   </rules>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- COORDINATION BRIDGE: .agents/ ↔ _comms/            -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <coordination-bridge>
+    <desc>When multi-agent coordination is active (.agents/ directory exists),
+    agents cross-post all coordination events to Maestro's _comms/ channel.
+    This preserves Maestro's hub mandate while enabling autonomous coordination.</desc>
+
+    <rule>ALL .agents/decisions/ entries cross-post to findings/ using _comms/ naming: {date}-{from}-finding-{slug}.md</rule>
+    <rule>ALL .agents/requests/ entries cross-post to requests/ using _comms/ naming: {date}-{from}-request-{slug}.md</rule>
+    <rule>ALL .agents/status/*-handoff.yaml entries cross-post to handoffs/ using _comms/ naming: {date}-{from}-handoff-{slug}.md</rule>
+    <rule>Security findings use [SECURITY] prefix in both surfaces</rule>
+    <rule>Cross-posting is the responsibility of the agent writing the .agents/ file — write to both locations atomically</rule>
+  </coordination-bridge>
 </task>
