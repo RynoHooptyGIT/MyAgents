@@ -39,6 +39,17 @@
     <action>Read {project-root}/team/manifest.yaml — store as {team_definitions}</action>
     <action>Check {project-root}/team/_memory/ for any existing agent memory files</action>
 
+    <!-- Multi-agent coordination awareness -->
+    <action>Check if {project-root}/.agents/registry/ exists and contains agent files</action>
+    <check if=".agents/ coordination is active">
+      <action>Read all .agents/registry/agent-*.yaml — store as {active_agents}</action>
+      <action>Read all .agents/claims/*.yaml — store as {active_claims}</action>
+      <action>Read all .agents/decisions/*.yaml — store as {recent_decisions}</action>
+      <action>Read all .agents/status/*-orphaned.yaml — store as {orphaned_agents}</action>
+      <action>Display: "Multi-agent coordination detected. {N} active agents, {M} active claims."</action>
+      <action>If orphaned agents found, display: "⚠️ {K} orphaned agent worktrees need review."</action>
+    </check>
+
     <action>Display summary: "Recon complete. [X] context files loaded, [Y] planning artifacts found, [Z] stories tracked."</action>
   </step>
 
@@ -139,6 +150,14 @@
     5. Identify SEQUENTIAL work (items that must happen in order)
     6. Flag any items that need TEAM coordination (multiple agents working together)
     </action>
+
+    <!-- When assigning work, respect existing agent claims -->
+    <check if="{active_claims} is not empty">
+      <action>For each story being assigned: check if it is already claimed in {active_claims}</action>
+      <action>If claimed: skip assignment, note "Already claimed by agent {id}"</action>
+      <action>If not claimed: proceed with normal assignment</action>
+      <action>Include active agent summary in the battle plan output</action>
+    </check>
 
     <action>Display agent assignments:
     "SQUAD DEPLOYMENT:
