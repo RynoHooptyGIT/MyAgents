@@ -1,0 +1,31 @@
+# Multi-Agent Coordination Configuration
+# See: docs/specs/2026-04-26-multi-agent-coordination-design.md
+
+coordination:
+  # Heartbeat
+  heartbeat_interval_calls: 20       # Update heartbeat every N tool calls
+  stale_threshold_minutes: 10        # Consider agent dead after N minutes no heartbeat
+
+  # Claims
+  claim_conflict_action: block       # block | warn | allow
+  claim_path_matching: prefix        # prefix | exact
+
+  # Worktrees
+  auto_worktree: true                # Enforce worktree creation on startup
+  worktree_base_dir: .worktrees      # Relative to repo root
+  cleanup_orphaned_worktrees: true   # Clean stale worktrees on startup
+  branch_prefix: agent               # Branch naming: {prefix}/{id}/{slug}
+
+  # Decisions
+  decision_sync_on_startup: true     # Read all decisions on startup
+  decision_sync_interval_calls: 100  # Periodic re-sync (in addition to event-driven sync before architectural choices)
+
+  # Requests
+  request_check_interval_calls: 50   # Check for inbound requests periodically
+
+maestro_integration:
+  enabled: auto                      # auto-detected from team/engine/ presence
+  cross_post_decisions: true
+  cross_post_handoffs: true
+  cross_post_findings: true
+  respect_mission_assignments: true
