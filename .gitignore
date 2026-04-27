@@ -12,3 +12,11 @@ Thumbs.db
 # Project-local update state (not tracked — each install has its own)
 .team-update-available
 .team-last-check
+
+# Agent worktrees (ephemeral, per-instance)
+.worktrees/
+
+# Agent PID-scoped identity files (ephemeral)
+.agents/registry/.current-agent-id-*
+.agents/registry/.coord-root-*
+.agents/registry/*.counter
