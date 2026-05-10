@@ -359,6 +359,13 @@ echo "$UPSTREAM" > "$PROJECT_ROOT/.team-upstream"
 # Clear update-available marker
 rm -f "$PROJECT_ROOT/.team-update-available"
 
+# ── Step 7: Sync plugins ──────────────────────────────────────────
+PLUGIN_SYNC="$PROJECT_ROOT/scripts/plugin-sync.sh"
+if [ -f "$PLUGIN_SYNC" ] && [ -f "$PROJECT_ROOT/plugins/registry.json" ]; then
+    echo -e "  ${DIM}[8/8] Syncing plugins...${NC}"
+    bash "$PLUGIN_SYNC" 2>/dev/null || true
+fi
+
 # ── Cleanup ──────────────────────────────────────────────────────
 rm -rf "$BACKUP_DIR"
 [ "$CLEANUP_TEMP" = true ] && rm -rf "$UPSTREAM_DIR"
@@ -371,7 +378,7 @@ echo -e "${GREEN}  ════════════════════�
 echo ""
 echo -e "  ${BLUE}Updated:${NC}"
 echo -e "    • Agents, workflows, engine, data, standards"
-echo -e "    • Slash commands, context scripts"
+echo -e "    • Slash commands, context scripts, plugins"
 echo ""
 echo -e "  ${BLUE}Preserved:${NC}"
 echo -e "    • config.yaml, CLAUDE.md, settings"
@@ -380,7 +387,8 @@ echo -e "    • Customize files, user-added agents"
 echo -e "    • All output artifacts"
 echo ""
 AGENT_COUNT=$(tail -n +2 "$PROJECT_ROOT/team/agent-manifest.csv" | wc -l | tr -d ' ')
-echo -e "  Agents: ${YELLOW}${AGENT_COUNT}${NC}"
+PLUGIN_COUNT=$(jq '.plugins | length' "$PROJECT_ROOT/plugins/registry.json" 2>/dev/null || echo "0")
+echo -e "  Agents: ${YELLOW}${AGENT_COUNT}${NC}  |  Plugins: ${YELLOW}${PLUGIN_COUNT}${NC}"
 echo ""
 echo -e "  ${DIM}Run /team:maestro to activate with the latest changes.${NC}"
 echo ""

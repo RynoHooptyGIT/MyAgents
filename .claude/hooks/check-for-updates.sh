@@ -2,9 +2,9 @@
 # =============================================================================
 # My Dev Team — Session Update Check Hook
 # =============================================================================
-# Runs as a UserPromptSubmit hook. Checks for team updates at most once
-# every 24 hours to avoid network overhead. Writes a marker file that
-# Oracle/Maestro read during activation to display an update banner.
+# Runs as a UserPromptSubmit hook. Checks for team updates AND plugin updates
+# at most once every 24 hours to avoid network overhead. Writes marker files
+# that Oracle/Maestro read during activation to display update banners.
 #
 # This script is non-blocking and silent — it never outputs to the user
 # directly. All notification happens through the orchestrator agents.
@@ -14,12 +14,9 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 CHECK_SCRIPT="$PROJECT_ROOT/scripts/team-check.sh"
+PLUGIN_SYNC_SCRIPT="$PROJECT_ROOT/scripts/plugin-sync.sh"
 COOLDOWN_FILE="$PROJECT_ROOT/.team-last-check"
 COOLDOWN_SECONDS=86400  # 24 hours
-
-# ── Exit early if no check script ──────────────────────────────
-[ -f "$CHECK_SCRIPT" ] || exit 0
-[ -f "$PROJECT_ROOT/.team-upstream" ] || exit 0
 
 # ── Cooldown: skip if checked recently ─────────────────────────
 if [ -f "$COOLDOWN_FILE" ]; then
@@ -30,10 +27,19 @@ if [ -f "$COOLDOWN_FILE" ]; then
     fi
 fi
 
-# ── Run check in background (non-blocking) ─────────────────────
+# ── Run checks in background (non-blocking) ─────────────────────
 (
     date +%s > "$COOLDOWN_FILE"
-    bash "$CHECK_SCRIPT" --quiet >/dev/null 2>&1
+
+    # Check team updates (if configured)
+    if [ -f "$CHECK_SCRIPT" ] && [ -f "$PROJECT_ROOT/.team-upstream" ]; then
+        bash "$CHECK_SCRIPT" --quiet >/dev/null 2>&1
+    fi
+
+    # Check plugin updates (if registry exists)
+    if [ -f "$PLUGIN_SYNC_SCRIPT" ] && [ -f "$PROJECT_ROOT/plugins/registry.json" ]; then
+        bash "$PLUGIN_SYNC_SCRIPT" --quiet >/dev/null 2>&1
+    fi
 ) &
 
 exit 0

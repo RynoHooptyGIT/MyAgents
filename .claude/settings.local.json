@@ -1,5 +1,11 @@
 {
   "permissions": {
+    "allow": [
+      "Bash(*)",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_click",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ],
     "deny": [
       "Bash(rm -rf:*)",
       "Bash(rm -r /:*)",
@@ -16,11 +22,6 @@
       "Bash(dd if=:*)",
       "Bash(chmod -R 777:*)",
       "Bash(kill -9:*)"
-    ],
-    "allow": [
-      "Bash(*)",
-      "mcp__plugin_playwright_playwright__browser_navigate",
-      "mcp__plugin_playwright_playwright__browser_click"
     ]
   },
   "hooks": {

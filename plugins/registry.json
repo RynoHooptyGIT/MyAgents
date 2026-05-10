@@ -1,0 +1,14 @@
+{
+  "description": "Plugin registry — tracks upstream sources and versions for auto-sync",
+  "plugins": {
+    "ralph-wiggum": {
+      "source": "github",
+      "repo": "anthropics/claude-code",
+      "path": "plugins/ralph-wiggum",
+      "branch": "main",
+      "commit": "c2022d3698c2ed89a5d9ca4a724571d2819057a5",
+      "installed_at": "2026-05-09T15:03:11Z",
+      "last_checked": "2026-05-09T15:03:43Z"
+    }
+  }
+}

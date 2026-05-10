@@ -27,6 +27,20 @@ Create Story (CS)  -->  Dev Story (DS)  -->  Code Review (CR)  -->  Ship (SH)
 
 Every session begins with the Oracle reading `sprint-status.yaml`, presenting a project brief with current state and recommendations, and displaying a command menu.
 
+### Ambient Intelligence
+
+Once activated, the Oracle enters **ambient monitoring mode** — continuously watching session output for errors, test failures, security signals, and completion events. Instead of waiting for you to diagnose problems, Athena detects them and either suggests or auto-executes the right fix.
+
+| Mode | Behavior | Toggle |
+|------|----------|--------|
+| **suggest** (default) | One-line nudge when problems detected | `oracle suggest` |
+| **auto** | Dispatches fixes immediately | `oracle auto` |
+| **off** | Silent — menu commands only | `oracle off` |
+
+The Oracle bridges two systems: **Claude Code skills** (systematic-debugging, parallel agents, TDD) for immediate fixes, and **team agents** (security auditor, architect, test architect, etc.) for domain expertise. Say `fix it` for a triaged plan, or `just fix it` for hands-free execution.
+
+See the [dispatch map](team/agents/oracle-dispatch-map.md) for the full routing table.
+
 ## Quick Start
 
 ```bash

@@ -20,3 +20,15 @@ of multiple simultaneous Claude instances:
 - `.agents/requests/` — inter-agent requests
 - `.agents/status/` — per-agent progress
 - `.agents/config.yaml` — coordination settings
+
+## Oracle Awareness
+
+When Athena (Oracle) has been activated in this session via `/team:oracle`, maintain ambient monitoring after every tool result. Evaluate output for errors, completions, security signals, and user frustration. Respond according to the current oracle mode:
+
+- **suggest** (default): One-line nudge at pause points when problems are detected
+- **auto**: Invoke the matching skill or agent immediately
+- **off**: Silent — only respond to direct commands
+
+Mode toggles: `oracle auto` | `oracle suggest` | `oracle off` | `oracle status`
+
+Fix triggers: `fix it` (plan + approval) | `just fix it` (auto-execute)
