@@ -108,27 +108,44 @@ else
 fi
 
 # ── Verify upstream is valid ─────────────────────────────────────
-if [ ! -f "$UPSTREAM_DIR/VERSION" ] || [ ! -d "$UPSTREAM_DIR/team/agents" ]; then
+if [ ! -d "$UPSTREAM_DIR/team/agents" ]; then
     echo -e "${RED}ERROR: Upstream doesn't look like a MyAgents template repo.${NC}"
-    echo "Expected VERSION file and team/agents/ directory."
+    echo "Expected team/agents/ directory."
     [ "$CLEANUP_TEMP" = true ] && rm -rf "$UPSTREAM_DIR"
     exit 1
 fi
 
 # ── Version comparison ───────────────────────────────────────────
-UPSTREAM_VERSION=$(head -1 "$UPSTREAM_DIR/VERSION" | sed 's/[[:space:]]*$//')
+# Resolve upstream version from VERSION file or package.json
+if [ -f "$UPSTREAM_DIR/VERSION" ]; then
+    UPSTREAM_VERSION=$(head -1 "$UPSTREAM_DIR/VERSION" | sed 's/[[:space:]]*$//')
+elif [ -f "$UPSTREAM_DIR/package.json" ]; then
+    UPSTREAM_VERSION=$(grep '"version"' "$UPSTREAM_DIR/package.json" | head -1 | sed 's/.*"version": *"//;s/".*//')
+else
+    UPSTREAM_VERSION="unknown"
+fi
 if [ -f "$PROJECT_ROOT/VERSION" ]; then
     CURRENT_VERSION=$(head -1 "$PROJECT_ROOT/VERSION" | sed 's/[[:space:]]*$//')
 else
     CURRENT_VERSION="unknown"
 fi
 
-echo ""
-echo -e "  Current version: ${YELLOW}${CURRENT_VERSION}${NC}"
-echo -e "  Upstream version: ${GREEN}${UPSTREAM_VERSION}${NC}"
+# Compare against last-synced upstream version, not local version
+# (fork maintains its own version scheme)
+LAST_SYNCED_UPSTREAM=""
+if [ -f "$PROJECT_ROOT/.team-upstream-version" ]; then
+    LAST_SYNCED_UPSTREAM=$(head -1 "$PROJECT_ROOT/.team-upstream-version" | sed 's/[[:space:]]*$//')
+fi
 
-if [ "$CURRENT_VERSION" = "$UPSTREAM_VERSION" ]; then
-    echo -e "\n  ${GREEN}Already up to date.${NC}"
+echo ""
+echo -e "  Local version:    ${YELLOW}${CURRENT_VERSION}${NC}"
+echo -e "  Upstream version: ${GREEN}${UPSTREAM_VERSION}${NC}"
+if [ -n "$LAST_SYNCED_UPSTREAM" ]; then
+    echo -e "  Last synced from: ${DIM}${LAST_SYNCED_UPSTREAM}${NC}"
+fi
+
+if [ "$LAST_SYNCED_UPSTREAM" = "$UPSTREAM_VERSION" ]; then
+    echo -e "\n  ${GREEN}Already up to date with upstream.${NC}"
     [ "$CLEANUP_TEMP" = true ] && rm -rf "$UPSTREAM_DIR"
     exit 0
 fi
@@ -333,23 +350,25 @@ fi
 # ── Step 6: Update version and manifest ──────────────────────────
 echo -e "  ${DIM}[7/7] Updating version...${NC}"
 
-# Update VERSION file
-cp "$UPSTREAM_DIR/VERSION" "$PROJECT_ROOT/VERSION"
+# Track upstream version without overwriting local version scheme
+# (fork may have its own version, e.g. 7.x vs upstream 6.x)
+echo "$UPSTREAM_VERSION" > "$PROJECT_ROOT/.team-upstream-version"
 
-# Update manifest version and date only (preserve teams section)
+# Update manifest date only (preserve local version and teams section)
 UPDATE_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
 if command -v python3 &> /dev/null; then
     python3 -c "
 import re
 with open('$PROJECT_ROOT/team/manifest.yaml', 'r') as f:
     content = f.read()
-content = re.sub(r'version: .*', 'version: $UPSTREAM_VERSION', content)
 content = re.sub(r'lastUpdated: .*', 'lastUpdated: $UPDATE_DATE', content)
+content = re.sub(r'upstreamVersion: .*', 'upstreamVersion: $UPSTREAM_VERSION', content, count=1)
+if 'upstreamVersion' not in content:
+    content = re.sub(r'(version: .*)', r'\1\nupstreamVersion: $UPSTREAM_VERSION', content, count=1)
 with open('$PROJECT_ROOT/team/manifest.yaml', 'w') as f:
     f.write(content)
 "
 else
-    sed -i '' "s|version: .*|version: $UPSTREAM_VERSION|" "$PROJECT_ROOT/team/manifest.yaml" 2>/dev/null || true
     sed -i '' "s|lastUpdated: .*|lastUpdated: $UPDATE_DATE|" "$PROJECT_ROOT/team/manifest.yaml" 2>/dev/null || true
 fi
 
@@ -373,7 +392,7 @@ rm -rf "$BACKUP_DIR"
 # ── Summary ──────────────────────────────────────────────────────
 echo ""
 echo -e "${GREEN}  ═══════════════════════════════════════════════════${NC}"
-echo -e "${GREEN}  ⚔️  Update complete: ${CURRENT_VERSION} → ${UPSTREAM_VERSION}${NC}"
+echo -e "${GREEN}  ⚔️  Update complete: synced upstream ${UPSTREAM_VERSION} (local ${CURRENT_VERSION})${NC}"
 echo -e "${GREEN}  ═══════════════════════════════════════════════════${NC}"
 echo ""
 echo -e "  ${BLUE}Updated:${NC}"
