@@ -137,6 +137,26 @@ Load and read full config from {main_config} and resolve:
 
 **IF mode == create:**
 "**Create Mode: Creating a new PRD from scratch.**"
+
+Before loading step-01-init.md, perform these three setup actions:
+
+**A) Create decision-log:** Write `{planning_artifacts}/prd-decision-log.md` with the header below. This is the canonical audit trail — record every decision, scope change, and override here as the conversation unfolds, not at finalize.
+
+```markdown
+# PRD Decision Log
+*Canonical memory for this PRD run. Append-only; never edit prior entries.*
+---
+```
+
+**B) Brain dump:** Even when the user opened with context, ask first: "Before we begin — give me your brain dump. What is the product, the problem it solves, and anything else you want me to know upfront? Paste any existing docs, briefs, or transcripts too."
+
+**C) Working mode:** After receiving the brain dump, offer: "How would you like to work?"
+
+- **[F] Fast path** — I batch remaining gaps into one or two questions, draft the full PRD with `[ASSUMPTION]` tags, then we iterate.
+- **[G] Guided path** — We walk each section together; you keep the pen.
+
+Store choice as `{working_mode}` (fast or guided). Then:
+
 Load, read entire file, then execute `{nextStep}` (steps-c/step-01-init.md)
 
 **IF mode == validate:**

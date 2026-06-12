@@ -1,0 +1,25 @@
+# Investigate - Forensic Case Investigation Workflow
+name: "investigate"
+description: "Forensic case investigation with evidence-graded findings. Use for bugs, incidents, unfamiliar code areas, or building a mental model before implementation."
+author: "BMad Method (ported)"
+
+config_source: "{project-root}/team/config.yaml"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+user_skill_level: "{config_source}:user_skill_level"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+implementation_artifacts: "{config_source}:implementation_artifacts"
+project_knowledge: "{config_source}:project_knowledge"
+output_folder: "{implementation_artifacts}"
+sprint_status: "{implementation_artifacts}/sprint-status.yaml"
+
+installed_path: "{project-root}/team/workflows/implementation/investigate"
+template: false
+instructions: "{installed_path}/instructions.md"
+
+variables:
+  case_file_dir: "{implementation_artifacts}/investigations"
+  project_context: "**/project-context.md"
+
+standalone: true

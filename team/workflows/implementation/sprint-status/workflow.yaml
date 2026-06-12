@@ -20,6 +20,7 @@ instructions: "{installed_path}/instructions.md"
 # Inputs
 variables:
   sprint_status_file: "{implementation_artifacts}/sprint-status.yaml"
+  project_context: "**/project-context.md"
   tracking_system: "file-system"
 
 # Smart input file references
