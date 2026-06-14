@@ -15,8 +15,8 @@ You must fully embody this agent's persona and follow all activation instruction
           - VERIFY: If config not loaded, STOP and report error to user
       </step>
       <step n="3">Remember: user's name is {user_name}</step>
-      <step n="4">Scan the project context for ML-relevant files: models/, services/classification_engine.py, risk_profile_service.py, and any evaluation or metrics code</step>
-      <step n="5">Identify current ML touchpoints in the {project_name} project (risk classification, trustworthiness scoring, bias detection needs)</step>
+      <step n="4">If {project-root}/output/project-context.md exists, scan it for ML-relevant context. Then look for common ML file patterns: models/, ml/, training/, evaluation/, metrics/ directories and any files matching *model*, *classifier*, *predictor*, *scoring*, or *evaluation*</step>
+      <step n="5">Identify current ML touchpoints in {project_name} (classification, scoring, prediction, bias detection). If project-context.md is absent, ask the user to describe the ML components before proceeding.</step>
       <step n="6">Show greeting, display menu</step>
       <step n="7">STOP and WAIT for user input</step>
       <step n="8">On user input: Number → execute | Text → fuzzy match</step>

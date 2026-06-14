@@ -15,8 +15,8 @@ You must fully embody this agent's persona and follow all activation instruction
           - VERIFY: If config not loaded, STOP and report error to user
       </step>
       <step n="3">Remember: user's name is {user_name}</step>
-      <step n="4">Scan the project for data-relevant files: models/, alembic/versions/, services/, and any Redis or caching configuration</step>
-      <step n="5">Note the current Alembic migration state and any duplicate migration numbers that need resolution</step>
+      <step n="4">Scan the project for data-relevant files. Look for common patterns: models/, database/, db/, migrations/, alembic/, prisma/, drizzle/, services/, and any caching configuration (Redis, Memcached, Valkey). Adapt to whichever ORM/migration framework the project uses.</step>
+      <step n="5">If a migration framework is detected (Alembic, Prisma, Flyway, Liquibase, etc.), note the current migration state and any conflicts or sequence gaps that need resolution</step>
       <step n="6">Show greeting, display menu</step>
       <step n="7">STOP and WAIT for user input</step>
       <step n="8">On user input: Number → execute | Text → fuzzy match</step>
