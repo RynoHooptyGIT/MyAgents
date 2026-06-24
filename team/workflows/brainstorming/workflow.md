@@ -18,6 +18,16 @@ context_file: '' # Optional context file path for project-specific guidance
 
 ---
 
+## FACILITATION MODES
+
+Pick one mode up front (offer the choice in step-01); it sets who generates the ideas for the session. The mode can change mid-session if the user asks — record the switch in the session document so a resume restores the new stance.
+
+- **Facilitator** (default) — You are a forcing function for the user's creativity, never a source of ideas. Your moves are questions, provocations, constraints, and reflections that make _the user_ generate. The session ends with the user surprised by what _they_ came up with — every idea is theirs. The one exception: if the user _directly asks_ for an idea, give exactly one as a spark, then hand the pen back. Repeated asks are the signal to change technique, not to keep feeding ideas. (This relaxes only during wrap-up synthesis.) Log ideas without attribution.
+- **Creative Partner** — You still facilitate and the user does the **majority** of the generating, but here you play too: ride alongside and throw in your own ideas as sparks and yes-and fuel so the two of you build a chain neither would alone. Set it up first — tell the user they stay in control (reject any idea you offer, ask you to help more or less, steer technique/tone/direction). Hand the pen back with a question after each idea you offer; never run a string of your own while they go quiet. Watch the ratio — if you've contributed more than they have over the last few exchanges, pull back to questions and constraints. **Attribution is mandatory:** mark each logged idea as the user's or yours (e.g. `by: user` / `by: coach`) so wrap-up can hand _them_ the mirror of what _they_ generated.
+- **Ideate For Me** (autonomous) — The user handed you the topic and wants to see what you come up with, then look at the result. You become the brainstormer: pick and run techniques yourself (no menu for the user), capture every idea, shift the creative domain every ~10 ideas, push past 100. One quick confirm of topic and goal up front — then run; don't pepper them with questions. When mined out, synthesize and produce the keepsake/output without asking first (it's the result you promised). Then, because a human is here, offer to keep going together — switch into **Facilitator** or **Creative Partner** and continue from the same session.
+
+---
+
 ## WORKFLOW ARCHITECTURE
 
 This uses **micro-file architecture** for disciplined execution:

@@ -84,7 +84,16 @@ Thank you for bringing our agents together in this unique collaborative experien
 
 **Until next time - keep collaborating, keep innovating, and keep enjoying the power of multi-agent teamwork!** 🚀"
 
-### 5. Complete Workflow Exit
+### 5. Top Up Party Memory
+
+If the active party has memory enabled, silently top up its memlog before exiting:
+
+- File: `{project-root}/team/_memory/party-mode/{party}/.memlog.md` (`{party}` = `installed` for the default room).
+- Append the final outcome and any memorable beat not yet captured — a top-up, not a recap. One dated line per beat, typed `dynamic | moment | callback | outcome`.
+- Create the folder + file on first write; never overwrite. If a write fails, skip silently — never stall the close.
+- If new faces showed up who aren't in the roster, name them in an entry so they can return next session.
+
+### 6. Complete Workflow Exit
 
 Final workflow completion steps:
 
@@ -109,7 +118,7 @@ workflow_completed: true
 - Finalize TTS session cleanup
 - Mark party mode workflow as completed
 
-### 6. Exit Workflow
+### 7. Exit Workflow
 
 Execute final workflow termination:
 

@@ -282,6 +282,7 @@ Athena (Oracle): "I found our retrospective from Epic {{prev_epic_num}}. Let me 
 
     **Action Item Follow-Through:**
     - For each action item from Epic {{prev_epic_num}} retro, check if it was completed
+    - Cross-check the action_items section in {sprint_status_file} (if present) for Epic {{prev_epic_num}} entries and their current status
     - Look for evidence in current epic's story records
     - Mark each action item: ✅ Completed, ⏳ In Progress, ❌ Not Addressed
 
@@ -1335,6 +1336,17 @@ Athena (Oracle): "See you all when prep work is done. Meeting adjourned!"
 <action>Find development_status key "epic-{{epic_number}}-retrospective"</action>
 <action>Verify current status (typically "optional" or "pending")</action>
 <action>Update development_status["epic-{{epic_number}}-retrospective"] = "done"</action>
+<action>Append each Epic {{epic_number}} action item to the action_items section, creating the section after development_status if missing. One entry per item:</action>
+
+    action_items:
+      - epic: {{epic_number}}
+        action: "{{action_description}}"
+        owner: "{{owner}}"
+        status: open
+
+<action>Quote action and owner values so punctuation (e.g., "#") cannot break YAML parsing</action>
+
+<action>Update Epic {{prev_epic_num}} action_items entries based on Step 4 follow-through: ✅ Completed → done, ⏳ In Progress → in-progress, ❌ Not Addressed → keep existing status (do not modify)</action>
 <action>Save file, preserving ALL comments and structure including STATUS DEFINITIONS</action>
 
 <check if="update successful">
@@ -1343,6 +1355,7 @@ Athena (Oracle): "See you all when prep work is done. Meeting adjourned!"
 
 Retrospective key: epic-{{epic_number}}-retrospective
 Status: {{previous_status}} → done
+Action items recorded: {{action_count}}
 </output>
 </check>
 

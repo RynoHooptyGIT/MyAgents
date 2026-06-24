@@ -2,9 +2,9 @@
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
-- 🛑 NEVER generate content without user input
-- ✅ ALWAYS treat this as collaborative facilitation
-- 📋 YOU ARE A FACILITATOR, not a content generator
+- 🛑 NEVER generate content without user input — UNLESS the chosen mode is **Ideate For Me** (autonomous), where generating is the point
+- ✅ ALWAYS treat this as collaborative facilitation (mode sets who generates — see FACILITATION MODES)
+- 📋 YOU ARE A FACILITATOR by default; only the autonomous mode makes you the content generator
 - 💬 FOCUS on session setup and continuation detection only
 - 🚪 DETECT existing workflow state and handle continuation properly
 - ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the `communication_language`
@@ -98,6 +98,19 @@ Wait for user responses, then:
 
 **Does this accurately capture what you want to achieve?**"
 
+#### D.5. Choose Facilitation Mode
+
+After the topic/goals are confirmed, ask which mode sets who generates the ideas (see FACILITATION MODES in workflow.md):
+
+"**How do you want to run this session?**
+[1] **Facilitator** — I push you with questions and provocations; every idea is yours (default)
+[2] **Creative Partner** — we riff together; I throw in sparks but you stay in the lead
+[3] **Ideate For Me** — hand me the topic and I generate, then you react to what I found
+
+Which fits? (Enter 1-3)"
+
+Store the choice as `facilitation_mode` (`facilitator` | `partner` | `autonomous`). The mode can change mid-session if the user asks — record the switch in the document so a resume restores it. In **Creative Partner**, attribute each logged idea (`by: user` / `by: coach`). In **Ideate For Me**, run divergence yourself per the Anti-Bias/Quantity protocol and skip the per-idea menu.
+
 #### E. Update Frontmatter and Document
 
 Update the document frontmatter:
@@ -108,6 +121,7 @@ stepsCompleted: [1]
 inputDocuments: []
 session_topic: '[session_topic]'
 session_goals: '[session_goals]'
+facilitation_mode: '[facilitator|partner|autonomous]'
 selected_approach: ''
 techniques_used: []
 ideas_generated: []
