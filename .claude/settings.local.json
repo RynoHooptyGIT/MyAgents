@@ -33,6 +33,11 @@
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/check-for-updates.sh\"",
             "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/slim-prompt.sh\"",
+            "timeout": 5000
           }
         ]
       }
