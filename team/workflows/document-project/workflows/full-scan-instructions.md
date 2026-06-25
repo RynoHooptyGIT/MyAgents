@@ -252,6 +252,27 @@ Are there any other important documents or key areas I should focus on while ana
 <action>PURGE detailed doc contents from memory, keep only: "{{existing_docs_count}} docs found"</action>
 </step>
 
+<step n="2.5" goal="Convert binary documents to Markdown for ingestion" if="workflow_mode != deep_dive">
+<action>From the existing_docs inventory (Step 2) plus any paths in {{user_context}}, select files whose extension Claude CANNOT read natively:
+- .docx, .doc, .xlsx, .xls, .pptx, .ppt, .epub, .msg
+- (Skip .md/.txt/.csv/.json/.xml — Read directly. Skip .pdf and images — Read handles those natively with higher fidelity.)
+</action>
+
+<check if="no such files found">
+  <action>Skip this step. Continue to Step 3.</action>
+</check>
+
+<check if="binary documents found">
+  <action>Invoke the file-to-markdown skill (skills/file-to-markdown/SKILL.md) for each file. Run:
+    uv tool run --from 'markitdown[docx,xlsx,pptx,outlook]' markitdown "<input-path>" > "{output_folder}/.ingested/<name>.md"
+  </action>
+  <action>Read each converted .md into context so the discovered document's content informs downstream analysis (tech stack, architecture, dev/deployment guides).</action>
+  <action>Record in state file: findings.ingested_documents = [{"source": "<input-path>", "converted": "{output_folder}/.ingested/<name>.md"}]</action>
+  <action>Update completed_steps: {"step": "step_2.5", "status": "completed", "timestamp": "{{now}}", "summary": "Converted {{ingested_count}} binary docs to Markdown"}</action>
+  <action>PURGE converted contents after extracting relevant facts, keep only: "{{ingested_count}} docs ingested via MarkItDown"</action>
+</check>
+</step>
+
 <step n="3" goal="Analyze technology stack for each part" if="workflow_mode != deep_dive">
 <action>For each part in project_parts:
   - Load key_file_patterns from documentation_requirements

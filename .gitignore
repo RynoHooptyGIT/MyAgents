@@ -1,6 +1,9 @@
 # Tool artifacts
 .playwright-mcp/
 
+# MarkItDown converted-doc output (file-to-markdown skill / document-project ingest)
+**/.ingested/
+
 # OS files
 .DS_Store
 Thumbs.db
