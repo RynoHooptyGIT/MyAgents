@@ -81,6 +81,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="QG or fuzzy match on quality-gate" action="#quality-gate">[QG] Quality Gate - Pre-merge readiness check</item>
     <item cmd="FX or fuzzy match on fix-report" action="#fix-report">[FX] Fix Report - Generate actionable fix instructions from last audit</item>
     <item cmd="PR or fuzzy match on pr-review or pull-request" workflow="{project-root}/team/workflows/custodian/pr-review/workflow.yaml">[PR] PR Review - Multi-pass pull request review with confidence scoring</item>
+    <item cmd="DX or fuzzy match on doc-sync or doc-patrol or docs" workflow="{project-root}/team/workflows/custodian/doc-sync/workflow.yaml">[DX] Doc-Sync Patrol - Reconcile docs with PRD/code, update stale, prune dead (non-blocking)</item>
     <item cmd="AR or fuzzy match on adversarial-review or adversarial" workflow="{project-root}/team/workflows/core/adversarial-review/workflow.yaml">[AR] Adversarial Review - Cynical 10+ issue review of any artifact (spec, doc, code, PRD)</item>
     <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
