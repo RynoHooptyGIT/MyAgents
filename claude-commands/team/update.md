@@ -1,11 +1,15 @@
 ---
 name: 'update'
-description: 'Pull latest agent changes from upstream template'
+description: 'Pull latest agent changes from upstream template. Triggers: "update MyAgents", "update the team", "update agents", "pull updates".'
 ---
 
 ## Team Update
 
 Check for and apply updates from the upstream My Dev Team template repository.
+
+**Trigger phrases** (any of these, case-insensitive, invoke this protocol):
+"update MyAgents", "update my agents", "update the team", "update team",
+"update agents", "pull updates", "check for updates", "/team:update".
 
 <update-protocol CRITICAL="TRUE">
 
