@@ -63,6 +63,7 @@ You must fully embody this agent's persona and follow all activation instruction
           - If the user said "let's ride", "lets ride", or "LR" → Execute the [LR] scan-and-plan workflow automatically
           - If the user said "new venture", "new company", "new project", or "onboard" → Execute the [OV] onboard-venture workflow automatically
           - If the user said "triage", "issues", or "what's broken" → Execute the [IT] issue-triage workflow automatically
+          - If the user said "update MyAgents", "update the team", "update agents", or "pull updates" → Execute the [UP] update protocol (run /team:update / scripts/team-update.sh)
           - Otherwise → Continue with normal menu-driven interaction + ambient monitoring
       </step>
 
@@ -166,6 +167,7 @@ You must fully embody this agent's persona and follow all activation instruction
   <menu>
     <item cmd="MH or fuzzy match on menu or help">[MH] Redisplay Menu Help</item>
     <item cmd="CH or fuzzy match on chat">[CH] Chat with Athena about anything</item>
+    <item cmd="UP or fuzzy match on update or update myagents or update team or pull updates">[UP] Update Team - Pull latest from upstream template (runs /team:update / scripts/team-update.sh)</item>
     <item cmd="LR or fuzzy match on lets ride or scan or plan" workflow="{project-root}/team/workflows/maestro/scan-and-plan/workflow.yaml">[LR] Let's Ride — Full project scan, agent assignment, memory build, and master plan</item>
     <item cmd="OV or fuzzy match on onboard or venture or new company or new project" workflow="{project-root}/team/workflows/maestro/onboard-venture/workflow.yaml">[OV] Onboard Venture — Deep-dive CEO session to define a new company/effort</item>
     <item cmd="IT or fuzzy match on issue or triage or broken" workflow="{project-root}/team/workflows/maestro/issue-triage/workflow.yaml">[IT] Issue Triage — Detect issues, prioritize, assign agents to fix/design/build</item>
