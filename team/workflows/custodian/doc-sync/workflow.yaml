@@ -1,0 +1,33 @@
+name: doc-sync
+description: "Documentation patrol — reconcile docs against PRD/epics + live code, update stale docs, flag/prune non-viable ones. Non-blocking."
+author: "My Dev Team"
+config_source: "{project-root}/team/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+installed_path: "{project-root}/team/workflows/custodian/doc-sync"
+instructions: "{installed_path}/instructions.md"
+variables:
+  # Paige (tech-writer) runs the patrol — she is the writer persona allowed to
+  # author/prune docs. Sentinel (custodian) is report-only and never writes.
+  agent: "tech-writer"
+  # Sources of truth for INTENT. NOTE: real planning artifacts live under
+  # _bmad-output/ in this repo, NOT output/ (config path is historically wrong).
+  prd_glob: "_bmad-output/planning-artifacts/prds/**/*.md"
+  epics_glob: "_bmad-output/planning-artifacts/*epics*.md"
+  docs_glob: "docs/**/*.md"
+  sprint_status: "_bmad-output/implementation-artifacts/sprint-status.yaml"
+input_file_patterns:
+  prd:
+    description: "Product requirements — source of truth for intent"
+    whole: "_bmad-output/planning-artifacts/prds/**/*.md"
+    load_strategy: "FULL_LOAD"
+  epics:
+    description: "Epics & stories — what is actually being built"
+    whole: "_bmad-output/planning-artifacts/*epics*.md"
+    load_strategy: "FULL_LOAD"
+  docs:
+    description: "Technical docs to keep in sync"
+    whole: "docs/**/*.md"
+    load_strategy: "FULL_LOAD"
+standalone: true

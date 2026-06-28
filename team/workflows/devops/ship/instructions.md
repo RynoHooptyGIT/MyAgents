@@ -183,6 +183,53 @@ After updating sprint-status.yaml, regenerate the sprint digest context file so 
 - Stage the regenerated file for inclusion in the commit (or as a follow-up commit)
 - `[INFO]` If the script is not found or fails, skip silently — this is non-blocking
 
+## Step 6c: Documentation Patrol (Scribe — NON-BLOCKING, PR-only)
+
+Fire the documentation custodian so docs stay aligned with what just shipped.
+This keeps PRD → technical docs current and prunes non-viable docs every PR —
+the standing job of the scrum-master/architect, automated as a safety net.
+
+**This is the ONLY automatic trigger for doc-sync.** It runs inside the ship/PR
+process, here, once. (The `/team:doc-sync` command is manual/on-demand only and
+is never auto-fired.)
+
+### 6c.1 — Loop guard (evaluate FIRST; skip patrol if any are true)
+
+Documentation edits from this patrol are staged into the SAME commit/push as the
+ship (Step 7) — there is no second push, so a normal ship cannot re-trigger
+itself. These guards harden that against any future automation:
+
+1. **Doc-only change** → SKIP. Compute the PR range:
+   `git diff --name-only origin/main...HEAD`. If every changed path is under
+   `docs/` or matches `*.md` (i.e. nothing code-side to reconcile, OR this push
+   IS a prior doc-sync result), log `[INFO] doc-sync: skipped (doc-only change)`
+   and go to Step 7.
+2. **Marker present** → SKIP. If the HEAD commit message (or any commit in the PR
+   range) contains `[skip-doc-sync]`, log `[INFO] doc-sync: skipped (marker)` and
+   go to Step 7. The patrol stamps its own work with this marker (see 6c.2), so
+   it can never react to its own output.
+3. **Already ran for this HEAD** → SKIP. If `.git/doc-sync-done` exists and
+   contains the current `git rev-parse HEAD`, the patrol already ran this revision;
+   log `[INFO] doc-sync: skipped (already ran)` and go to Step 7.
+
+### 6c.2 — Run the patrol (only if no guard tripped)
+
+- Invoke the doc-sync patrol: run `team/workflows/custodian/doc-sync/instructions.md`
+  scoped to this PR's diff range.
+- It may UPDATE stale docs, CREATE docs for shipped features, and PRUNE/flag dead
+  docs. **Stage** any applied doc edits so they ride along in this PR's push —
+  do NOT create a separate commit/push for them.
+- After staging, write the current HEAD sha to `.git/doc-sync-done` (idempotency
+  marker; `.git/` is never committed). When the patrol does produce its own
+  standalone commit (manual runs only), that commit message MUST include the
+  `[skip-doc-sync]` trailer.
+- It surfaces **PRD DRIFT** (where the PRD has fallen behind the code) as a report
+  item only — it does NOT auto-edit the PRD. Relay that to the user for the
+  architect to action.
+- `[CRITICAL — NON-BLOCKING]` This patrol must NEVER block the push/PR. If it
+  errors, finds nothing, or the user declines, log `[INFO] doc-sync: <result>`
+  and proceed to Step 7 regardless. Documentation drift never aborts a ship.
+
 ---
 
 ## Step 7: Push and PR
