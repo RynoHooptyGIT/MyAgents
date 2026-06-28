@@ -41,7 +41,6 @@ teams:
   core-dev:
     name: "Core Development"
     members:
-      - maestro
       - oracle
       - custodian
       - architect
@@ -84,7 +83,6 @@ teams:
   full-team:
     name: "Full Team"
     members:
-      - maestro
       - oracle
       - custodian
       - architect

@@ -131,7 +131,7 @@
     ASSIGNMENT RULES:
     1. Match work domains to agent expertise:
        - ARCHITECTURE → Winston (Architect)
-       - IMPLEMENTATION → Amelia (Dev) for coding, Athena/Maestro for lifecycle
+       - IMPLEMENTATION → Amelia (Dev) for coding, Athena (Oracle) for lifecycle
        - TESTING → Murat (Tea - Test Architect)
        - SECURITY → Shield (Security Auditor)
        - DOCUMENTATION → Paige (Tech Writer)
@@ -228,7 +228,7 @@
     NOT "review the architecture" but "the API layer in src/routes/ lacks input validation on 3 endpoints: /users, /auth, /data"
     </action>
 
-    <action>Also create/update the Maestro memory file at {project-root}/team/_memory/maestro/latest-scan.md:
+    <action>Also create/update the Oracle scan memory file at {project-root}/team/_memory/maestro/latest-scan.md:
     ```markdown
     ---
     scan_date: {date}

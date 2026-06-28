@@ -46,7 +46,6 @@ teams:
   project-dev:
     name: "{project_name} Core Development"
     members:
-      - maestro
       - oracle
       - custodian
       - architect
@@ -89,7 +88,6 @@ teams:
   project-full:
     name: "{project_name} Full Team"
     members:
-      - maestro
       - oracle
       - custodian
       - architect

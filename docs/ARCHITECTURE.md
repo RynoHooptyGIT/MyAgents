@@ -1,6 +1,6 @@
 # My Dev Team — Architecture
 
-This document explains how the system works internally -- the workflow engine, agent activation protocol, Maestro/Oracle orchestration, variable resolution, context generation pipeline, and sprint status tracking.
+This document explains how the system works internally -- the workflow engine, agent activation protocol, Oracle orchestration, variable resolution, context generation pipeline, and sprint status tracking.
 
 ## System Overview
 
@@ -10,7 +10,7 @@ This is a file-driven methodology. There is no runtime, no server, no database. 
 User Directive
       |
       v
-Maestro (project-level) or Oracle (sprint-level)
+Oracle (sole orchestrator: project-level + sprint-level)
       |
       +-- Reads config.yaml (project settings)
       +-- Reads sprint-status.yaml (project state)
@@ -153,12 +153,11 @@ When an agent is invoked (via slash command or direct file reference):
 
 The agent stays in character until dismissed via the exit menu item.
 
-## Orchestration: Maestro and Oracle
+## Orchestration: Oracle
 
-The system has two orchestrators with distinct roles:
+The system has a single orchestrator that owns both reactive and proactive work:
 
-- **Maestro** (`team/agents/maestro.md`) — The primary project-level orchestrator. Scans the full project landscape, assigns agents to tasks, builds per-agent mission briefings (memory), produces the master plan, and enforces CEO approval gates. Use Maestro when starting new projects, major initiatives, or when "Let's ride" scanning is needed.
-- **Oracle / Athena** (`team/agents/oracle.md`) — The sprint-level orchestrator. Reads sprint state, presents project briefs, and enforces the implementation lifecycle (create-story → dev-story → code-review → ship). Use Oracle for day-to-day sprint execution.
+- **Oracle / Athena** (`team/agents/oracle.md`) — The sole orchestrator. At the sprint level, it reads sprint state, presents project briefs, and enforces the implementation lifecycle (create-story → dev-story → code-review → ship). At the project level, it scans the full landscape, assigns agents to tasks, builds per-agent mission briefings (memory), produces the master plan, enforces CEO approval gates, and serves as the inter-agent communication hub. Use Oracle for everything from day-to-day sprint execution to new-project kickoff, major initiatives, and "Let's ride" scanning. Oracle owns the [LR] Let's Ride / [OV] Onboard Venture / [IT] Issue Triage / [AP] Approval Queue menu items.
 
 ### Oracle Activation Sequence
 

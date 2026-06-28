@@ -43,7 +43,7 @@ baseline for this repo (re-run to refresh):
 | Asset       | Files | Size    | ~Tokens | Note |
 |-------------|-------|---------|---------|------|
 | Commands    | 84    | ~65 KB  | ~17k    | thin, fine |
-| Agents      | 30    | ~344 KB | ~86k    | `oracle.md` & `maestro.md` ~28KB each |
+| Agents      | 29    | ~316 KB | ~79k    | `oracle.md` sole orchestrator (sharded); fattest experts ~5k each |
 | Workflows   | 509   | ~3.3 MB | ~820k   | the elephant |
 
 `oracle.md` (~7k tokens) loads **every session** via CLAUDE.md ambient

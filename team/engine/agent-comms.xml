@@ -1,8 +1,8 @@
 <task id="team/engine/agent-comms.xml" name="Inter-Agent Communication Protocol">
-  <objective>Enable structured communication between agents through file-based message passing with Maestro as the command hub</objective>
+  <objective>Enable structured communication between agents through file-based message passing with Oracle as the command hub</objective>
 
   <llm critical="true">
-    <mandate>ALL inter-agent communication flows through Maestro — no agent-to-agent direct messaging without Maestro's awareness</mandate>
+    <mandate>ALL inter-agent communication flows through Oracle — no agent-to-agent direct messaging without Oracle's awareness</mandate>
     <mandate>Messages must be actionable — no status-only messages without a request or deliverable</mandate>
     <mandate>Security-sensitive findings ALWAYS get flagged with [SECURITY] prefix</mandate>
   </llm>
@@ -11,10 +11,10 @@
   <!-- COMMUNICATION MODEL                                 -->
   <!-- ═══════════════════════════════════════════════════ -->
   <model>
-    <principle>Maestro is the hub — all communication routes through Maestro</principle>
+    <principle>Oracle is the hub — all communication routes through Oracle</principle>
     <principle>Agents write to their own memory space and the shared comms channel</principle>
-    <principle>Maestro reads all agent outputs and creates coordinated briefings</principle>
-    <principle>Agents can REQUEST information from other agents via Maestro</principle>
+    <principle>Oracle reads all agent outputs and creates coordinated briefings</principle>
+    <principle>Agents can REQUEST information from other agents via Oracle</principle>
 
     <directory-structure>
       {project-root}/team/_memory/_comms/
@@ -50,7 +50,7 @@
       <example>
         Shield (Security Auditor) finds an SQL injection risk during security review.
         Writes finding to findings/ addressed to Amelia (Dev) with priority CRITICAL.
-        Maestro reads the finding during next triage and creates a task for Amelia.
+        Oracle reads the finding during next triage and creates a task for Amelia.
       </example>
     </type>
 
@@ -108,7 +108,7 @@
   </message-types>
 
   <!-- ═══════════════════════════════════════════════════ -->
-  <!-- MAESTRO'S ROLE AS HUB                                 -->
+  <!-- ORACLE'S ROLE AS HUB                                  -->
   <!-- ═══════════════════════════════════════════════════ -->
   <hub-protocol>
     <step n="1" title="On Activation / Scan">
@@ -143,9 +143,9 @@
   <rules>
     <r>Every agent MUST check their mission briefing (team/_memory/{agent}/mission.md) at activation</r>
     <r>Every agent MUST write a handoff document when completing assigned work</r>
-    <r>Security findings are NEVER deferred — they go to Maestro immediately with [SECURITY] flag</r>
-    <r>Agents MUST NOT start work that contradicts another agent's findings without Maestro mediation</r>
-    <r>When in doubt about scope, agents write a request to Maestro rather than making assumptions</r>
+    <r>Security findings are NEVER deferred — they go to Oracle immediately with [SECURITY] flag</r>
+    <r>Agents MUST NOT start work that contradicts another agent's findings without Oracle mediation</r>
+    <r>When in doubt about scope, agents write a request to Oracle rather than making assumptions</r>
     <r>All communication files use the naming convention: {date}-{from}-{type}-{slug}.md</r>
   </rules>
 
@@ -154,8 +154,8 @@
   <!-- ═══════════════════════════════════════════════════ -->
   <coordination-bridge>
     <desc>When multi-agent coordination is active (.agents/ directory exists),
-    agents cross-post all coordination events to Maestro's _comms/ channel.
-    This preserves Maestro's hub mandate while enabling autonomous coordination.</desc>
+    agents cross-post all coordination events to Oracle's _comms/ channel.
+    This preserves Oracle's hub mandate while enabling autonomous coordination.</desc>
 
     <rule>ALL .agents/decisions/ entries cross-post to findings/ using _comms/ naming: {date}-{from}-finding-{slug}.md</rule>
     <rule>ALL .agents/requests/ entries cross-post to requests/ using _comms/ naming: {date}-{from}-request-{slug}.md</rule>

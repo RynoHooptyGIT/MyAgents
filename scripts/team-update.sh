@@ -409,5 +409,5 @@ AGENT_COUNT=$(tail -n +2 "$PROJECT_ROOT/team/agent-manifest.csv" | wc -l | tr -d
 PLUGIN_COUNT=$(jq '.plugins | length' "$PROJECT_ROOT/plugins/registry.json" 2>/dev/null || echo "0")
 echo -e "  Agents: ${YELLOW}${AGENT_COUNT}${NC}  |  Plugins: ${YELLOW}${PLUGIN_COUNT}${NC}"
 echo ""
-echo -e "  ${DIM}Run /team:maestro to activate with the latest changes.${NC}"
+echo -e "  ${DIM}Run /team:oracle to activate with the latest changes.${NC}"
 echo ""
