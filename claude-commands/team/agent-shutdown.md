@@ -73,7 +73,7 @@ decisions_made:
 next_steps: "{recommended next actions}"
 ```
 
-If Maestro integration is enabled, also write the handoff to `team/_memory/_comms/handoffs/` using the naming convention `{date}-{AGENT_ID}-handoff-{slug}.md`.
+If Oracle integration is enabled, also write the handoff to `team/_memory/_comms/handoffs/` using the naming convention `{date}-{AGENT_ID}-handoff-{slug}.md`.
 
 ## Step 5: Release Claim
 

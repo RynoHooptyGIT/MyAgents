@@ -43,7 +43,7 @@ bash skills/slim-audit/scripts/audit.sh        # measure / re-measure
 ```
 
 The four cuts, in priority order:
-1. **Shard always-loaded personas** (oracle/maestro) into a thin activation core
+1. **Shard always-loaded personas** (e.g. oracle) into a thin activation core
    + lazy reference sections. Biggest per-session win.
 2. **JIT step-files** for monolithic workflows — load the current step, drop it
    after.

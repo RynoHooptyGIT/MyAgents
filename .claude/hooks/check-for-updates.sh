@@ -4,7 +4,7 @@
 # =============================================================================
 # Runs as a UserPromptSubmit hook. Checks for team updates AND plugin updates
 # at most once every 24 hours to avoid network overhead. Writes marker files
-# that Oracle/Maestro read during activation to display update banners.
+# that Oracle reads during activation to display update banners.
 #
 # This script is non-blocking and silent — it never outputs to the user
 # directly. All notification happens through the orchestrator agents.

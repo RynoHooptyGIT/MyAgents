@@ -1,21 +1,15 @@
 # My Dev Team — Agent Catalog
 
-27 specialist agents, each agent has a persona with a unique name, communication style, domain expertise, and activation protocol. This catalog documents every agent, when to use them, and how to invoke them.
+26 specialist agents, each agent has a persona with a unique name, communication style, domain expertise, and activation protocol. This catalog documents every agent, when to use them, and how to invoke them.
 
 ---
 
 ## Orchestration
 
-### Maestro
-
-- **Domain**: Project orchestration, full-landscape scanning, agent assignment, mission briefing generation, master plan creation
-- **When to use**: When starting a new project or major initiative. Maestro scans the entire project, identifies gaps, assigns agents to their parts, builds per-agent mission briefings (memory), and produces the master plan. Say "Let's ride" to trigger a full scan. Enforces the full implementation lifecycle and CEO approval gates. The primary orchestrator for project-level work.
-- **Slash command**: `/team:maestro`
-
 ### Oracle / Athena
 
-- **Domain**: Sprint orchestration, lifecycle enforcement, sprint state management, discipline enforcement
-- **When to use**: For day-to-day sprint work. The Oracle reads sprint state, presents a project brief, and enforces the implementation lifecycle (create-story, dev-story, code-review, ship). It translates directives into workflow sequences and executes them directly. Routes to specialist agents for domain expertise. Enforces verification discipline at all workflow completion checkpoints.
+- **Domain**: Sole orchestrator — both reactive tactical fixes and proactive strategic scan-and-plan, sprint orchestration, lifecycle enforcement, full-landscape scanning, agent assignment, mission briefing generation, master plan creation, CEO approval gate, inter-agent communication hub
+- **When to use**: For all orchestration, project-level and sprint-level alike. For day-to-day sprint work, Oracle reads sprint state, presents a project brief, and enforces the implementation lifecycle (create-story, dev-story, code-review, ship). For new projects and major initiatives, Oracle scans the entire project, identifies gaps, assigns agents to their parts, builds per-agent mission briefings (memory), and produces the master plan — say "Let's ride" to trigger a full scan, or use the [OV] Onboard Venture / [IT] Issue Triage / [AP] Approval Queue menu items. It translates directives into workflow sequences and executes them directly, routes to specialist agents for domain expertise, enforces CEO approval gates, and is the central inter-agent communication hub. Enforces verification discipline at all workflow completion checkpoints.
 - **Slash command**: `/team:oracle`
 
 ---
@@ -220,7 +214,7 @@
 
 | Category | Agents |
 |----------|--------|
-| Orchestration | 2 |
+| Orchestration | 1 |
 | Core Planning | 4 |
 | Implementation | 3 |
 | Quality & Testing | 2 |
@@ -231,4 +225,4 @@
 | Creative Innovation | 3 |
 | Builders | 3 |
 | Platform | 1 |
-| **Total** | **28** |
+| **Total** | **27** |

@@ -145,17 +145,17 @@ For each decision where `acknowledged_by` does not contain your `AGENT_ID`:
 2. Tell the user about it: "Decision from agent {id}: {decision}"
 3. Add your AGENT_ID to the `acknowledged_by` list in the file
 
-## Step 7: Check for Maestro Integration
+## Step 7: Check for Oracle Integration
 
 ```bash
-[ -f "$REPO_ROOT/team/engine/agent-comms.xml" ] && echo "Maestro detected" || echo "Standalone mode"
+[ -f "$REPO_ROOT/team/engine/agent-comms.xml" ] && echo "Oracle detected" || echo "Standalone mode"
 ```
 
-If Maestro is detected:
+If Oracle is detected:
 1. Create `team/_memory/_comms/` directories if they don't exist
 2. Read `team/_memory/_comms/broadcasts/` for team-wide directives
 3. Read `team/_memory/{persona}/mission.md` if it exists for pre-assigned work
-4. Report any Maestro directives found
+4. Report any Oracle directives found
 
 ## Step 8: Report and Begin
 
@@ -170,7 +170,7 @@ Display a summary:
   Branch:      agent/{AGENT_ID}/{task-slug}
   Story:       {story_id or "manual"}
   Claimed:     {list of owned_paths}
-  Mode:        {Maestro | Standalone}
+  Mode:        {Oracle | Standalone}
 
   Active Agents: {N}
   {list other agents and their tasks}

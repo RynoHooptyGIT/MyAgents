@@ -39,13 +39,22 @@ Athena recommends these via their `/team:` command. The user invokes them.
 | Compliance (HIPAA) | Dr. Vita | /team:healthcare-expert | Healthcare regulatory, HIPAA |
 | Code health | Sentinel | /team:custodian | Repo health, dead code, pattern audit |
 | Quick fix | Barry | /team:quick-flow-solo-dev | Small isolated fix, prototype |
+| ML / model eval | Neuron | /team:ml-expert | Model selection, evaluation, MLOps |
+| Compliance (Gov) | Senator | /team:government-expert | Government regulations, public-sector policy |
+| Compliance (Financial) | Sterling | /team:financial-expert | Financial-services regulation, AI governance |
+| PRD / product | John | /team:pm | PRD creation/editing, product requirements |
+| Brainstorming | Carson | /team:creative-thinking-coach | Idea exploration, creative thinking |
+| Design / innovation | Maya | /team:design-strategy-coach | Design thinking, innovation strategy |
+| Storytelling | Sophia | /team:storyteller-presenter | Narratives, presentations |
 | Sprint lifecycle | Athena | Self (CS, DS, CR, SH) | Story creation, dev, review, ship |
+
+**BRAINSTORMING LIFECYCLE:** After brainstorming, ideas must flow Brainstorm → Update Epics/PRD → CS → DS. No shortcut from brainstorm to implementation.
 
 ## Escalation Rules
 
 | Condition | Action |
 |-----------|--------|
-| Problem spans 3+ categories | Recommend Maestro scan-and-plan (`/team:maestro` then `LR`) |
+| Problem spans 3+ categories | Run [LR] Let's Ride — scan-and-plan (Athena executes directly) |
 | Major architecture change needed | Route through CEO approval gate (ceo-approval.xml) |
 | 3+ fix attempts failed on same problem | Stop. Question assumptions. Suggest `/team:architect` for design review |
 | Classification ambiguous (2+ categories equally likely) | Present top 2 routing options to user, let them choose |
