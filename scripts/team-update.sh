@@ -356,16 +356,24 @@ echo "$UPSTREAM_VERSION" > "$PROJECT_ROOT/.team-upstream-version"
 
 # Update manifest date only (preserve local version and teams section)
 UPDATE_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
+# On Git Bash / MSYS / Cygwin, a native-Windows python3 cannot open an msys-style
+# path like /c/... → convert to a forward-slash Windows path (C:/...) with
+# `cygpath -m`. -m (not -w) avoids backslash escapes such as \team → tab in the
+# python string. No-op on Linux/macOS where cygpath is absent.
+MANIFEST_PATH="$PROJECT_ROOT/team/manifest.yaml"
+if command -v cygpath &> /dev/null; then
+    MANIFEST_PATH="$(cygpath -m "$MANIFEST_PATH")"
+fi
 if command -v python3 &> /dev/null; then
     python3 -c "
 import re
-with open('$PROJECT_ROOT/team/manifest.yaml', 'r') as f:
+with open('$MANIFEST_PATH', 'r') as f:
     content = f.read()
 content = re.sub(r'lastUpdated: .*', 'lastUpdated: $UPDATE_DATE', content)
 content = re.sub(r'upstreamVersion: .*', 'upstreamVersion: $UPSTREAM_VERSION', content, count=1)
 if 'upstreamVersion' not in content:
     content = re.sub(r'(version: .*)', r'\1\nupstreamVersion: $UPSTREAM_VERSION', content, count=1)
-with open('$PROJECT_ROOT/team/manifest.yaml', 'w') as f:
+with open('$MANIFEST_PATH', 'w') as f:
     f.write(content)
 "
 else
