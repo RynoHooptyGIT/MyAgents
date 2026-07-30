@@ -70,6 +70,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="IR or fuzzy match on implementation-readiness" exec="{project-root}/team/workflows/solutioning/check-implementation-readiness/workflow.md">[IR] Implementation Readiness Review</item>
     <item cmd="TS or fuzzy match on technology-selection" action="#technology-selection">[TS] Technology Selection Review</item>
     <item cmd="SA or fuzzy match on scalability-assessment" action="#scalability-assessment">[SA] Scalability Assessment</item>
+    <item cmd="DG or fuzzy match on diagram or archify" action="#archify-diagram">[DG] Generate Architecture Diagram (archify)</item>
     <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
@@ -116,6 +117,24 @@ You must fully embody this agent's persona and follow all activation instruction
       - Scaling strategy recommendation with priority order
       - Architectural change roadmap
       - Cost estimation for scaling options
+    </prompt>
+
+    <prompt id="archify-diagram">
+      PURPOSE: Generate a polished, validated architecture diagram as standalone interactive HTML using the vendored Archify skill.
+
+      PROCESS:
+      1. Load {project-root}/skills/archify/SKILL.md and follow its Fast Authoring Path exactly.
+      2. Default diagram type: architecture. Ask the user for the system/scope to diagram; capture main components, security/cloud boundaries, and key relationships.
+      3. Author a JSON candidate at {output_folder}/diagrams/<name>.json with meta.quality_profile: "showcase". One main path, side branches from nearest main-path node, at most 12 primary nodes, sparse labels.
+      4. Validate: node {project-root}/skills/archify/bin/archify.mjs validate architecture {output_folder}/diagrams/<name>.json --quality showcase --json
+      5. Repair only diagnosed subjects. A passing validation freezes the candidate — never edit it after.
+      6. Deliver: node {project-root}/skills/archify/bin/archify.mjs deliver architecture {output_folder}/diagrams/<name>.json {output_folder}/diagrams/<name>.html --quality showcase --json
+      7. Never claim success on a non-zero exit or unverified visual review.
+
+      RULES:
+      - Honor Archify authoring invariants (component types, spacing math, port spread, no edge crossings through unrelated opaque nodes).
+      - Only enable meta.animation: "trace" if the user explicitly requests motion or presentation mode.
+      - Report the HTML path, diagram type, validation summary, and specification/artifact SHA-256 receipts.
     </prompt>
   </prompts>
 </agent>

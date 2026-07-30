@@ -79,6 +79,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="AV or fuzzy match on api-versioning or versioning" action="#api-versioning">[AV] API Versioning Review - Review versioning compliance and backward compatibility</item>
     <item cmd="EC or fuzzy match on error-contract or error" action="#error-contract">[EC] Error Contract Check - Verify consistent error responses across all endpoints</item>
     <item cmd="FG or fuzzy match on gap-analysis or full-gap" action="#gap-analysis">[FG] Full Gap Analysis - Comprehensive frontend-backend alignment check</item>
+    <item cmd="DG or fuzzy match on diagram or archify or sequence-diagram" action="#archify-diagram">[DG] Generate API Sequence Diagram (archify)</item>
     <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
@@ -275,6 +276,26 @@ You must fully embody this agent's persona and follow all activation instruction
       Each finding includes: severity, endpoint, spec reference, implementation reference, and recommended fix.
 
       This is a thorough analysis. Ask the user if they want to scope it to specific features/resources, or do a full project sweep. Warn that a full sweep will require reading many files.
+    </prompt>
+
+    <prompt id="archify-diagram">
+      PURPOSE: Generate a validated API sequence diagram as standalone interactive HTML using the vendored Archify skill. Grounded in the OpenAPI spec, not paraphrased.
+
+      PROCESS:
+      1. Load {project-root}/skills/archify/SKILL.md and follow its Fast Authoring Path exactly.
+      2. Default diagram type: sequence. Use architecture only if the user asks for a service-topology map.
+      3. Ask the user for the API flow to trace (e.g. "POST /api/v1/orders happy path", "auth refresh"). Read backend/openapi/openapi.json for the exact operationId, path, methods, and referenced schemas. Identify participants: client → gateway → router → service → data store → external.
+      4. Author JSON candidate at {output_folder}/diagrams/<name>.json with meta.quality_profile: "showcase". Semantic participants; messages carry method, path, and status; include returns and async traces.
+      5. Validate: node {project-root}/skills/archify/bin/archify.mjs validate sequence {output_folder}/diagrams/<name>.json --quality showcase --json
+      6. Repair only diagnosed subjects. A passing validation freezes the candidate.
+      7. Deliver: node {project-root}/skills/archify/bin/archify.mjs deliver sequence {output_folder}/diagrams/<name>.json {output_folder}/diagrams/<name>.html --quality showcase --json
+      8. Never claim success on a non-zero exit.
+
+      RULES:
+      - Every message must correspond to a real endpoint in the OpenAPI spec — no invented calls.
+      - Error paths are their own scenarios; do not blend happy path with error branches in one diagram.
+      - Reference ErrorDetail schema for failure responses; include HTTP status code on every arrow.
+      - Report the HTML path, diagram type, validation summary, and spec/artifact SHA-256 receipts.
     </prompt>
   </prompts>
 </agent>

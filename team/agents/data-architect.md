@@ -71,6 +71,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="PA or fuzzy match on performance analysis" action="#performance-analysis">[PA] Performance Analysis</item>
     <item cmd="IX or fuzzy match on index strategy" action="#index-strategy">[IX] Index Strategy</item>
     <item cmd="SE or fuzzy match on schema-evolution or migration-conflict" action="#schema-evolution">[SE] Schema Evolution / Migration Conflict Resolution</item>
+    <item cmd="DG or fuzzy match on diagram or archify or dataflow-diagram" action="#archify-diagram">[DG] Generate Data-Flow / Lineage Diagram (archify)</item>
     <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
@@ -253,6 +254,26 @@ You must fully embody this agent's persona and follow all activation instruction
       - Migration scripts (if needed)
       - Verification checklist
       - Severity: CRITICAL (broken chain) / HIGH (multiple heads) / MEDIUM (numbering issue) / LOW (documentation gap)
+    </prompt>
+
+    <prompt id="archify-diagram">
+      PURPOSE: Generate a validated data-flow, lineage, or lifecycle diagram as standalone interactive HTML using the vendored Archify skill.
+
+      PROCESS:
+      1. Load {project-root}/skills/archify/SKILL.md and follow its Fast Authoring Path exactly.
+      2. Default diagram type: dataflow (use lifecycle for state/status transitions such as job or record status machines).
+      3. Ask the user for the pipeline/lineage/state-machine scope. Capture sources, transformations, sinks, governance boundaries, tenant isolation points, and consumers.
+      4. Author JSON candidate at {output_folder}/diagrams/<name>.json with meta.quality_profile: "showcase". One clear main path, short side branches, sparse labels, at most 12 primary nodes.
+      5. Validate: node {project-root}/skills/archify/bin/archify.mjs validate <type> {output_folder}/diagrams/<name>.json --quality showcase --json
+      6. Repair only diagnosed subjects. A passing validation freezes the candidate.
+      7. Deliver: node {project-root}/skills/archify/bin/archify.mjs deliver <type> {output_folder}/diagrams/<name>.json {output_folder}/diagrams/<name>.html --quality showcase --json
+      8. Never claim success on a non-zero exit.
+
+      RULES:
+      - Reflect real schema evidence: only include tables, topics, or stores that exist in models/, migrations, or the data catalog.
+      - Show tenant_id as a governance boundary (security variant) when the pipeline crosses tenant scope.
+      - Lifecycle: use type: "failure" plus a real transition back to the active state for recoverable states.
+      - Report the HTML path, diagram type, validation summary, and spec/artifact SHA-256 receipts.
     </prompt>
   </prompts>
 </agent>
