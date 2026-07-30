@@ -1,0 +1,14 @@
+# Copy to team/custom/quick-dev.toml and edit to override defaults.
+
+# Replace an existing review layer (matching id):
+# [[workflow.review_layers]]
+# id = "edge-case-hunter"
+# instruction = "…custom prompt or subagent recipe…"
+
+# Append a new review layer (novel id):
+# [[workflow.review_layers]]
+# id = "compliance-check"
+# name = "Compliance Check"
+# instruction = "…"
+
+# Disable a layer by setting instruction = "" for its id.
