@@ -52,7 +52,7 @@ Use these headings:
 - **No full copies.** Never quote source documents, section numbers, or paste large blocks verbatim. Always distill.
 - **No story-level details.** The story list is for orientation only. Individual story specs handle the details.
 - **Nothing derivable from the codebase.** Don't document what a developer can learn by reading the code.
-- **Be concise and actionable.** Target 800–1500 tokens total. This file loads into bmad-build-auto's context alongside other material.
+- **Be concise and actionable.** Target 800–1500 tokens total. This file loads into bmad-dev-auto's context alongside other material.
 - **Never hallucinate content.** If source material doesn't say something, don't invent it.
 - **Omit empty sections entirely**, except Goal and Stories, which are always required.
 
