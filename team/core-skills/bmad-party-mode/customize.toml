@@ -65,7 +65,7 @@ party_memory = true
 # `{memory_dir}/<party>/.memlog.md`, where `<party>` is the group id (or
 # `installed` for the default room). `{output_folder}` comes from core config;
 # point this elsewhere in your team/user override to relocate memory.
-memory_dir = "{output_folder}/party-mode/memories"
+memory_dir = "team/_memory/party"
 
 # Executed when the party wraps (after the read-back, before dropping to normal
 # mode). String scalar = one instruction; array = instructions run in order.
