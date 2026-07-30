@@ -57,7 +57,7 @@ name = "Blind Hunter"
 instruction = """
 Launch a context-free subagent with this prompt:
 
-Read `{skill-root}/review-prompts/adversarial.md` completely and follow it as your review instructions.
+Read `team/core-skills/bmad-review/references/lens-adversarial.md` completely and follow it as your review instructions.
 
 Review content:
 
@@ -73,7 +73,7 @@ name = "Edge Case Hunter"
 instruction = """
 Launch a context-free subagent with this prompt:
 
-Read `{skill-root}/review-prompts/edge-case-hunter.md` completely and follow it as your review instructions.
+Read `team/core-skills/bmad-review/references/lens-edge-case-hunter.md` completely and follow it as your review instructions.
 
 Review content:
 
@@ -89,7 +89,7 @@ name = "Verification Gap Reviewer"
 instruction = """
 Launch a context-free subagent with this prompt:
 
-Read `{skill-root}/review-prompts/verification-gap.md` completely and follow it as your review instructions.
+Read `team/core-skills/bmad-review/references/lens-verification-gap.md` completely and follow it as your review instructions.
 
 Review content:
 
@@ -107,7 +107,7 @@ name = "Blind Hunter"
 instruction = """
 Launch a context-free subagent with this prompt:
 
-Read `{skill-root}/review-prompts/adversarial.md` completely and follow it as your review instructions.
+Read `team/core-skills/bmad-review/references/lens-adversarial.md` completely and follow it as your review instructions.
 
 Review content: the changed files in the current worktree. Inspect them directly before reviewing.
 
