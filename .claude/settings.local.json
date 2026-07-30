@@ -4,7 +4,8 @@
       "Bash(*)",
       "mcp__plugin_playwright_playwright__browser_navigate",
       "mcp__plugin_playwright_playwright__browser_click",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Skill(claude-md-management:revise-claude-md)"
     ],
     "deny": [
       "Bash(rm -rf:*)",
