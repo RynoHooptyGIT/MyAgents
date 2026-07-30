@@ -1,6 +1,7 @@
 <task id="team/workflows/advanced-elicitation/workflow.xml" name="Advanced Elicitation" standalone="true"
   methods="{project-root}/team/workflows/advanced-elicitation/methods.csv"
   agent-party="{project-root}/team/agent-manifest.csv">
+  <!-- Canonical methods.csv now lives at team/core-skills/bmad-advanced-elicitation/assets/methods.csv. This file is mirrored for backward compat. -->
   <llm critical="true">
     <i>MANDATORY: Execute ALL steps in the flow section IN EXACT ORDER</i>
     <i>DO NOT skip steps or change the sequence</i>
