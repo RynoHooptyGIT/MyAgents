@@ -26,6 +26,10 @@ Run a round-table where these agents talk to each other and to the user like rea
 > `id` matches the user's request. On unknown id, list available parties
 > and halt.
 
+> `scripts/memlog.py` is also not ported. Append party memlog entries by hand:
+> open `team/_memory/party/<party-id>/.memlog.md`, add a dated line describing
+> the turn's outcome, and save. On unknown party-id, create the directory first.
+
 5. **Memory.** If `memory_enabled` (from `resolve_party.py`), follow `references/party-memory.md` for the whole run.
 6. **Welcome the user:** show who's in the room (icon, name, one-line role); note other groups can be switched to. Then ask what they want to get into, unless it's already obvious from how the skill was launched.
 7. Run each `{workflow.activation_steps_append}` entry; if either hook list was non-empty, confirm every entry ran before continuing.
