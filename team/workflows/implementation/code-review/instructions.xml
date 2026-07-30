@@ -14,6 +14,11 @@
   <critical>Acceptance Criteria not implemented = HIGH severity finding</critical>
   <critical>Do not review files that are not part of the application's source code. Always exclude the team/ and output/ folders from the review. Always exclude IDE and CLI configuration folders like .cursor/ and .windsurf/ and .claude/</critical>
 
+  <no-spec-mode>
+    <supported>true</supported>
+    <behavior>If no spec file is provided, proceed with the review and skip spec-alignment checks. All other layers still run.</behavior>
+  </no-spec-mode>
+
 
   <step n="1" goal="Load story and discover changes">
     <action>Use provided {{story_path}} or ask user which story file to review</action>
