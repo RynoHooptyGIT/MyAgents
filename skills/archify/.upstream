@@ -1,0 +1,6 @@
+repo: https://github.com/tt-a1i/archify
+commit: 7b49d0b715fd4ba48116bcdecd1ba3789a279613
+version: 2.12
+vendored_at: 2026-07-29
+license: MIT
+source_path: archify.zip
