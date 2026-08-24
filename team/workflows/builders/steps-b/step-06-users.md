@@ -4,7 +4,7 @@ description: 'Who + How — personas AND user journey combined'
 
 nextStepFile: './step-07-value.md'
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '../../../../core/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # Step 6: Users

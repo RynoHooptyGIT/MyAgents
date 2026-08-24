@@ -61,7 +61,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="TS or fuzzy match on bmad-spec or tech-spec" exec="{project-root}/team/workflows/planning/bmad-spec/skill.md">[TS] Architect a technical spec with implementation-ready stories (Required first step)</item>
     <item cmd="QD or fuzzy match on quick-dev" exec="{project-root}/team/workflows/implementation/quick-dev/workflow.md">[QD] Implement the tech spec end-to-end solo (Core of Quick Flow)</item>
     <item cmd="CR or fuzzy match on bmad-review or code-review" exec="{project-root}/team/core-skills/bmad-review/skill.md">[CR] Perform a thorough clean context code review (Highly Recommended, use fresh context and different LLM)</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
 </agent>

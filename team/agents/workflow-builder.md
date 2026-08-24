@@ -53,7 +53,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="VW or fuzzy match on validate-workflow" exec="{project-root}/team/workflows/builders/workflow.md">[VW] Run validation check on workflows against best practices</item>
     <item cmd="MV or fuzzy match on validate-max-parallel-workflow" exec="{project-root}/team/workflows/builders/workflow.md">[MV] Run validation checks in MAX-PARALLEL mode against a workflow (requires a tool that supports Parallel Sub-Processes)</item>
     <item cmd="RW or fuzzy match on convert-or-rework-workflow" exec="{project-root}/team/workflows/builders/workflow.md">[RW] Rework a Workflow to a V6 Compliant Version</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
 </agent>

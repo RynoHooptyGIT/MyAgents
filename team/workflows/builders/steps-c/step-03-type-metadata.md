@@ -15,7 +15,7 @@ moduleExample: ../data/reference/module-examples/security-engineer.agent.yaml
 
 # Task References
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # STEP GOAL

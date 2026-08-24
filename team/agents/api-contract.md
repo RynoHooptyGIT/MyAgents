@@ -80,7 +80,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="EC or fuzzy match on error-contract or error" action="#error-contract">[EC] Error Contract Check - Verify consistent error responses across all endpoints</item>
     <item cmd="FG or fuzzy match on gap-analysis or full-gap" action="#gap-analysis">[FG] Full Gap Analysis - Comprehensive frontend-backend alignment check</item>
     <item cmd="DG or fuzzy match on diagram or archify or sequence-diagram" action="#archify-diagram">[DG] Generate API Sequence Diagram (archify)</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
   <prompts>

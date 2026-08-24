@@ -81,7 +81,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="PERF or fuzzy match on performance">[PERF] Performance Audit — Core Web Vitals and bundle analysis</item>
     <item cmd="DS or fuzzy match on design-system">[DS] Design System — Create or extend project design tokens and component library</item>
     <item cmd="CR or fuzzy match on bmad-review or code-review" exec="{project-root}/team/core-skills/bmad-review/skill.md">[CR] Code Review (Frontend Focus) — Review frontend code for quality, accessibility, performance</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
 </agent>

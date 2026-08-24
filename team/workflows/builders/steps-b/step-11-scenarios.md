@@ -4,7 +4,7 @@ description: 'User journey — tell stories of how people will use this module'
 
 nextStepFile: './step-12-creative.md'
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '../../../../core/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # Step 11: Scenarios

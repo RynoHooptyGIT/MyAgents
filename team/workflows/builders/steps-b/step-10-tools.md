@@ -4,7 +4,7 @@ description: 'MCP tools, integrations, external services the module might need'
 
 nextStepFile: './step-11-scenarios.md'
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '../../../../core/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # Step 10: Tools

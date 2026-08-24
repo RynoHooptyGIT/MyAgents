@@ -6,7 +6,7 @@ nextStepFile: './e-04-type-metadata.md'
 editPlan: '{bmb_creations_output_folder}/edit-plan-{agent-name}.md'
 
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # Edit Step 2: Discover Edits

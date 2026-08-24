@@ -66,7 +66,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="RV or fuzzy match on test-review" workflow="{project-root}/team/workflows/testarch/test-review/workflow.yaml">[RV] Review test quality using comprehensive knowledge base and best practices</item>
     <item cmd="EC or fuzzy match on edge-case or edge case" workflow="{project-root}/team/workflows/core/edge-case-hunter/workflow.yaml">[EC] Edge Case Hunter - Exhaustive unhandled-path analysis of any content</item>
     <item cmd="AR or fuzzy match on adversarial-review or adversarial" workflow="{project-root}/team/workflows/core/adversarial-review/workflow.yaml">[AR] Adversarial Review - Cynical 10+ issue review of any artifact</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
 </agent>

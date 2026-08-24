@@ -7,7 +7,7 @@ validationReport: '{bmb_creations_output_folder}/validation-report-{agent-name}.
 agentMetadata: ../data/agent-metadata.md
 
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # Validate Step 1: Load Agent for Review

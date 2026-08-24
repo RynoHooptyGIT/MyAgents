@@ -6,7 +6,7 @@ nextStepFile: './step-05-plan-review.md'
 commonToolsCsv: '../data/common-workflow-tools.csv'
 workflowPlanFile: '{bmb_creations_output_folder}/workflows/{new_workflow_name}/workflow-plan-{new_workflow_name}.md'
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # Step 4: Tools Configuration

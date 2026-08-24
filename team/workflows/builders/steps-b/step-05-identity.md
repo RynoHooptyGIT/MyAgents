@@ -4,7 +4,7 @@ description: 'Module code, name, and personality/theme'
 
 nextStepFile: './step-06-users.md'
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '../../../../core/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # Step 5: Identity

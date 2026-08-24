@@ -4,7 +4,7 @@ description: 'Unique Value Proposition — what makes this module special?'
 
 nextStepFile: './step-08-agents.md'
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '../../../../core/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # Step 7: Value

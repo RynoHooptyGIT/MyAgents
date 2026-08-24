@@ -192,7 +192,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="AM or fuzzy match on agent-memory or memory or memories" action="#agent-memory-status">[AM] Agent Memory Status - View/update agent mission briefings</item>
     <item cmd="MP or fuzzy match on master-plan or plan" action="#view-master-plan">[MP] View Master Plan - Display the current master plan</item>
     <item cmd="HO or fuzzy match on handoff or save or session" action="#session-handoff">[HO] Session Handoff - Generate session summary for continuity</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="FI or fuzzy match on fix-it or fix it or fix" action="#fix-it">[FI] Fix It - Analyze context, identify problems, dispatch fixes</item>
     <item cmd="OS or fuzzy match on oracle-status or oracle status" action="#oracle-status">[OS] Oracle Status - Show ambient monitoring state</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>

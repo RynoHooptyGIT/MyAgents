@@ -4,7 +4,7 @@ description: 'Workflow ecosystem — brainstorm what workflows could exist'
 
 nextStepFile: './step-10-tools.md'
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '../../../../core/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # Step 9: Workflows

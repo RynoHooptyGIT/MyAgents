@@ -70,7 +70,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="IS or fuzzy match on forge-idea or innovation-strategy" exec="{project-root}/team/core-skills/bmad-forge-idea/skill.md">[IS] Innovation Strategy — Disruption opportunities and business model innovation</item>
     <item cmd="EM or fuzzy match on empathy-map" action="#empathy-mapping">[EM] Empathy Mapping — Deep user understanding exercise</item>
     <item cmd="BC or fuzzy match on business-model-canvas" action="#business-model-canvas">[BC] Business Model Canvas — Visual business model design</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
   <prompts>

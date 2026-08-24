@@ -13,7 +13,7 @@ outputFormatStandards: '../data/output-format-standards.md'
 csvDataFileStandards: '../data/csv-data-file-standards.md'
 subprocessPatterns: '../data/subprocess-optimization-patterns.md'
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # Step 9: Build Next Step (Repeatable)
@@ -163,7 +163,7 @@ someData: '../data/[data-file].csv'  # If applicable
 
 # Tasks (if A/P menu used)
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 ```
 

@@ -4,7 +4,7 @@ description: 'Deep dive into the vision — what would make this module extraord
 
 nextStepFile: './step-05-identity.md'
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '../../../../core/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # Step 4: Vision

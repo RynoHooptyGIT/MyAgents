@@ -4,7 +4,7 @@ description: 'Creative features — easter eggs, lore, delightful touches'
 
 nextStepFile: './step-13-review.md'
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '../../../../core/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # Step 12: Creative Features

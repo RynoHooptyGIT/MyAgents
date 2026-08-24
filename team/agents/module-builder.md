@@ -52,7 +52,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="CM or fuzzy match on create-module" exec="{project-root}/team/workflows/builders/workflow.md">[CM] Create a complete module with agents, workflows, and infrastructure</item>
     <item cmd="EM or fuzzy match on edit-module" exec="{project-root}/team/workflows/builders/workflow.md">[EM] Edit existing modules while maintaining coherence</item>
     <item cmd="VM or fuzzy match on validate-module" exec="{project-root}/team/workflows/builders/workflow.md">[VM] Run compliance check on modules against best practices</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
 </agent>

@@ -9,7 +9,7 @@ outputFile: {bmb_creations_output_folder}/agent-completion-{agent_name}.md
 
 # Task References
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 installationDocs: '' # TODO: replace with local or project-specific installation docs
 validationWorkflow: '{project-root}/team/workflows/builders/steps-v/v-01-load-review.md'
 ---

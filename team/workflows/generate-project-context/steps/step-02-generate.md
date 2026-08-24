@@ -30,7 +30,7 @@ This step will generate content and present choices for each rule category:
 ## PROTOCOL INTEGRATION:
 
 - When 'A' selected: Execute {project-root}/team/core-skills/bmad-advanced-elicitation/skill.md
-- When 'P' selected: Execute {project-root}/team/workflows/party-mode
+- When 'P' selected: Execute {project-root}/team/core-skills/bmad-party-mode/skill.md
 - PROTOCOLS always return to display this step's A/P/C menu after the A or P have completed
 - User accepts/rejects protocol changes before proceeding
 

@@ -82,7 +82,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="RA or fuzzy match on rag or rag-architecture" action="#rag-architecture">[RA] RAG Architecture - Design RAG systems: chunking, embedding, and retrieval</item>
     <item cmd="CO or fuzzy match on cost or cost-analysis or latency" action="#cost-analysis">[CO] Cost and Latency Analysis - Estimate costs and latency for agentic flows</item>
     <item cmd="FW or fuzzy match on framework or framework-comparison" action="#framework-comparison">[FW] Framework Comparison - Compare agentic frameworks for specific use cases</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
   <prompts>

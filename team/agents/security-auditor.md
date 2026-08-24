@@ -69,7 +69,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="AM or fuzzy match on auth-audit" action="#auth-audit">[AM] Auth Flow Audit - Authentication and authorization review</item>
     <item cmd="VA or fuzzy match on vulnerability-scan" action="#vulnerability-scan">[VA] Vulnerability Scan - OWASP Top 10 scan of code changes</item>
     <item cmd="TR or fuzzy match on threat-review" action="#threat-review">[TR] Threat Review - Threat model review for a specific feature</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
   <prompts>

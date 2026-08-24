@@ -828,7 +828,7 @@ HANDOFF:
   - Reused: Per-feature subprocess with structured return
 
 - **Party Mode Orchestration**: Sequential agent coordination
-  - Location: `team/workflows/party-mode/`
+  - Location: `team/core-skills/bmad-party-mode/`
   - Reused: Agent selection, sequential spawning, state tracking
 
 - **Evaluation Orchestrator**: Phase-based execution

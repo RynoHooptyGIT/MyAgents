@@ -110,7 +110,7 @@
                 <action>Continue to next step</action>
               </if>
               <if response="p">
-                <action>Start the party-mode workflow {project-root}/team/workflows/party-mode/workflow.yaml</action>
+                <action>Start the party-mode workflow {project-root}/team/core-skills/bmad-party-mode/skill.md</action>
               </if>
               <if
                 response="y">

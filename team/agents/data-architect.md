@@ -72,7 +72,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="IX or fuzzy match on index strategy" action="#index-strategy">[IX] Index Strategy</item>
     <item cmd="SE or fuzzy match on schema-evolution or migration-conflict" action="#schema-evolution">[SE] Schema Evolution / Migration Conflict Resolution</item>
     <item cmd="DG or fuzzy match on diagram or archify or dataflow-diagram" action="#archify-diagram">[DG] Generate Data-Flow / Lineage Diagram (archify)</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
   <prompts>

@@ -32,7 +32,7 @@ This step will generate content and present choices:
 ## PROTOCOL INTEGRATION:
 
 - When 'A' selected: Execute {project-root}/team/core-skills/bmad-advanced-elicitation/skill.md
-- When 'P' selected: Execute {project-root}/team/workflows/party-mode/workflow.md
+- When 'P' selected: Execute {project-root}/team/core-skills/bmad-party-mode/skill.md
 - PROTOCOLS always return to display this step's A/P/C menu after the A or P have completed
 - User accepts/rejects protocol changes before proceeding
 
@@ -285,7 +285,7 @@ Show the generated content and present choices:
 
 #### If 'P' (Party Mode):
 
-- Execute {project-root}/team/workflows/party-mode/workflow.md with starter evaluation context
+- Execute {project-root}/team/core-skills/bmad-party-mode/skill.md with starter evaluation context
 - Process collaborative insights about starter trade-offs
 - Ask user: "Accept these changes to the starter template evaluation? (y/n)"
 - If yes: Update content, then return to A/P/C menu

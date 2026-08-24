@@ -71,7 +71,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="TS or fuzzy match on technology-selection" action="#technology-selection">[TS] Technology Selection Review</item>
     <item cmd="SA or fuzzy match on scalability-assessment" action="#scalability-assessment">[SA] Scalability Assessment</item>
     <item cmd="DG or fuzzy match on diagram or archify" action="#archify-diagram">[DG] Generate Architecture Diagram (archify)</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
   <prompts>

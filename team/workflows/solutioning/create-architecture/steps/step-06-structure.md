@@ -33,7 +33,7 @@ This step will generate content and present choices:
 ## PROTOCOL INTEGRATION:
 
 - When 'A' selected: Execute {project-root}/team/core-skills/bmad-advanced-elicitation/skill.md
-- When 'P' selected: Execute {project-root}/team/workflows/party-mode/workflow.md
+- When 'P' selected: Execute {project-root}/team/core-skills/bmad-party-mode/skill.md
 - PROTOCOLS always return to display this step's A/P/C menu after the A or P have completed
 - User accepts/rejects protocol changes before proceeding
 
@@ -333,7 +333,7 @@ Show the generated project structure content and present choices:
 
 #### If 'P' (Party Mode):
 
-- Execute {project-root}/team/workflows/party-mode/workflow.md with project structure context
+- Execute {project-root}/team/core-skills/bmad-party-mode/skill.md with project structure context
 - Process collaborative insights about organization trade-offs
 - Ask user: "Accept these changes to the project structure? (y/n)"
 - If yes: Update content, then return to A/P/C menu

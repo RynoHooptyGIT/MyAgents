@@ -80,7 +80,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="MS or fuzzy match on measure or measurement" action="#measure-review">[MS] MEASURE Review - Review risk measurement and metrics</item>
     <item cmd="MG or fuzzy match on manage or management" action="#manage-review">[MG] MANAGE Review - Review risk response and mitigation controls</item>
     <item cmd="TW or fuzzy match on trustworthiness or trust" action="#trustworthiness">[TW] Trustworthiness Analysis - Analyze against 9 trustworthiness characteristics</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
   <prompts>

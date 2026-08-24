@@ -69,7 +69,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="PRD or fuzzy match on prd or create-prd or validate-prd or edit-prd" exec="{project-root}/team/workflows/planning/bmad-prd/skill.md">[PRD] Product Requirements Document — Create, Validate, or Edit</item>
     <item cmd="SP or fuzzy match on spec or distill or distillate" workflow="{project-root}/team/workflows/core/spec/workflow.yaml">[SP] Spec — Distill any intent (brain dump, PRD, brief, transcript) into a tight SPEC.md kernel</item>
     <item cmd="ES or fuzzy match on epics-stories" exec="{project-root}/team/workflows/solutioning/create-epics-and-stories/workflow.md">[ES] Create Epics and User Stories from PRD (Required flow AFTER the Architecture is completed)</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
 </agent>

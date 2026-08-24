@@ -80,7 +80,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="SD or fuzzy match on slide-deck" workflow="todo">[SD] Slide Deck — Professional presentation with visual hierarchy</item>
     <item cmd="PD or fuzzy match on pitch-deck" workflow="todo">[PD] Pitch Deck — Investor presentation with data visualization and narrative arc</item>
     <item cmd="IN or fuzzy match on infographic" workflow="todo">[IN] Infographic — Creative information visualization with visual storytelling</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
 </agent>

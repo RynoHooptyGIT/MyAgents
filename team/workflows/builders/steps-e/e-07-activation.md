@@ -11,7 +11,7 @@ expertEdit: './e-08b-edit-expert.md'
 moduleEdit: './e-08c-edit-module.md'
 
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # Edit Step 7: Activation and Routing

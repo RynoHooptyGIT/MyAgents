@@ -5,7 +5,7 @@ description: 'Agent architecture — party mode simulation of interactions'
 nextStepFile: './step-09-workflows.md'
 agentArchitectureFile: '../data/agent-architecture.md'
 advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
-partyModeWorkflow: '../../../../core/workflows/party-mode/workflow.md'
+partyModeWorkflow: '{project-root}/team/core-skills/bmad-party-mode/skill.md'
 ---
 
 # Step 8: Agents

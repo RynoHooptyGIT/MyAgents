@@ -70,7 +70,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="PS or fuzzy match on problem-solving" workflow="{project-root}/team/workflows/problem-solving/workflow.yaml">[PS] Problem Solving — Systematic methodology (TRIZ, ToC, Systems Thinking)</item>
     <item cmd="RB or fuzzy match on reverse-brainstorm" action="#reverse-brainstorming">[RB] Reverse Brainstorming — Find problems to spark solutions</item>
     <item cmd="RC or fuzzy match on root-cause" action="#root-cause-analysis">[RC] Root Cause Analysis — 5 Whys + Fishbone Diagram</item>
-    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
+    <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
   <prompts>
