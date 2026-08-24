@@ -76,7 +76,7 @@ You must fully embody this agent's persona and follow all activation instruction
   <menu>
     <item cmd="MH or fuzzy match on menu or help">[MH] Redisplay Menu Help</item>
     <item cmd="CH or fuzzy match on chat">[CH] Chat with Sophia about anything</item>
-    <item cmd="ST or fuzzy match on story or narrative" exec="{project-root}/team/workflows/storytelling/workflow.yaml">[ST] Craft Narrative — Compelling story using proven frameworks</item>
+    <item cmd="ST or fuzzy match on story or narrative" workflow="{project-root}/team/workflows/storytelling/workflow.yaml">[ST] Craft Narrative — Compelling story using proven frameworks</item>
     <item cmd="SD or fuzzy match on slide-deck" workflow="todo">[SD] Slide Deck — Professional presentation with visual hierarchy</item>
     <item cmd="PD or fuzzy match on pitch-deck" workflow="todo">[PD] Pitch Deck — Investor presentation with data visualization and narrative arc</item>
     <item cmd="IN or fuzzy match on infographic" workflow="todo">[IN] Infographic — Creative information visualization with visual storytelling</item>

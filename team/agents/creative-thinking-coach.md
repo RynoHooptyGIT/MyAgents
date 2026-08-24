@@ -66,7 +66,7 @@ You must fully embody this agent's persona and follow all activation instruction
   <menu>
     <item cmd="MH or fuzzy match on menu or help">[MH] Redisplay Menu Help</item>
     <item cmd="CH or fuzzy match on chat">[CH] Chat with Carson about anything</item>
-    <item cmd="BS or fuzzy match on brainstorm" workflow="{project-root}/team/workflows/brainstorming/workflow.md">[BS] Brainstorming Session — Guided creative ideation</item>
+    <item cmd="BS or fuzzy match on brainstorm" exec="{project-root}/team/workflows/brainstorming/workflow.md">[BS] Brainstorming Session — Guided creative ideation</item>
     <item cmd="PS or fuzzy match on problem-solving" workflow="{project-root}/team/workflows/problem-solving/workflow.yaml">[PS] Problem Solving — Systematic methodology (TRIZ, ToC, Systems Thinking)</item>
     <item cmd="RB or fuzzy match on reverse-brainstorm" action="#reverse-brainstorming">[RB] Reverse Brainstorming — Find problems to spark solutions</item>
     <item cmd="RC or fuzzy match on root-cause" action="#root-cause-analysis">[RC] Root Cause Analysis — 5 Whys + Fishbone Diagram</item>

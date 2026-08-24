@@ -58,17 +58,13 @@ re-baselined before execution.
   Agent menu items had to change *attribute*, not just path — a path-only swap would have broken
   handler dispatch silently.
 
-## Known issue — `quick-dev` name collision
+## Resolved — `quick-dev` name collision
 
-There are now two distinct workflows named `quick-dev`:
-
-| Path | Origin | Invoked by |
-|---|---|---|
-| `team/workflows/quick-flow/quick-dev/` | pre-existing fork (7 files) | `/team:quick-dev` |
-| `team/workflows/implementation/quick-dev/` | ported here, Plan A (13 files) | `/team:dev-story`, agent `[DS]`/`[IM]` menus |
-
-`/team:quick-dev` still points at the **fork's** lightweight workflow. Renaming one of them is
-recommended but deliberately not done here — it is a user-facing naming decision, not a port step.
+Resolved 2026-08-23 by the consolidation in
+`docs/plans/2026-08-23-bmad-skill-consolidation.md`. `quick-flow/quick-dev` was
+retired; `implementation/quick-dev` is canonical and `/team:quick-dev` points at
+it. `/team:dev-story` was removed; `dev-story` survives as a fuzzy-match alias in
+the `dev` and `oracle` menus.
 
 ## Deferred
 
