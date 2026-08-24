@@ -168,6 +168,33 @@ cluster (e.g. `/team:code-review` still resolves and runs).
 - **Rewriting the fork's XML agents to upstream's `SKILL.md` + `customize.toml` format.** Only 5 of
   28 agents have any upstream counterpart. Out of scope indefinitely.
 
+## Release
+
+**Nothing ships until this spec is fully implemented.** The v6.10.0 port is deliberately held rather
+than released on its own, so consumers never receive the dormant parallel tree. One clean release
+follows consolidation.
+
+Target: **7.10.0** (minor). The work adds capability — the `core-skills/` tree, the nine bmad
+skills, `quick-dev`, `dev-auto` — and removes `implementation/dev-story`, but every entry point
+survives as a command name or menu alias, so nothing a user invokes breaks.
+
+Shipping sequence, once the clusters are done:
+
+1. Fast-forward `main` to `origin/main` (local `main` is a stale divergent line — see
+   `docs/sync-notes-v6.10.0.md`), then merge `integration/bmad-v6.10`.
+2. `bash scripts/release.sh 7.10.0` — bumps `VERSION`, commits, tags `v7.10.0`, pushes.
+
+Propagation depends on step 2. Downstream projects run `scripts/team-check.sh`, which fetches
+`raw.githubusercontent.com/RynoHooptyGIT/MyAgents/main/VERSION` and compares it against their own
+`.team-upstream-version`. Equal values mean "up to date" and the `.team-update-available` marker is
+removed, so **without the `VERSION` bump reaching `main`, no consumer is notified** regardless of
+what else was pushed. The marker is what `oracle.md` activation step 2 reads to show its update
+banner.
+
+Note the filename `.team-upstream-version` means different things by position in the chain: here it
+records the last **bmad** version synced (`6.10.0`); in a downstream project it records the last
+**MyAgents** version synced. Consumers read `VERSION`, not this file.
+
 ## Risks
 
 | Risk | Mitigation |
