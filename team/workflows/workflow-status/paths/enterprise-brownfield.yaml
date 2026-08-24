@@ -50,7 +50,7 @@ phases:
     required: true
     workflows:
       - id: "prd"
-        exec: "{project-root}/team/workflows/planning/prd/workflow.md"
+        exec: "{project-root}/team/workflows/planning/bmad-prd/skill.md"
         required: true
         agent: "pm"
         command: "/team:create-prd"

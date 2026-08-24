@@ -179,7 +179,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="SR or fuzzy match on bmad-spec or spec-review or spec" exec="{project-root}/team/workflows/planning/bmad-spec/skill.md">[SR] Spec Review - Technical specification gate before implementation</item>
     <item cmd="CR or fuzzy match on bmad-review or code-review or review" exec="{project-root}/team/core-skills/bmad-review/skill.md">[CR] Code Review - Adversarial review of implemented story</item>
     <item cmd="CP or fuzzy match on checkpoint or preview or walk" workflow="{project-root}/team/workflows/checkpoint-preview/workflow.yaml">[CP] Checkpoint Preview - Human-in-the-loop walkthrough of a change</item>
-    <item cmd="VP or fuzzy match on validate-prd or validate or prd-check" workflow="{project-root}/team/workflows/validate-prd/workflow.yaml">[VP] Validate PRD - 13-step comprehensive PRD quality validation</item>
+    <item cmd="VP or fuzzy match on bmad-prd or validate-prd or validate or prd-check" exec="{project-root}/team/workflows/planning/bmad-prd/skill.md">[VP] Validate PRD - 13-step comprehensive PRD quality validation</item>
     <item cmd="SH or fuzzy match on ship or push or pr" workflow="{project-root}/team/workflows/devops/ship/workflow.yaml">[SH] Ship - Commit, push, and create PR</item>
     <item cmd="SP or fuzzy match on sprint-planning or sprint-plan" workflow="{project-root}/team/workflows/implementation/sprint-planning/workflow.yaml">[SP] Sprint Planning - Generate/update sprint status tracking</item>
     <item cmd="SS or fuzzy match on sprint-status or sprint-summary" workflow="{project-root}/team/workflows/implementation/sprint-status/workflow.yaml">[SS] Sprint Status - Summarize sprint and surface risks</item>

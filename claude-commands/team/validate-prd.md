@@ -1,14 +1,7 @@
 ---
-name: 'validate-prd'
-description: 'Validate PRD — 13-step comprehensive PRD validation against quality standards.'
+description: 'Validate a PRD is comprehensive, lean, well organized and cohesive'
 ---
 
-You must execute the validate-prd workflow precisely as defined.
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL @team/workflows/planning/bmad-prd/skill.md, READ its entire contents and follow its directions exactly, running its validation path.
 
-<workflow-activation CRITICAL="TRUE">
-1. LOAD the workflow engine: @team/engine/workflow.xml
-2. READ the complete workflow engine file - this is the CORE OS for executing workflows
-3. LOAD the validate-prd workflow config: @team/workflows/validate-prd/workflow.yaml
-4. Pass the workflow config to the workflow engine and execute all steps
-5. Run all 13 validation checks and produce the validation report
-</workflow-activation>
+> bmad-prd unifies create, update and validate — state your intent or the skill will ask.
