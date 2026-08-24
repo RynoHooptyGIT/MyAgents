@@ -85,7 +85,7 @@
     </rationalization-table>
   </discipline>
 
-  <discipline name="Spec Review" ref="{project-root}/team/workflows/spec-review">
+  <discipline name="Spec Review" ref="{project-root}/team/workflows/planning/bmad-spec">
     <rationalization-table>
       <row excuse="This story is too simple for a spec" reality="Simple stories with specs take 10 minutes. Without = rework."/>
       <row excuse="I already know how to build this" reality="Knowledge is not documentation. Write it down."/>
