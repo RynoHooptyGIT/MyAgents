@@ -20,7 +20,7 @@ Gather git state:
 
 **Branch awareness**:
 - `[WARNING]` If current branch is `main` → warn: "You are committing directly to `main`. This should only be done for hotfixes or release preparation. Consider creating a feature branch first."
-- `[WARNING]` If current branch is `develop` → warn: "You are committing directly to `develop`. Feature work should be on a dedicated `feature/*` or `fix/*` branch. Consider running `dev-story` which auto-creates the correct branch. Continue? [y/N]"
+- `[WARNING]` If current branch is `develop` → warn: "You are committing directly to `develop`. Feature work should be on a dedicated `feature/*` or `fix/*` branch. Consider running `quick-dev` which auto-creates the correct branch. Continue? [y/N]"
 - `[INFO]` If current branch matches `feature/*` or `fix/*` → no warning needed, this is the expected workflow
 
 ---

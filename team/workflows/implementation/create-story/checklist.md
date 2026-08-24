@@ -320,7 +320,7 @@ The story now includes comprehensive developer guidance to prevent common implem
 
 **Next Steps:**
 1. Review the updated story
-2. Run `dev-story` for implementation
+2. Run `quick-dev` for implementation
 ```
 
 ---

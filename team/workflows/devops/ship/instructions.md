@@ -60,7 +60,7 @@ When a story was found in Step 2, validate its lifecycle state before proceeding
   - If user chooses [1] → STOP and inform user to run CR workflow
   - If user chooses [2] → Proceed with `[OVERRIDE]` noted in Step 8 report
 - **Status is `in-progress`** → `[WARNING]` Story is still being implemented. Display: "⚠️ Story is still 'in-progress' — development and code review have not been completed."
-  - Ask user: `[1] Go back to dev-story (recommended)` / `[2] Ship anyway (override)`
+  - Ask user: `[1] Go back to quick-dev (recommended)` / `[2] Ship anyway (override)`
   - If user chooses [1] → STOP and inform user to run DS workflow
   - If user chooses [2] → Proceed with `[OVERRIDE]` noted in Step 8 report
 - **Status is `backlog` or `ready-for-dev`** → `[CRITICAL]` Story has not been started. Display: "🛑 Story has not been implemented. Cannot ship work that hasn't been developed."

@@ -49,7 +49,7 @@ ASSESS:
 RECOMMENDATION LOGIC:
 
 IF total_features == 1:
-  RECOMMEND: quick-dev or dev-story
+  RECOMMEND: quick-flow/quick-dev or implementation/quick-dev
   REASON: Single feature doesn't need orchestration
 
 ELSE IF features_are_independent AND team_available:
@@ -58,7 +58,7 @@ ELSE IF features_are_independent AND team_available:
   BENEFIT: Faster completion
 
 ELSE IF features_have_dependencies OR solo_developer:
-  RECOMMEND: dev-story (sequential implementation)
+  RECOMMEND: quick-dev (sequential implementation)
   REASON: Dependencies require sequence, or solo dev
   BENEFIT: Clear focus, incremental validation
 
@@ -105,7 +105,7 @@ Advantages:
   ✓ Specialization by feature
   ✓ Clear ownership
 
-{ELSE IF recommendation == "dev-story"}
+{ELSE IF recommendation == "quick-dev"}
 Dev-Story (Sequential Implementation)
 
 Sequence:
@@ -160,18 +160,18 @@ IF recommendation == "agent-teams":
        - Archive orchestration session
        - Display completion summary
 
-ELSE IF recommendation == "dev-story":
+ELSE IF recommendation == "quick-dev":
   ACTIONS:
     1. Display: "Starting sequential implementation..."
 
     2. FOR EACH feature in implementation sequence:
        a. Display: "Implementing Feature {name}..."
 
-       b. Spawn dev-story workflow:
+       b. Spawn quick-dev workflow:
           INPUT: feature-{id}-handoff.yaml
           STORY: Create from feature plan
 
-       c. dev-story implements feature
+       c. quick-dev implements feature
 
        d. When feature complete:
           - Update manifest: feature status = "implemented"
@@ -187,7 +187,7 @@ ELSE IF recommendation == "dev-story":
 ```yaml
 DISPLAY ALL OPTIONS:
 
-1. Sequential Implementation (dev-story)
+1. Sequential Implementation (quick-dev)
    - One feature at a time
    - Timeline: {sequential_days} days
    - Best for: Solo dev, dependencies, learning
@@ -255,7 +255,7 @@ ACTIONS:
 3. Provide next steps:
    To implement later:
    - Review: {consolidated_plan_path}
-   - Use: dev-story or agent-teams workflow
+   - Use: quick-dev or agent-teams workflow
    - Resume: Feature orchestrator can resume this session
 
 4. Exit orchestrator workflow

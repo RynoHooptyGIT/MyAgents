@@ -26,7 +26,7 @@ This skill loads and executes the feature-orchestrator workflow:
 1. **Decomposition**: Analyze request, identify features, present for approval
 2. **Feature Spawning**: Spawn subprocess agent per feature for isolated planning
 3. **Consolidation**: Aggregate feature plans into consolidated implementation plan
-4. **Next Actions**: Recommend implementation workflow (dev-story or agent-teams)
+4. **Next Actions**: Recommend implementation workflow (quick-dev or agent-teams)
 
 ## INVOCATION
 
@@ -63,7 +63,7 @@ User: "Build a complete authentication system with OAuth, JWT, 2FA, and admin da
 **Output**:
 - `output/.orchestrator/session-{timestamp}/consolidated-plan.md`
 - Individual feature plans in same directory
-- Ready to implement via dev-story or agent-teams
+- Ready to implement via quick-dev or agent-teams
 
 ## WORKFLOW REFERENCE
 

@@ -14,7 +14,7 @@
       <action>Search entries by relevance to the current task context:
         - Match against file paths being modified
         - Match against technology/framework keywords
-        - Match against the current workflow type (code-review, dev-story, etc.)
+        - Match against the current workflow type (code-review, quick-dev, etc.)
       </action>
       <action>Return the top 5 most relevant entries (by recency + relevance)</action>
       <check if="relevant learnings found">
@@ -42,7 +42,7 @@
         "type": "{{pattern|pitfall|decision|architecture}}",
         "insight": "{{one-line description of what was learned}}",
         "files": ["{{list of relevant file paths}}"],
-        "source": "{{workflow that captured this: code-review, dev-story, etc.}}",
+        "source": "{{workflow that captured this: code-review, quick-dev, etc.}}",
         "ts": "{{current ISO timestamp}}"
       }
     </action>

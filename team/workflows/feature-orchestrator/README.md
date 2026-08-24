@@ -32,7 +32,7 @@ The Feature Orchestrator solves this through **decomposition-based resilience**:
 - User explicitly requests feature breakdown
 
 ❌ **Don't use when**:
-- Single small feature (use quick-dev or dev-story)
+- Single small feature (use quick-flow/quick-dev or implementation/quick-dev)
 - Simple bug fixes or enhancements
 - Tasks that don't need planning phase
 
@@ -55,7 +55,7 @@ Orchestrator (Lightweight Coordinator)
     │   (Aggregate plans, sequence implementation)
     ↓
     └─> Step 4: Next Actions
-        (Handoff to dev-story or agent-teams)
+        (Handoff to quick-dev or agent-teams)
 ```
 
 ### Core Pattern: Sequential Subprocess Coordination
@@ -144,7 +144,7 @@ estimated_complexity:
 - Generate consolidated-plan.md
 
 **Step 4: Next Actions** ([`steps/step-04-next-actions.md`](steps/step-04-next-actions.md))
-- Recommend implementation approach (dev-story vs agent-teams)
+- Recommend implementation approach (quick-dev vs agent-teams)
 - Present options to user
 - Archive session
 - Handoff to implementation workflow
@@ -183,13 +183,13 @@ User: "I need JWT authentication, a user dashboard, and comprehensive tests"
    - Total: 10 days effort, 18 files
    - Sequence: Phase 1 (Auth) → Phase 2 (Dashboard) → Phase 3 (Tests)
 
-4. **Next Actions**: Recommends dev-story (sequential due to dependencies)
+4. **Next Actions**: Recommends quick-dev (sequential due to dependencies)
 
 **Output**:
 - `consolidated-plan.md` - Complete implementation plan
 - `feature-{001-003}-handoff.yaml` - Detailed plans per feature
 - `manifest.yaml` - Feature breakdown
-- Handoff to dev-story for implementation
+- Handoff to quick-dev for implementation
 
 ## Token Budget Management
 
@@ -233,7 +233,7 @@ User: "I need JWT authentication, a user dashboard, and comprehensive tests"
 - sprint-planning (to plan epics)
 
 ### Downstream (What orchestrator spawns)
-- **dev-story**: Sequential implementation per feature
+- **quick-dev**: Sequential implementation per feature
 - **agent-teams**: Parallel implementation with team
 - **Nested orchestrator**: If features are epic-sized
 
@@ -275,7 +275,7 @@ team/workflows/feature-orchestrator/
 - **Detection Rules**: 5 rules + scoring matrix
 - **State Files**: 3 types (manifest, state, handoffs)
 - **Error Handlers**: 5 error types with recovery
-- **Integration Points**: 3 workflows (dev-story, agent-teams, nested)
+- **Integration Points**: 3 workflows (quick-dev, agent-teams, nested)
 
 ## Benefits
 

@@ -30,8 +30,8 @@ teams:
   token_budget_multiplier: 2.5  # Agent teams use ~2.5x more tokens than single sessions
 
 # ─── Git Workflow Configuration ───────────────
-# Branch conventions referenced by dev-story, ship, and commit workflows.
-# dev-story reads fix_keywords from this config; other values are documentation.
+# Branch conventions referenced by quick-dev, ship, and commit workflows.
+# quick-dev reads fix_keywords from this config; other values are documentation.
 git_workflow:
   base_branch: "develop"
   production_branch: "main"

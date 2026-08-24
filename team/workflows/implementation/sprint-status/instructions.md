@@ -94,9 +94,9 @@ Enter corrections (e.g., "1=in-progress, 2=backlog") or "skip" to continue witho
 <step n="3" goal="Select next action recommendation">
   <action>Pick the next recommended workflow using priority:</action>
   <note>When selecting "first" story: sort by epic number, then story number (e.g., 1-1 before 1-2 before 2-1)</note>
-  1. If any story status == in-progress → recommend `dev-story` for the first in-progress story
+  1. If any story status == in-progress → recommend `quick-dev` for the first in-progress story
   2. Else if any story status == review → recommend `code-review` for the first review story
-  3. Else if any story status == ready-for-dev → recommend `dev-story`
+  3. Else if any story status == ready-for-dev → recommend `quick-dev`
   4. Else if any story status == backlog → recommend `create-story`
   5. Else if any retrospective status == optional → recommend `retrospective`
   6. Else → All implementation items done; suggest `workflow-status` to plan next phase

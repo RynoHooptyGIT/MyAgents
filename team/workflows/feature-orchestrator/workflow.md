@@ -27,7 +27,7 @@ bmad_module: core
 - Previous planning attempts hit context limits
 
 **When NOT to Use**:
-- Single small feature (use quick-dev or dev-story)
+- Single small feature (use quick-flow/quick-dev or implementation/quick-dev)
 - Simple bug fixes or enhancements
 - Tasks that don't require planning phase
 
@@ -59,7 +59,7 @@ User Request
     ↓
 Consolidated Plan + Feature Plans
     ↓
-Implementation Workflow (dev-story/agent-teams)
+Implementation Workflow (quick-dev/agent-teams)
 ```
 
 **Key Principles**:
@@ -242,7 +242,7 @@ WORKFLOW_START:
 1. Analyze consolidated plan
 2. Recommend implementation approach:
    - agent-teams (parallel) if features independent
-   - dev-story (sequential) if dependencies or solo dev
+   - quick-dev (sequential) if dependencies or solo dev
    - nested orchestration if features are epic-sized
 3. Present options to user
 4. Handle user choice:
@@ -492,16 +492,16 @@ team/workflows/feature-orchestrator/
 
 ### Downstream (What Orchestrator Spawns)
 
-- **dev-story workflow**: Sequential implementation per feature
+- **quick-dev workflow**: Sequential implementation per feature
 - **agent-teams workflow**: Parallel implementation with team
 - **Nested orchestrator**: If features are epic-sized themselves
 
 ### Handoff Protocol
 
-**To dev-story**:
+**To quick-dev**:
 ```
 INPUT: feature-{id}-handoff.yaml
-WORKFLOW: dev-story creates story file from feature plan
+WORKFLOW: quick-dev creates story file from feature plan
 SEQUENCE: One feature at a time
 ```
 
@@ -524,7 +524,7 @@ TEAM: Dev + Tea + Tech-Writer
 1. Decomposition: 3 features detected (auth, dashboard, tests)
 2. Spawning: 3 agents spawned sequentially
 3. Consolidation: Plans aggregated, 3 phases identified
-4. Next Actions: Recommends dev-story (dependencies require sequence)
+4. Next Actions: Recommends quick-dev (dependencies require sequence)
 
 **Output**: Consolidated plan with 3 features, ~10 days effort
 

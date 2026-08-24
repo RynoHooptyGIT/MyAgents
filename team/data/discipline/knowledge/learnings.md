@@ -6,7 +6,7 @@
 
 ## When This Applies
 
-- Before starting any implementation workflow (dev-story, create-story)
+- Before starting any implementation workflow (quick-dev, create-story)
 - After completing any review workflow (code-review)
 - After debugging sessions that reveal architectural patterns
 - After discovering framework quirks or version-specific behavior

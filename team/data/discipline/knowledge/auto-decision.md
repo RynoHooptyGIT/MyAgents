@@ -27,7 +27,7 @@ When principles conflict, context determines priority:
 | Workflow Phase | Dominant Principles |
 |---------------|-------------------|
 | Planning (PRD, Architecture) | P1 (completeness) + P2 (boil lakes) |
-| Implementation (dev-story) | P5 (explicit) + P3 (pragmatic) |
+| Implementation (quick-dev) | P5 (explicit) + P3 (pragmatic) |
 | Review (code-review) | P5 (explicit) + P1 (completeness) |
 | Quick Flow | P6 (action) + P3 (pragmatic) |
 

@@ -748,12 +748,12 @@ performance_metrics:
 
 ## Integration Patterns
 
-### Pattern 1: Orchestrator → dev-story Workflow
+### Pattern 1: Orchestrator → quick-dev Workflow
 
 ```yaml
 HANDOFF:
   FROM: feature-orchestrator (Step 4: Next Actions)
-  TO: dev-story workflow
+  TO: quick-dev workflow
 
   TRANSFER:
     input_file: consolidated-plan.md
@@ -764,12 +764,12 @@ HANDOFF:
     1. Orchestrator generates consolidated-plan.md
     2. Asks user: "Ready to implement?"
     3. IF yes:
-        - Spawn dev-story workflow
+        - Spawn quick-dev workflow
         - Pass feature-001 plan as input
-        - dev-story creates story file
-        - dev-story implements
+        - quick-dev creates story file
+        - quick-dev implements
     4. When feature-001 complete:
-        - Orchestrator spawns dev-story for feature-002
+        - Orchestrator spawns quick-dev for feature-002
         - Continues until all features implemented
 ```
 

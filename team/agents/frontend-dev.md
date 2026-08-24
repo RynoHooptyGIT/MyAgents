@@ -76,7 +76,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="MH or fuzzy match on menu or help">[MH] Redisplay Menu Help</item>
     <item cmd="CH or fuzzy match on chat">[CH] Chat with the Agent about anything</item>
     <item cmd="CA or fuzzy match on component-architecture">[CA] Component Architecture — Design component tree from UX wireframes</item>
-    <item cmd="IM or fuzzy match on implement-ui" workflow="{project-root}/team/workflows/implementation/dev-story/workflow.yaml">[IM] Implement UI — Build components from approved specs/wireframes</item>
+    <item cmd="IM or fuzzy match on implement-ui" exec="{project-root}/team/workflows/implementation/quick-dev/workflow.md">[IM] Implement UI — Build components from approved specs/wireframes</item>
     <item cmd="A11Y or fuzzy match on accessibility">[A11Y] Accessibility Audit — WCAG 2.1 AA compliance check</item>
     <item cmd="PERF or fuzzy match on performance">[PERF] Performance Audit — Core Web Vitals and bundle analysis</item>
     <item cmd="DS or fuzzy match on design-system">[DS] Design System — Create or extend project design tokens and component library</item>

@@ -194,7 +194,7 @@ next_steps:
   - "Review security considerations for JWT secret management"
   - "Validate refresh token rotation approach with team"
   - "Confirm cookie settings (httpOnly, secure, sameSite)"
-  - "Proceed to implementation via dev-story workflow"
+  - "Proceed to implementation via quick-dev workflow"
 
 # ============================================================================
 # METADATA (REQUIRED)

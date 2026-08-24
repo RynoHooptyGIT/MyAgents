@@ -329,11 +329,11 @@ No database migrations required.
 {if_sequential_implementation}
 #### Sequential Implementation (Recommended)
 
-Use `dev-story` workflow for feature-by-feature implementation:
+Use `quick-dev` workflow for feature-by-feature implementation:
 
 1. **Feature {first_feature_name}**
    - Input: {handoff_file_path}
-   - Command: `claude-code dev-story {handoff_file_path}`
+   - Command: `claude-code quick-dev {handoff_file_path}`
    - Duration: {effort_days} days
 
 2. **Feature {second_feature_name}**

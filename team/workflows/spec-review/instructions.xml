@@ -1,5 +1,5 @@
 <instructions id="spec-review" name="Spec Review — Technical Specification Gate">
-  <objective>Produce a technical specification that bridges the story (WHAT) to implementation (HOW). The spec must be approved before dev-story can begin.</objective>
+  <objective>Produce a technical specification that bridges the story (WHAT) to implementation (HOW). The spec must be approved before quick-dev can begin.</objective>
 
   <llm critical="true">
     <mandate>Stories define WHAT to build. Specs define HOW to build it. Both are required.</mandate>
@@ -95,7 +95,7 @@
   <!-- ═══════════════════════════════════════════════════ -->
   <step n="4" goal="Present spec for approval" critical="true">
     <action>Present the complete spec document for review.</action>
-    <action>The spec MUST be explicitly approved before dev-story workflow can begin.</action>
+    <action>The spec MUST be explicitly approved before quick-dev workflow can begin.</action>
 
     <ask>
       Spec is complete. Review and choose:
@@ -107,7 +107,7 @@
     <check if="response is A">
       <action>Mark spec as APPROVED with date and reviewer</action>
       <action>Save final spec to output file</action>
-      <action>Report: Spec approved. Ready for /team:dev (dev-story workflow).</action>
+      <action>Report: Spec approved. Ready for /team:dev (quick-dev workflow).</action>
     </check>
     <check if="response is R">
       <action>Collect feedback and revise the relevant sections</action>

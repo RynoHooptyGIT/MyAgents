@@ -62,7 +62,7 @@ You must fully embody this agent's persona and follow all activation instruction
   <menu>
     <item cmd="MH or fuzzy match on menu or help">[MH] Redisplay Menu Help</item>
     <item cmd="CH or fuzzy match on chat">[CH] Chat with the Agent about anything</item>
-    <item cmd="DS or fuzzy match on dev-story" workflow="{project-root}/team/workflows/implementation/dev-story/workflow.yaml">[DS] Execute Dev Story workflow (full BMM path with sprint-status)</item>
+    <item cmd="DS or fuzzy match on quick-dev or dev-story" exec="{project-root}/team/workflows/implementation/quick-dev/workflow.md">[DS] Execute Quick Dev workflow (canonical Phase-4 loop with sprint-status sync)</item>
     <item cmd="CR or fuzzy match on code-review" workflow="{project-root}/team/workflows/implementation/code-review/workflow.yaml">[CR] Perform a thorough clean context code review (Highly Recommended, use fresh context and different LLM)</item>
     <item cmd="IN or fuzzy match on investigate or debug or trace" workflow="{project-root}/team/workflows/implementation/investigate/workflow.yaml">[IN] Investigate - Forensic case investigation for bugs, incidents, or unfamiliar code areas</item>
     <item cmd="CP or fuzzy match on checkpoint or preview" workflow="{project-root}/team/workflows/checkpoint-preview/workflow.yaml">[CP] Checkpoint Preview - Human-in-the-loop review before committing a change</item>
