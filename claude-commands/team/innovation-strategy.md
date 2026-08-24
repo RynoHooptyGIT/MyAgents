@@ -1,13 +1,7 @@
 ---
-description: 'Identify disruption opportunities and architect business model innovation. This workflow guides strategic analysis of markets, competitive dynamics, and business model innovation to uncover sustainable competitive advantages and breakthrough opportunities.'
+description: 'Forge and stress-test a raw idea into a defensible strategic concept'
 ---
 
-IT IS CRITICAL THAT YOU FOLLOW THESE STEPS - while staying in character as the current agent persona you may have loaded:
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL @team/core-skills/bmad-forge-idea/skill.md, READ its entire contents and follow its directions exactly!
 
-<steps CRITICAL="TRUE">
-1. Always LOAD the FULL @team/engine/workflow.xml
-2. READ its entire contents - this is the CORE OS for EXECUTING the specific workflow-config @team/workflows/innovation-strategy/workflow.yaml
-3. Pass the yaml path team/workflows/innovation-strategy/workflow.yaml as 'workflow-config' parameter to the workflow.xml instructions
-4. Follow workflow.xml instructions EXACTLY as written to process and follow the specific workflow config and its instructions
-5. Save outputs after EACH section when generating any documents from templates
-</steps>
+> Replaces the retired `innovation-strategy` workflow.

@@ -67,7 +67,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="MH or fuzzy match on menu or help">[MH] Redisplay Menu Help</item>
     <item cmd="CH or fuzzy match on chat">[CH] Chat with Maya about anything</item>
     <item cmd="DT or fuzzy match on design-thinking" workflow="{project-root}/team/workflows/design-thinking/workflow.yaml">[DT] Design Thinking Process — Full human-centered design cycle</item>
-    <item cmd="IS or fuzzy match on innovation-strategy" workflow="{project-root}/team/workflows/innovation-strategy/workflow.yaml">[IS] Innovation Strategy — Disruption opportunities and business model innovation</item>
+    <item cmd="IS or fuzzy match on forge-idea or innovation-strategy" exec="{project-root}/team/core-skills/bmad-forge-idea/skill.md">[IS] Innovation Strategy — Disruption opportunities and business model innovation</item>
     <item cmd="EM or fuzzy match on empathy-map" action="#empathy-mapping">[EM] Empathy Mapping — Deep user understanding exercise</item>
     <item cmd="BC or fuzzy match on business-model-canvas" action="#business-model-canvas">[BC] Business Model Canvas — Visual business model design</item>
     <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
