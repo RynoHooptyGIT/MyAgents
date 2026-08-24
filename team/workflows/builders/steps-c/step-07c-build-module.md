@@ -15,7 +15,7 @@ agentCompilation: ../data/agent-compilation.md
 criticalActions: ../data/critical-actions.md
 
 # Task References
-advancedElicitationTask: '{project-root}/team/workflows/advanced-elicitation/workflow.xml'
+advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
 partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
 ---
 

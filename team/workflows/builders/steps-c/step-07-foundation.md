@@ -8,7 +8,7 @@ workflowPlanFile: '{targetWorkflowPath}/workflow-plan-{new_workflow_name}.md'
 workflowTemplate: '../templates/workflow-template.md'
 outputFormatStandards: '../data/output-format-standards.md'
 minimalOutputTemplate: '../templates/minimal-output-template.md'
-advancedElicitationTask: '{project-root}/team/workflows/advanced-elicitation/workflow.xml'
+advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
 partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
 ---
 

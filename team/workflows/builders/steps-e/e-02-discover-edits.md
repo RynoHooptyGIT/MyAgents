@@ -5,7 +5,7 @@ description: 'Discover what user wants to change about the agent'
 nextStepFile: './e-04-type-metadata.md'
 editPlan: '{bmb_creations_output_folder}/edit-plan-{agent-name}.md'
 
-advancedElicitationTask: '{project-root}/team/workflows/advanced-elicitation/workflow.xml'
+advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
 partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
 ---
 

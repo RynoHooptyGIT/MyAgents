@@ -57,7 +57,7 @@ Load config from `{project-root}/team/config.yaml` and resolve:
 - `brain_techniques_path` = `{installed_path}/brain-methods.csv`
 - `default_output_file` = `{output_folder}/analysis/brainstorming-session-{{date}}.md`
 - `context_file` = Optional context file path from workflow invocation for project-specific guidance
-- `advancedElicitationTask` = `{project-root}/team/workflows/advanced-elicitation/workflow.xml`
+- `advancedElicitationTask` = `{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md`
 
 ---
 

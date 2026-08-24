@@ -12,7 +12,7 @@ menuHandlingStandards: '../data/menu-handling-standards.md'
 outputFormatStandards: '../data/output-format-standards.md'
 inputDiscoveryStandards: '../data/input-discovery-standards.md'
 subprocessPatterns: '../data/subprocess-optimization-patterns.md'
-advancedElicitationTask: '{project-root}/team/workflows/advanced-elicitation/workflow.xml'
+advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
 partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
 ---
 
@@ -117,7 +117,7 @@ moduleInputFolder: '{module_output_folder}'
 inputFilePatterns: ['*-prd.md', '*-ux.md']  # From design
 
 # Tasks (if A/P menu used)
-advancedElicitationTask: '{project-root}/team/workflows/advanced-elicitation/workflow.xml'
+advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
 partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
 ---
 ```

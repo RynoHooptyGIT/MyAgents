@@ -64,7 +64,7 @@ someData: './data/config.csv'
 outputFile: '{planning_artifacts}/product-brief-{{project_name}}-{{date}}.md'
 
 # External references - use {project-root}
-advancedElicitationTask: '{project-root}/team/workflows/advanced-elicitation/workflow.xml'
+advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
 partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
 ---
 ```
@@ -129,7 +129,7 @@ dataFile: './data/config.csv'
 ### 4. External References = {project-root}/...
 ```yaml
 # ✅ CORRECT
-advancedElicitationTask: '{project-root}/team/workflows/advanced-elicitation/workflow.xml'
+advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
 ```
 
 ### 5. Output Files = Use folder variable

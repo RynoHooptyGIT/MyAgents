@@ -3,7 +3,7 @@ name: 'step-04-vision'
 description: 'Deep dive into the vision — what would make this module extraordinary?'
 
 nextStepFile: './step-05-identity.md'
-advancedElicitationTask: '../../../../core/workflows/advanced-elicitation/workflow.xml'
+advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
 partyModeWorkflow: '../../../../core/workflows/party-mode/workflow.md'
 ---
 

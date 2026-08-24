@@ -8,7 +8,7 @@ agentPlan: '{bmb_creations_output_folder}/agent-plan-{agent_name}.md'
 brainstormContext: ../data/brainstorm-context.md
 
 # Task References
-advancedElicitationTask: '{project-root}/team/workflows/advanced-elicitation/workflow.xml'
+advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
 partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
 ---
 

@@ -242,7 +242,7 @@ Display: **Select an Option:** [A] Advanced Elicitation [P] Party Mode [C] Conti
 
 #### Menu Handling Logic:
 
-- IF A: Execute {project-root}/team/workflows/advanced-elicitation/workflow.xml
+- IF A: Execute {project-root}/team/core-skills/bmad-advanced-elicitation/skill.md
 - IF P: Execute {project-root}/team/workflows/party-mode/workflow.md
 - IF C: Update plan frontmatter with stepsCompleted and classification, then load `{nextStepFile}`
 - IF Any other: Help user, then redisplay menu

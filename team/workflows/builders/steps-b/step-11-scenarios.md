@@ -3,7 +3,7 @@ name: 'step-11-scenarios'
 description: 'User journey — tell stories of how people will use this module'
 
 nextStepFile: './step-12-creative.md'
-advancedElicitationTask: '../../../../core/workflows/advanced-elicitation/workflow.xml'
+advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
 partyModeWorkflow: '../../../../core/workflows/party-mode/workflow.md'
 ---
 

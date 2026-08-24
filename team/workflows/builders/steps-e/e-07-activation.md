@@ -10,7 +10,7 @@ simpleEdit: './e-08a-edit-simple.md'
 expertEdit: './e-08b-edit-expert.md'
 moduleEdit: './e-08c-edit-module.md'
 
-advancedElicitationTask: '{project-root}/team/workflows/advanced-elicitation/workflow.xml'
+advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
 partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
 ---
 

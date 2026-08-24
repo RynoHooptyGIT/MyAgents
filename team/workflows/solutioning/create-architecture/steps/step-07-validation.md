@@ -32,7 +32,7 @@ This step will generate content and present choices:
 
 ## PROTOCOL INTEGRATION:
 
-- When 'A' selected: Execute {project-root}/team/workflows/advanced-elicitation/workflow.xml
+- When 'A' selected: Execute {project-root}/team/core-skills/bmad-advanced-elicitation/skill.md
 - When 'P' selected: Execute {project-root}/team/workflows/party-mode/workflow.md
 - PROTOCOLS always return to display this step's A/P/C menu after the A or P have completed
 - User accepts/rejects protocol changes before proceeding
@@ -305,7 +305,7 @@ Show the validation results and present choices:
 
 #### If 'A' (Advanced Elicitation):
 
-- Execute {project-root}/team/workflows/advanced-elicitation/workflow.xml with validation issues
+- Execute {project-root}/team/core-skills/bmad-advanced-elicitation/skill.md with validation issues
 - Process enhanced solutions for complex concerns
 - Ask user: "Accept these architectural improvements? (y/n)"
 - If yes: Update content, then return to A/P/C menu

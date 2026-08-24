@@ -23,7 +23,7 @@ outputFile: '{output_folder}/[output-file-name]-{project_name}.md'
 
 # Task References (IF THE workflow uses and it makes sense in this step to have these )
 
-advancedElicitationTask: '{project-root}/team/workflows/advanced-elicitation/workflow.xml'
+advancedElicitationTask: '{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md'
 partyModeWorkflow: '{project-root}/team/workflows/party-mode/workflow.md'
 
 # Template References (if this step uses a specific templates)

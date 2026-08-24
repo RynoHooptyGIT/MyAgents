@@ -103,7 +103,7 @@
           <check if="NOT #yolo">
             <ask> [a] Advanced Elicitation, [c] Continue, [p] Party-Mode, [y] YOLO the rest of this document only. WAIT for response. <if
                 response="a">
-                <action>Start the advanced elicitation workflow {project-root}/team/workflows/advanced-elicitation/workflow.xml</action>
+                <action>Start the advanced elicitation workflow {project-root}/team/core-skills/bmad-advanced-elicitation/skill.md</action>
               </if>
               <if
                 response="c">
