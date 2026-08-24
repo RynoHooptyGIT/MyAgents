@@ -84,7 +84,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="MH or fuzzy match on menu or help">[MH] Redisplay Menu Help</item>
     <item cmd="CH or fuzzy match on chat">[CH] Chat with the Agent about anything</item>
     <item cmd="WS or fuzzy match on workflow-status" workflow="{project-root}/team/workflows/workflow-status/workflow.yaml">[WS] Get workflow status or initialize a workflow if not already done (optional)</item>
-    <item cmd="UX or fuzzy match on ux-design" exec="{project-root}/team/workflows/planning/create-ux-design/workflow.md">[UX] Generate a UX Design and UI Plan from a PRD — produces DESIGN.md (visual identity) + EXPERIENCE.md (behavior, flow, IA, journeys)</item>
+    <item cmd="UX or fuzzy match on bmad-ux or ux-design" exec="{project-root}/team/workflows/planning/bmad-ux/skill.md">[UX] Generate a UX Design and UI Plan from a PRD — produces DESIGN.md (visual identity) + EXPERIENCE.md (behavior, flow, IA, journeys)</item>
     <item cmd="XW or fuzzy match on wireframe" workflow="{project-root}/team/workflows/excalidraw-diagrams/create-wireframe/workflow.yaml">[XW] Create website or app wireframe (Excalidraw)</item>
     <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>

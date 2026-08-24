@@ -57,7 +57,7 @@ phases:
         output: "Product Requirements Document with FRs and NFRs"
       - id: "create-ux-design"
         conditional: "if_has_ui"
-        exec: "{project-root}/team/workflows/planning/create-ux-design/workflow.md"
+        exec: "{project-root}/team/workflows/planning/bmad-ux/skill.md"
         agent: "ux-designer"
         command: "/team:create-ux-design"
         note: "Determined after PRD - user/agent decides if needed"
