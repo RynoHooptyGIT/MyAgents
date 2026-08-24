@@ -75,7 +75,7 @@
     </rationalization-table>
   </discipline>
 
-  <discipline name="Code Review" ref="{project-root}/team/workflows/implementation/code-review">
+  <discipline name="Code Review" ref="{project-root}/team/core-skills/bmad-review">
     <rationalization-table>
       <row excuse="This is a small change" reality="Small changes cause regressions. Review it."/>
       <row excuse="I wrote it, I know it's correct" reality="Self-review is not review. Get fresh eyes."/>

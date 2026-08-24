@@ -401,7 +401,7 @@ Resolves the collision recorded in `docs/sync-notes-v6.10.0.md`: two workflows n
 - [ ] **Step 1: Rewire the agent menu item**
 
 ```bash
-sed -i '' 's|workflow="{project-root}/team/workflows/quick-flow/quick-dev/workflow.yaml"|exec="{project-root}/team/workflows/implementation/quick-dev/workflow.md"|g' team/agents/quick-flow-solo-dev.md
+sed -i '' 's|workflow="{project-root}/team/workflows/quick-flow/quick-dev/workflow.md"|exec="{project-root}/team/workflows/implementation/quick-dev/workflow.md"|g' team/agents/quick-flow-solo-dev.md
 grep -n 'QD or fuzzy' team/agents/quick-flow-solo-dev.md
 ```
 
