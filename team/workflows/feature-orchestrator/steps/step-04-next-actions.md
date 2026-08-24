@@ -49,7 +49,7 @@ ASSESS:
 RECOMMENDATION LOGIC:
 
 IF total_features == 1:
-  RECOMMEND: quick-flow/quick-dev or implementation/quick-dev
+  RECOMMEND: quick-dev
   REASON: Single feature doesn't need orchestration
 
 ELSE IF features_are_independent AND team_available:

@@ -27,7 +27,7 @@ bmad_module: core
 - Previous planning attempts hit context limits
 
 **When NOT to Use**:
-- Single small feature (use quick-flow/quick-dev or implementation/quick-dev)
+- Single small feature (use quick-dev)
 - Simple bug fixes or enhancements
 - Tasks that don't require planning phase
 

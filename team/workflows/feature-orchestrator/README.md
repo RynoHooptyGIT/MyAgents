@@ -32,7 +32,7 @@ The Feature Orchestrator solves this through **decomposition-based resilience**:
 - User explicitly requests feature breakdown
 
 ❌ **Don't use when**:
-- Single small feature (use quick-flow/quick-dev or implementation/quick-dev)
+- Single small feature (use quick-dev)
 - Simple bug fixes or enhancements
 - Tasks that don't need planning phase
 
