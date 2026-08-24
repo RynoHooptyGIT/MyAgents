@@ -66,7 +66,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="CR or fuzzy match on bmad-review or code-review" exec="{project-root}/team/core-skills/bmad-review/skill.md">[CR] Perform a thorough clean context code review (Highly Recommended, use fresh context and different LLM)</item>
     <item cmd="IN or fuzzy match on investigate or debug or trace" workflow="{project-root}/team/workflows/implementation/investigate/workflow.yaml">[IN] Investigate - Forensic case investigation for bugs, incidents, or unfamiliar code areas</item>
     <item cmd="CP or fuzzy match on checkpoint or preview" workflow="{project-root}/team/workflows/checkpoint-preview/workflow.yaml">[CP] Checkpoint Preview - Human-in-the-loop review before committing a change</item>
-    <item cmd="EC or fuzzy match on edge-case or edge case" workflow="{project-root}/team/workflows/core/edge-case-hunter/workflow.yaml">[EC] Edge Case Hunter - Exhaustive unhandled-path analysis of a diff, file, or function</item>
+    <item cmd="EC or fuzzy match on edge-case or edge case" exec="{project-root}/team/core-skills/bmad-review/skill.md" lenses="edge-case-hunter">[EC] Edge Case Hunter - Exhaustive unhandled-path analysis of a diff, file, or function</item>
     <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>

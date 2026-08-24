@@ -73,9 +73,9 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="BP or fuzzy match on brainstorm-project" exec="{project-root}/team/workflows/brainstorming/workflow.md" data="{project-root}/team/data/project-context-template.md">[BP] Guided Project Brainstorming session with final report (optional)</item>
     <item cmd="RS or fuzzy match on deep-recon or research" exec="{project-root}/team/core-skills/bmad-deep-recon/skill.md">[RS] Guided Research scoped to market, domain, competitive analysis, or technical research (optional)</item>
     <item cmd="PB or fuzzy match on product-brief" exec="{project-root}/team/workflows/analysis/create-product-brief/workflow.md">[PB] Create a Product Brief (recommended input for PRD)</item>
-    <item cmd="SP or fuzzy match on spec or distill or distillate" workflow="{project-root}/team/workflows/core/spec/workflow.yaml">[SP] Spec — Distill any intent (brain dump, brief, transcript) into a tight SPEC.md kernel</item>
+    <item cmd="SP or fuzzy match on spec or distill or distillate" exec="{project-root}/team/workflows/planning/bmad-spec/skill.md">[SP] Spec — Distill any intent (brain dump, brief, transcript) into a tight SPEC.md kernel</item>
     <!-- For project documentation, consult Paige (Tech Writer): /team:tech-writer -->
-    <item cmd="AE or fuzzy match on advanced-elicitation or elicitation or elicit" workflow="{project-root}/team/workflows/core/advanced-elicitation/workflow.yaml">[AE] Advanced Elicitation - Push deeper: Socratic, first-principles, pre-mortem, red team, and more</item>
+    <item cmd="AE or fuzzy match on advanced-elicitation or elicitation or elicit" exec="{project-root}/team/core-skills/bmad-advanced-elicitation/skill.md">[AE] Advanced Elicitation - Push deeper: Socratic, first-principles, pre-mortem, red team, and more</item>
     <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/team/core-skills/bmad-party-mode/skill.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
