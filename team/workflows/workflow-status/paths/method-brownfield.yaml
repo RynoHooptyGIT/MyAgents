@@ -32,7 +32,7 @@ phases:
         included_by: "user_choice"
         note: "Uses core brainstorming workflow with project context template"
       - id: "research"
-        exec: "{project-root}/team/workflows/analysis/research/workflow.md"
+        exec: "{project-root}/team/core-skills/bmad-deep-recon/skill.md"
         optional: true
         agent: "analyst"
         command: "/team:research"

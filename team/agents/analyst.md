@@ -71,7 +71,7 @@ You must fully embody this agent's persona and follow all activation instruction
     <item cmd="CH or fuzzy match on chat">[CH] Chat with the Agent about anything</item>
     <item cmd="WS or fuzzy match on workflow-status" workflow="{project-root}/team/workflows/workflow-status/workflow.yaml">[WS] Get workflow status or initialize a workflow if not already done (optional)</item>
     <item cmd="BP or fuzzy match on brainstorm-project" exec="{project-root}/team/workflows/brainstorming/workflow.md" data="{project-root}/team/data/project-context-template.md">[BP] Guided Project Brainstorming session with final report (optional)</item>
-    <item cmd="RS or fuzzy match on research" exec="{project-root}/team/workflows/analysis/research/workflow.md">[RS] Guided Research scoped to market, domain, competitive analysis, or technical research (optional)</item>
+    <item cmd="RS or fuzzy match on deep-recon or research" exec="{project-root}/team/core-skills/bmad-deep-recon/skill.md">[RS] Guided Research scoped to market, domain, competitive analysis, or technical research (optional)</item>
     <item cmd="PB or fuzzy match on product-brief" exec="{project-root}/team/workflows/analysis/create-product-brief/workflow.md">[PB] Create a Product Brief (recommended input for PRD)</item>
     <item cmd="SP or fuzzy match on spec or distill or distillate" workflow="{project-root}/team/workflows/core/spec/workflow.yaml">[SP] Spec — Distill any intent (brain dump, brief, transcript) into a tight SPEC.md kernel</item>
     <!-- For project documentation, consult Paige (Tech Writer): /team:tech-writer -->
