@@ -22,6 +22,7 @@ STATUS_FILE="$COORD_ROOT/.agents/status/agent-${MY_ID}.yaml"
 
 COUNT=0
 [ -f "$COUNTER_FILE" ] && COUNT="$(cat "$COUNTER_FILE")"
+case "$COUNT" in ''|*[!0-9]*) COUNT=0 ;; esac
 COUNT=$((COUNT + 1))
 
 if [ "$COUNT" -lt 20 ]; then

@@ -5,6 +5,7 @@
 # edited, (2) the hook's cwd, (3) legacy PID-suffixed registry files.
 #
 # Usage:  source lib-identity.sh; resolve_identity "$FILE_PATH" "$CWD"
+# Callers must pass an ABSOLUTE cwd; find_marker_dir does not test a relative "." itself.
 # Sets:   COORD_ROOT  main checkout holding .agents/   (may be empty)
 #         MY_ID       this instance's agent id           (may be empty)
 #         WORK_ROOT   dir containing .agent-id, else COORD_ROOT

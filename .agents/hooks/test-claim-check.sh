@@ -4,11 +4,12 @@ set -e
 HOOK="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/claim-check.sh"
 PASS=0
 FAIL=0
-COORD_ROOT="$(pwd)"
 
+# Hermetic: legacy cases run against $TMP/legacy (a fake main checkout with its own
+# .agents/), never the repo's real .agents/.
 setup() {
-  mkdir -p .agents/claims .agents/registry
-  cat > .agents/claims/feature-auth.yaml << 'EOF'
+  mkdir -p "$TMP/legacy/.agents/claims" "$TMP/legacy/.agents/registry"
+  cat > "$TMP/legacy/.agents/claims/feature-auth.yaml" << 'EOF'
 agent_id: other1
 branch: agent/other1/auth
 story_id: "24-3"
@@ -18,14 +19,11 @@ owned_paths:
   - backend/app/models/user.py
 description: "Auth system"
 EOF
-  echo "self01" > .agents/registry/.current-agent-id-$$
-  echo "$COORD_ROOT" > .agents/registry/.coord-root-$$
+  echo "self01" > "$TMP/legacy/.agents/registry/.current-agent-id-$$"
+  echo "$TMP/legacy" > "$TMP/legacy/.agents/registry/.coord-root-$$"
 }
 
 teardown() {
-  rm -f .agents/claims/feature-auth.yaml
-  rm -f .agents/registry/.current-agent-id-$$
-  rm -f .agents/registry/.coord-root-$$
   rm -rf "$TMP"
 }
 
@@ -47,16 +45,16 @@ TMP="$(mktemp -d)"
 setup
 trap teardown EXIT
 
-# --- Legacy single-instance cases (PID files in registry, relative paths) ---
-run_test "edit claimed file blocked" '{"tool_name":"Edit","tool_input":{"file_path":"backend/app/auth/router.py"}}' 2
-run_test "edit exact claimed file blocked" '{"tool_name":"Edit","tool_input":{"file_path":"backend/app/models/user.py"}}' 2
-run_test "edit unclaimed file allowed" '{"tool_name":"Edit","tool_input":{"file_path":"frontend/src/App.tsx"}}' 0
-run_test "edit .agents/ file allowed" '{"tool_name":"Write","tool_input":{"file_path":".agents/decisions/test.yaml"}}' 0
+# --- Legacy single-instance cases (PID files in registry, relative paths, cwd = fake main checkout) ---
+run_test "edit claimed file blocked" "{\"cwd\":\"$TMP/legacy\",\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"backend/app/auth/router.py\"}}" 2
+run_test "edit exact claimed file blocked" "{\"cwd\":\"$TMP/legacy\",\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"backend/app/models/user.py\"}}" 2
+run_test "edit unclaimed file allowed" "{\"cwd\":\"$TMP/legacy\",\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"frontend/src/App.tsx\"}}" 0
+run_test "edit .agents/ file allowed" "{\"cwd\":\"$TMP/legacy\",\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\".agents/decisions/test.yaml\"}}" 0
 
 # --- Two-instance cases: worktree = identity ---
 # Coordination root is a temp dir with the same claim; two worktrees A (other1, owns auth) and B (agentb).
 mkdir -p "$TMP/.agents/claims" "$TMP/.agents/registry" "$TMP/wt/a/backend/app/auth" "$TMP/wt/b/backend/app/auth"
-cp .agents/claims/feature-auth.yaml "$TMP/.agents/claims/"
+cp "$TMP/legacy/.agents/claims/feature-auth.yaml" "$TMP/.agents/claims/"
 echo "other1" > "$TMP/wt/a/.agent-id"; echo "$TMP" > "$TMP/wt/a/.agent-coord-root"
 echo "agentb" > "$TMP/wt/b/.agent-id"; echo "$TMP" > "$TMP/wt/b/.agent-coord-root"
 

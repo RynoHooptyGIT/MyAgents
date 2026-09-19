@@ -70,10 +70,10 @@ fi
 
 # --- Contract and hook checks ---
 bash "$REPO_ROOT/scripts/apply-contract.sh" --check
-bash "$REPO_ROOT/scripts/test-apply-contract.sh" > /dev/null
-bash "$REPO_ROOT/.agents/hooks/test-claim-check.sh" > /dev/null
-bash "$REPO_ROOT/.agents/hooks/test-heartbeat.sh" > /dev/null
-bash "$REPO_ROOT/.agents/hooks/test-worktree-guard.sh" > /dev/null
+bash "$REPO_ROOT/scripts/test-apply-contract.sh" > /dev/null || { echo "Error: preflight failed in scripts/test-apply-contract.sh" >&2; exit 1; }
+bash "$REPO_ROOT/.agents/hooks/test-claim-check.sh" > /dev/null || { echo "Error: preflight failed in .agents/hooks/test-claim-check.sh" >&2; exit 1; }
+bash "$REPO_ROOT/.agents/hooks/test-heartbeat.sh" > /dev/null || { echo "Error: preflight failed in .agents/hooks/test-heartbeat.sh" >&2; exit 1; }
+bash "$REPO_ROOT/.agents/hooks/test-worktree-guard.sh" > /dev/null || { echo "Error: preflight failed in .agents/hooks/test-worktree-guard.sh" >&2; exit 1; }
 echo "Preflight: contract wired, hook tests green"
 
 CURRENT_VERSION=$(cat VERSION 2>/dev/null || echo "0.0.0")

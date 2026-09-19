@@ -19,7 +19,7 @@ CWD="$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).g
 [ -z "$FILE_PATH" ] && exit 0
 
 case "$FILE_PATH" in
-  *.agents/*|*/.agents/*) exit 0 ;;
+  .agents/*|*/.agents/*) exit 0 ;;
 esac
 
 resolve_identity "$FILE_PATH" "$CWD"
