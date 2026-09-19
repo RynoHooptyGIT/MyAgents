@@ -28,7 +28,7 @@ check "counter resets to 0" "$([ "$(cat "$TMP/.agents/registry/agentb.counter")"
 check "registry last_heartbeat updated" "$(! grep -q '^last_heartbeat: 2020-01-01T00:00:00Z$' "$TMP/.agents/registry/agent-agentb.yaml"; echo $?)"
 check "registry other lines preserved" "$(grep -q '^status: active$' "$TMP/.agents/registry/agent-agentb.yaml"; echo $?)"
 check "status last_updated updated" "$(! grep -q '^last_updated: 2020-01-01T00:00:00Z$' "$TMP/.agents/status/agent-agentb.yaml"; echo $?)"
-check "no sed backup files created" "$([ -z "$(ls "$TMP/.agents/registry" | grep -v '^agent-agentb.yaml$\|^agentb.counter$')" ]; echo $?)"
+check "no sed backup files created" "$([ -z "$(ls "$TMP/.agents/registry" | grep -v -e '^agent-agentb.yaml$' -e '^agentb.counter$')" ]; echo $?)"
 
 # No identity → exit 0, nothing written
 rc=0; echo '{"cwd":"/","tool_name":"Bash","tool_input":{"command":"ls"}}' | bash "$HOOK" || rc=$?
