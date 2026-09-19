@@ -5,10 +5,16 @@
 
 set -euo pipefail
 
+HOOK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib-identity.sh
+. "$HOOK_DIR/lib-identity.sh"
+
 INPUT="$(cat)"
 
 FILE_PATH="$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('tool_input',{}).get('file_path',''))" 2>/dev/null)" || \
 FILE_PATH="$(echo "$INPUT" | grep -o '"file_path"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed 's/.*: *"//;s/"$//')"
+CWD="$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('cwd',''))" 2>/dev/null)" || CWD=""
+[ -z "$CWD" ] && CWD="$PWD"
 
 [ -z "$FILE_PATH" ] && exit 0
 
@@ -16,22 +22,18 @@ case "$FILE_PATH" in
   *.agents/*|*/.agents/*) exit 0 ;;
 esac
 
-COORD_ROOT=""
-for pidfile in .agents/registry/.coord-root-* ; do
-  [ -f "$pidfile" ] && COORD_ROOT="$(cat "$pidfile")" && break
-done
-[ -z "$COORD_ROOT" ] && COORD_ROOT="$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null | sed 's|/.git$||')" || true
+resolve_identity "$FILE_PATH" "$CWD"
 [ -z "$COORD_ROOT" ] && exit 0
 
 CLAIMS_DIR="$COORD_ROOT/.agents/claims"
 [ -d "$CLAIMS_DIR" ] || exit 0
 
-MY_ID=""
-for idfile in "$COORD_ROOT/.agents/registry/.current-agent-id-"* ; do
-  [ -f "$idfile" ] && MY_ID="$(cat "$idfile")" && break
-done
-
-REL_PATH="$FILE_PATH"
+# Make the path relative to the worktree root (or coordination root when not in a worktree)
+case "$FILE_PATH" in
+  /*) FILE_ABS="$FILE_PATH" ;;
+  *)  FILE_ABS="$CWD/$FILE_PATH" ;;
+esac
+REL_PATH="${FILE_ABS#$WORK_ROOT/}"
 REL_PATH="${REL_PATH#$COORD_ROOT/}"
 REL_PATH="${REL_PATH#/}"
 

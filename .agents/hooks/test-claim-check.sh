@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-HOOK=".agents/hooks/claim-check.sh"
+HOOK="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/claim-check.sh"
 PASS=0
 FAIL=0
 COORD_ROOT="$(pwd)"
@@ -26,6 +26,7 @@ teardown() {
   rm -f .agents/claims/feature-auth.yaml
   rm -f .agents/registry/.current-agent-id-$$
   rm -f .agents/registry/.coord-root-$$
+  rm -rf "$TMP"
 }
 
 run_test() {
@@ -42,13 +43,29 @@ run_test() {
 }
 
 echo "=== Claim Check Tests ==="
+TMP="$(mktemp -d)"
 setup
 trap teardown EXIT
 
+# --- Legacy single-instance cases (PID files in registry, relative paths) ---
 run_test "edit claimed file blocked" '{"tool_name":"Edit","tool_input":{"file_path":"backend/app/auth/router.py"}}' 2
 run_test "edit exact claimed file blocked" '{"tool_name":"Edit","tool_input":{"file_path":"backend/app/models/user.py"}}' 2
 run_test "edit unclaimed file allowed" '{"tool_name":"Edit","tool_input":{"file_path":"frontend/src/App.tsx"}}' 0
 run_test "edit .agents/ file allowed" '{"tool_name":"Write","tool_input":{"file_path":".agents/decisions/test.yaml"}}' 0
+
+# --- Two-instance cases: worktree = identity ---
+# Coordination root is a temp dir with the same claim; two worktrees A (other1, owns auth) and B (agentb).
+mkdir -p "$TMP/.agents/claims" "$TMP/.agents/registry" "$TMP/wt/a/backend/app/auth" "$TMP/wt/b/backend/app/auth"
+cp .agents/claims/feature-auth.yaml "$TMP/.agents/claims/"
+echo "other1" > "$TMP/wt/a/.agent-id"; echo "$TMP" > "$TMP/wt/a/.agent-coord-root"
+echo "agentb" > "$TMP/wt/b/.agent-id"; echo "$TMP" > "$TMP/wt/b/.agent-coord-root"
+
+run_test "B editing A's claimed path (abs path) blocked" "{\"cwd\":\"$TMP/wt/b\",\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"$TMP/wt/b/backend/app/auth/router.py\"}}" 2
+run_test "A editing its own claimed path (abs path) allowed" "{\"cwd\":\"$TMP/wt/a\",\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"$TMP/wt/a/backend/app/auth/router.py\"}}" 0
+run_test "B editing A's claimed path (rel path, cwd=B) blocked" "{\"cwd\":\"$TMP/wt/b\",\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"backend/app/auth/router.py\"}}" 2
+run_test "A editing its own claimed path (rel path, cwd=A) allowed" "{\"cwd\":\"$TMP/wt/a\",\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"backend/app/auth/router.py\"}}" 0
+run_test "B editing unclaimed path allowed" "{\"cwd\":\"$TMP/wt/b\",\"tool_name\":\"Edit\",\"tool_input\":{\"file_path\":\"$TMP/wt/b/frontend/App.tsx\"}}" 0
+run_test "B editing coordination files allowed" "{\"cwd\":\"$TMP/wt/b\",\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$TMP/.agents/requests/b-to-a.yaml\"}}" 0
 
 echo ""
 echo "Results: $PASS passed, $FAIL failed"

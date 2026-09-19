@@ -59,10 +59,11 @@ git worktree add .worktrees/agent-{AGENT_ID} -b agent/{AGENT_ID}/{task-slug}
 cd .worktrees/agent-{AGENT_ID}
 ```
 
-5. Write the coordination root path into the worktree:
+5. Write the coordination root path and your agent ID into the worktree (hooks resolve identity from these — worktree = identity):
 
 ```bash
 echo "$REPO_ROOT" > .agent-coord-root
+echo "$AGENT_ID" > .agent-id
 ```
 
 ## Step 3: Scan and Clean Registry
