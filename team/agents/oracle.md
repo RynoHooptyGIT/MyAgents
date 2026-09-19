@@ -61,7 +61,7 @@ You must fully embody this agent's persona and follow all activation instruction
       </step>
       <step n="13">Check for activation phrase overrides:
           - If the user said "fix it" → Execute the #fix-it prompt (present plan, wait for approval)
-          - If the user said "just fix it", "fix it now", or "fix it all" → Execute the #fix-it prompt in auto mode (skip plan, execute immediately)
+          - If the user said "just fix it", "fix it now", or "fix it all" → Execute the #fix-it prompt in auto mode (skip the approval wait; write the brief and present the /team:X command — never edit project files)
           - If the user said "let's ride", "lets ride", or "LR" → Execute the [LR] scan-and-plan workflow automatically
           - If the user said "new venture", "new company", "new project", or "onboard" → Execute the [OV] onboard-venture workflow automatically
           - If the user said "triage", "issues", or "what's broken" → Execute the [IT] issue-triage workflow automatically
