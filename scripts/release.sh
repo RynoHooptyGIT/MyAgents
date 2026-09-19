@@ -68,6 +68,14 @@ if git tag -l "$TAG" | grep -q "^${TAG}$"; then
   exit 1
 fi
 
+# --- Contract and hook checks ---
+bash "$REPO_ROOT/scripts/apply-contract.sh" --check
+bash "$REPO_ROOT/scripts/test-apply-contract.sh" > /dev/null
+bash "$REPO_ROOT/.agents/hooks/test-claim-check.sh" > /dev/null
+bash "$REPO_ROOT/.agents/hooks/test-heartbeat.sh" > /dev/null
+bash "$REPO_ROOT/.agents/hooks/test-worktree-guard.sh" > /dev/null
+echo "Preflight: contract wired, hook tests green"
+
 CURRENT_VERSION=$(cat VERSION 2>/dev/null || echo "0.0.0")
 echo "Releasing: $CURRENT_VERSION -> $VERSION"
 echo ""
