@@ -426,7 +426,7 @@ team/
   config.yaml           # Unified configuration
   manifest.yaml         # Team definitions and metadata
   agent-manifest.csv    # Agent registry
-  agents/               # All 27 agents (flat, no module nesting)
+  agents/               # All 28 agents (flat, no module nesting)
   workflows/            # All workflows by category
     analysis/           # Phase 1: Product brief, research
     planning/           # Phase 2: PRD, UX design

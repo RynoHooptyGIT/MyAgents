@@ -88,10 +88,11 @@ First, change directory back to the repo root (you can't remove a worktree you'r
 
 ```bash
 cd "$REPO_ROOT"
+rm -f ".worktrees/agent-${AGENT_ID}/.agent-id" ".worktrees/agent-${AGENT_ID}/.agent-coord-root"
 git worktree remove ".worktrees/agent-${AGENT_ID}" 2>&1
 ```
 
-If removal fails (e.g., unclean), force is NOT used — report the issue instead.
+The identity markers are removed first so the worktree stops resolving as this agent even when removal is refused. If removal fails (e.g., unclean), force is NOT used — report the issue instead.
 
 ## Step 7: Deregister
 

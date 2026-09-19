@@ -17,7 +17,7 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --check) CHECK=true ;;
     --agents-dir) shift; AGENTS_DIR="$1" ;;
-    -h|--help) sed -n '2,9p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,8p' "$0"; exit 0 ;;
     *) echo "Error: unknown argument '$1'" >&2; exit 1 ;;
   esac
   shift

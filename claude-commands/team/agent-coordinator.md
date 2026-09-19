@@ -18,7 +18,7 @@ AGENT_ID=$(date +%s%N | shasum | head -c 6)
 echo "$AGENT_ID"
 ```
 
-Store the ID in a PID-scoped file so hooks can read it:
+Store the ID in a PID-scoped file (fallback identity for the main checkout; worktree hooks read `.agent-id` written in Step 2):
 
 ```bash
 REPO_ROOT="$(git rev-parse --path-format=absolute --git-common-dir | sed 's|/.git$||')"

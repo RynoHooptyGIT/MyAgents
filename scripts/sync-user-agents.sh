@@ -28,6 +28,7 @@ DIFFS=0
 COPIED=0
 for f in "$SRC"/*.md; do
   base="$(basename "$f")"
+  [ "$base" = "oracle-dispatch-map.md" ] && continue
   if $CHECK; then
     if ! cmp -s "$f" "$DEST/$base"; then echo "STALE: $base"; DIFFS=$((DIFFS+1)); fi
   else
