@@ -1,6 +1,6 @@
 # My Dev Team
 
-**27 specialist AI agents**, **70+ workflows**, and an **Oracle orchestrator** that together guide your project from initial concept through production deployment. Works with Claude Code, Cursor, or GitHub Copilot to enforce lifecycle discipline, maintain sprint state, and ensure consistent quality.
+**28 specialist AI agents**, **70+ workflows**, and an **Oracle orchestrator** that together guide your project from initial concept through production deployment. Works with Claude Code, Cursor, or GitHub Copilot to enforce lifecycle discipline, maintain sprint state, and ensure consistent quality.
 
 ## What It Does
 
@@ -88,7 +88,7 @@ See [docs/TOOL-COMPATIBILITY.md](docs/TOOL-COMPATIBILITY.md) for a detailed feat
 |----------|-------------|
 | [Quick Start Guide](docs/QUICKSTART.md) | Step-by-step new project setup |
 | [Architecture](docs/ARCHITECTURE.md) | How the system works internally |
-| [Agent Catalog](docs/AGENT-CATALOG.md) | All 27 agents with descriptions |
+| [Agent Catalog](docs/AGENT-CATALOG.md) | All 28 agents with descriptions |
 | [Workflow Catalog](docs/WORKFLOW-CATALOG.md) | All 70+ workflows by phase |
 | [Tool Compatibility](docs/TOOL-COMPATIBILITY.md) | Feature matrix for Claude Code, Cursor, Copilot |
 | [Customization](docs/CUSTOMIZATION.md) | Adding agents, workflows, and project rules |
@@ -104,7 +104,7 @@ my-dev-team/
     config.yaml             # Unified configuration
     manifest.yaml           # Team definitions
     agent-manifest.csv      # Agent registry
-    agents/                 # All 27 agents (flat)
+    agents/                 # All 28 agents (flat)
     workflows/              # All workflows by category
     engine/                 # Workflow execution engine + discipline gates
     resources/              # Shared resources (excalidraw helpers)

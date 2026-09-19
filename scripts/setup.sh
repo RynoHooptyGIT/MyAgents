@@ -99,7 +99,7 @@ substitute() {
 echo -e "\n${CYAN}[1/6] Copying team system...${NC}"
 cp -R "$TEAM_ROOT/team" "$TARGET_DIR/team"
 
-echo -e "  ${GREEN}✓${NC} team/ directory installed (27 agents, 70+ workflows)"
+echo -e "  ${GREEN}✓${NC} team/ directory installed (28 agents, 70+ workflows)"
 
 # ── Step 2: Generate config ─────────────────────────────────────
 echo -e "${CYAN}[2/6] Generating configuration...${NC}"
@@ -136,7 +136,7 @@ if [ "$TOOL_CHOICE" != "5" ]; then
     cp "$TEAM_ROOT/hooks/post-commit-context.sh" "$TARGET_DIR/.claude/hooks/post-commit-context.sh"
     chmod +x "$TARGET_DIR/.claude/hooks/post-commit-context.sh"
 
-    echo -e "  ${GREEN}✓${NC} Claude Code: CLAUDE.md, 76 slash commands, hooks"
+    echo -e "  ${GREEN}✓${NC} Claude Code: CLAUDE.md, 83 slash commands, hooks"
 fi
 
 # GitHub Copilot (options 2, 4)

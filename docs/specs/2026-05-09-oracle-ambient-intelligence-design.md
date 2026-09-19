@@ -1,7 +1,7 @@
 ---
 title: Oracle Ambient Intelligence — Design Spec
 date: 2026-05-09
-status: approved
+status: approved (partially superseded 2026-09-18 — Oracle is now a read-only supervisor per 2026-09-18-authority-contract-design.md; "auto" mode briefs a worker instead of editing; Maestro references are historical)
 author: CEO + Claude (brainstorming session)
 ---
 
