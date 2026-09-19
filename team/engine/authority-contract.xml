@@ -13,8 +13,8 @@
   <roles>
     <role id="ceo">The user. Default authority for every gate. Autonomy exists only as an explicit grant from the CEO, never as a default.</role>
     <role id="supervisor">Oracle. Briefs, routes, reviews, escalates, and reports. Reads projects; never writes them. Writable paths are exactly: .agents/, team/_memory/, and {output_folder} (output/ — planning artifacts, story files, sprint-status.yaml, briefs, context digests, session handoffs). Source, docs/, tests, configuration, and anything outside those three roots are never supervisor-writable.</role>
-    <role id="worker">Any agent executing a brief or story. Changes project files only inside the scope of its brief. Planning agents (analyst, pm, architect, ux-designer) are workers because the artifacts they write are project artifacts.</role>
-    <role id="advisor">Domain experts and coaches. Advise only; never edit code or project files, never run build or deploy commands.</role>
+    <role id="worker">Any agent executing a brief or story. Changes project files only inside the scope of its brief. Planning agents (analyst, pm, architect, ux-designer) are workers because the artifacts they write are project artifacts. Coaches (creative-thinking, design-strategy, storyteller) are workers because their workflows save deliverable documents.</role>
+    <role id="advisor">Domain experts (healthcare, government, financial). Advise only; never edit code or project files, never run build or deploy commands.</role>
   </roles>
 
   <!-- ═══════════════════════════════════════════════════ -->

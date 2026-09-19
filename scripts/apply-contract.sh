@@ -31,7 +31,7 @@ RULE_LINE='      <r>AUTHORITY: '"$CONTRACT_PATH"' hard rules override any menu i
 role_for() {
   case "$1" in
     oracle) echo supervisor ;;
-    healthcare-expert|government-expert|financial-expert|creative-thinking-coach|design-strategy-coach|storyteller-presenter) echo advisor ;;
+    healthcare-expert|government-expert|financial-expert) echo advisor ;;
     *) echo worker ;;
   esac
 }

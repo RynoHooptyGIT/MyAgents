@@ -70,11 +70,13 @@ it by path and never copy its text.
 |------|-----|-----------|
 | `ceo` | The user | Default authority for every gate. Autonomy exists only as an explicit grant, never as a default. |
 | `supervisor` | Oracle | Briefs, routes, reviews, escalates, reports. Reads projects; writes only under `.agents/`, `team/_memory/`, `output/`. |
-| `worker` | Any agent executing a brief (dev, frontend-dev, tea, devops, tech-writer, quick-flow-solo-dev, custodian, api-contract, data-architect, ml-expert, agentic-expert, security-auditor, nist-rmf-expert, analyst, pm, architect, ux-designer, platform-master, agent-builder, workflow-builder, module-builder) | Changes projects inside its brief's scope only. |
-| `advisor` | healthcare-expert, government-expert, financial-expert, creative-thinking-coach, design-strategy-coach, storyteller-presenter | Advises; never edits code or project files. |
+| `worker` | Any agent executing a brief (dev, frontend-dev, tea, devops, tech-writer, quick-flow-solo-dev, custodian, api-contract, data-architect, ml-expert, agentic-expert, security-auditor, nist-rmf-expert, analyst, pm, architect, ux-designer, platform-master, agent-builder, workflow-builder, module-builder, creative-thinking-coach, design-strategy-coach, storyteller-presenter) | Changes projects inside its brief's scope only. |
+| `advisor` | healthcare-expert, government-expert, financial-expert | Advises; never edits code or project files. |
 
 Agents that plan (analyst, pm, architect, ux-designer) are `worker` because their output
-(PRDs, specs, stories) *is* a project artifact they write.
+(PRDs, specs, stories) *is* a project artifact they write. Coaches (creative-thinking-coach,
+design-strategy-coach, storyteller-presenter) are `worker` for the same reason: their workflows
+save deliverable documents.
 
 ### 3.2 `<hard-rules>` — priority-ordered
 
