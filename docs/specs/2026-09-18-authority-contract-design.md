@@ -1,6 +1,6 @@
 # Authority Contract & Coordination Defects (SP1)
 
-**Status:** Approved design — Rev 1
+**Status:** Approved design — Rev 2 (2026-09-19: supervisor-writable set widened to output/ — see §3.2)
 **Date:** 2026-09-18
 **Author:** Oracle (Athena) with CEO
 **Program:** firstmate-inspired supervision, sub-project 1 of 4
@@ -69,7 +69,7 @@ it by path and never copy its text.
 | Role | Who | Authority |
 |------|-----|-----------|
 | `ceo` | The user | Default authority for every gate. Autonomy exists only as an explicit grant, never as a default. |
-| `supervisor` | Oracle | Briefs, routes, reviews, escalates, reports. Reads projects; never writes them. |
+| `supervisor` | Oracle | Briefs, routes, reviews, escalates, reports. Reads projects; writes only under `.agents/`, `team/_memory/`, `output/`. |
 | `worker` | Any agent executing a brief (dev, frontend-dev, tea, devops, tech-writer, quick-flow-solo-dev, custodian, api-contract, data-architect, ml-expert, agentic-expert, security-auditor, nist-rmf-expert, analyst, pm, architect, ux-designer, platform-master, agent-builder, workflow-builder, module-builder) | Changes projects inside its brief's scope only. |
 | `advisor` | healthcare-expert, government-expert, financial-expert, creative-thinking-coach, design-strategy-coach, storyteller-presenter | Advises; never edits code or project files. |
 
@@ -83,7 +83,7 @@ test. Where the owner lands in a later sub-project it is marked `owner: pending 
 
 1. **The supervisor never writes to a project.** Any Edit/Write/Bash that changes a file under
    a project checkout or worktree is a worker's job. Supervisor-writable paths are exactly:
-   `.agents/`, `team/_memory/`, `output/planning-artifacts/`, `output/briefs/`.
+   `.agents/`, `team/_memory/`, `output/` (planning artifacts, story files, sprint-status.yaml, briefs, context, handoffs). Rev 2: the Rev 1 list omitted `output/implementation-artifacts/`, which create-story and sprint-status updates require.
    *Owner: PreToolUse path guard, pending SP4. Until then, prompt-enforced.*
 2. **Nothing merges without the CEO's explicit word.** A per-project `+yolo` grant is the only
    standing relaxation, and it authorizes only green, in-scope merges; a red merge is never

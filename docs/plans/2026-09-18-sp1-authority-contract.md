@@ -16,7 +16,7 @@
 - No GNU-only tool flags: no `sed -i ''`, no `sed -i`, no `readlink -f`, no `grep -P`. Use temp file + `mv` for in-place edits.
 - Agent files are edited **only** by `scripts/apply-contract.sh`, except `oracle.md` and `architect.md` rule edits (Tasks 5, 6), which are hand edits.
 - Terminology is "CEO", never "captain".
-- Supervisor-writable paths (verbatim from spec §3.2): `.agents/`, `team/_memory/`, `output/planning-artifacts/`, `output/briefs/`.
+- Supervisor-writable paths (spec §3.2 Rev 2): `.agents/`, `team/_memory/`, `output/`.
 - Commit messages end with `Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>`.
 - Run every test script with `bash <path>` from the repo root.
 
