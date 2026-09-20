@@ -98,6 +98,18 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.agents/hooks/instinct-inject.sh\"",
+            "timeout": 5000
+          }
+        ]
+      }
     ]
   }
 }
