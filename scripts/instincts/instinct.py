@@ -274,3 +274,193 @@ def ingest(root, objs, today, project_name):
             existing[obj["id"]] = dict(new, _path=str(path), _tier="project")
             result["created"].append(obj["id"])
     return result
+
+
+# ---------- status / review ----------
+
+def _summary(d, today, cfg):
+    return {"id": d["id"], "tier": d["_tier"], "trigger": d["trigger"], "action": d["action"],
+            "confidence": effective_confidence(d, today, cfg["decay_per_week"]),
+            "domain": d.get("domain", "workflow"), "scope": d.get("scope", "project")}
+
+
+def status(root, today, cfg):
+    items, bad = load_all(root)
+    by = {"pending": [], "active": [], "rejected": []}
+    for d in items:
+        by[d["status"]].append(d)
+    last = None
+    log = learnings_dir(root) / "miner.log"
+    if log.is_file():
+        lines = log.read_text(encoding="utf-8", errors="replace").strip().splitlines()
+        last = lines[-1] if lines else None
+    return {"pending": [_summary(d, today, cfg) for d in by["pending"]],
+            "active": [_summary(d, today, cfg) for d in by["active"]],
+            "rejected_ids": [d["id"] for d in by["rejected"]],
+            "unreadable": bad, "last_miner_line": last}
+
+
+def set_status(root, ids, new_status, min_confidence=None):
+    changed = []
+    for d in load_tier(project_dir(root), "project")[0]:
+        if d["status"] != "pending":
+            continue
+        if ids and d["id"] not in ids:
+            continue
+        if min_confidence is not None and float(d["confidence"]) < min_confidence:
+            continue
+        d["status"] = new_status
+        write_instinct(d["_path"], _public(d))
+        changed.append(d["id"])
+    return changed
+
+
+def prune(root, today, ttl_days, rejected_ttl_days=90):
+    removed = []
+    for d in load_tier(project_dir(root), "project")[0]:
+        age = weeks_since(d.get("last_seen"), today) * 7
+        if (d["status"] == "pending" and age > ttl_days) or (d["status"] == "rejected" and age > rejected_ttl_days):
+            try:
+                os.remove(d["_path"])
+                removed.append(d["id"])
+            except OSError:
+                pass
+    return removed
+
+
+# ---------- inject ----------
+
+def register_project(root):
+    reg = user_dir() / ".projects"
+    try:
+        reg.parent.mkdir(parents=True, exist_ok=True)
+        entries = set(reg.read_text(encoding="utf-8").splitlines()) if reg.is_file() else set()
+        rp = Path(root).resolve()
+        entry = f"{rp}\t{rp.name}"
+        if entry not in entries:
+            with reg.open("a", encoding="utf-8") as f:
+                f.write(entry + "\n")
+    except OSError:
+        pass
+
+
+def rank_key(d, today, cfg):
+    recency = max(0.5, 1 - weeks_since(d.get("last_seen"), today) * 0.05)
+    boost = 0.05 if d["_tier"] == "project" else 0.0
+    return effective_confidence(d, today, cfg["decay_per_week"]) * recency + boost
+
+
+def inject(root, today, cfg):
+    if not cfg.get("enabled", True):
+        return ""
+    items, _ = load_all(root)
+    register_project(root)
+    decay = cfg["decay_per_week"]
+    active = [d for d in items if d["status"] == "active"
+              and effective_confidence(d, today, decay) >= cfg["min_confidence"]]
+    pending = sum(1 for d in items if d["status"] == "pending")
+    if not active and not pending:
+        return ""
+    active.sort(key=lambda d: rank_key(d, today, cfg), reverse=True)
+    n_proj = sum(1 for d in active if d["_tier"] == "project")
+    head = f"[instincts] {len(active)} active ({n_proj} project, {len(active) - n_proj} global)"
+    if pending:
+        head += f" · {pending} pending — /team:instincts review or ask Athena"
+    head += ". Context, not policy."
+    lines = [head]
+    for d in active[:cfg["inject_limit"]]:
+        line = f"- {d['trigger']} → {d['action']} ({effective_confidence(d, today, decay):.2f}, {d.get('domain', 'workflow')})"
+        if len("\n".join(lines + [line])) > cfg["inject_max_chars"]:
+            break
+        lines.append(line)
+    return "\n".join(lines) + "\n"
+
+
+# ---------- CLI ----------
+
+def _print_status(s):
+    print(f"Instincts: {len(s['active'])} active, {len(s['pending'])} pending, {len(s['rejected_ids'])} rejected")
+    for label in ("active", "pending"):
+        if s[label]:
+            print(f"\n{label.upper()}")
+            for d in s[label]:
+                print(f"  {d['id']} [{d['tier']}] {d['trigger']} → {d['action']} ({d['confidence']:.2f}, {d['domain']})")
+    if s["unreadable"]:
+        print("\nUNREADABLE: " + ", ".join(s["unreadable"]))
+    if s["last_miner_line"]:
+        print(f"\nLast miner: {s['last_miner_line']}")
+
+
+def _review(root, today, cfg, stdin):
+    accepted, rejected = [], []
+    for d in status(root, today, cfg)["pending"]:
+        print(f"{d['id']}: {d['trigger']} → {d['action']} ({d['confidence']:.2f}, {d['domain']})  [a]ccept / [r]eject / [s]kip: ", end="", flush=True)
+        ans = (stdin.readline() or "").strip().lower()
+        if ans.startswith("a"):
+            accepted += set_status(root, [d["id"]], "active")
+        elif ans.startswith("r"):
+            rejected += set_status(root, [d["id"]], "rejected")
+    print(f"accepted={accepted} rejected={rejected}")
+
+
+def main(argv=None, stdin=None):
+    import argparse
+    stdin = stdin or sys.stdin
+    ap = argparse.ArgumentParser(description="Instinct store CLI")
+    ap.add_argument("--root")
+    ap.add_argument("--today")
+    sub = ap.add_subparsers(dest="cmd")
+    sub.required = True
+    p = sub.add_parser("status"); p.add_argument("--json", action="store_true")
+    p = sub.add_parser("accept"); p.add_argument("ids", nargs="*"); p.add_argument("--min-confidence", type=float)
+    p = sub.add_parser("reject"); p.add_argument("ids", nargs="+")
+    sub.add_parser("review")
+    p = sub.add_parser("prune"); p.add_argument("--ttl-days", type=int)
+    sub.add_parser("inject")
+    p = sub.add_parser("ingest"); p.add_argument("--project-name")
+    sub.add_parser("rejected-ids")
+    sub.add_parser("promote")
+    sub.add_parser("export")
+    sub.add_parser("import")
+    a = ap.parse_args(argv)
+
+    root = resolve_root(a.root)
+    cfg = _config.load(root)
+    today = date.fromisoformat(a.today) if a.today else date.today()
+
+    if a.cmd == "status":
+        s = status(root, today, cfg)
+        if a.json:
+            print(json.dumps(s, indent=1))
+        else:
+            _print_status(s)
+        return 0
+    if a.cmd == "accept":
+        print(" ".join(set_status(root, a.ids, "active", a.min_confidence)))
+        return 0
+    if a.cmd == "reject":
+        print(" ".join(set_status(root, a.ids, "rejected")))
+        return 0
+    if a.cmd == "review":
+        _review(root, today, cfg, stdin)
+        return 0
+    if a.cmd == "prune":
+        print(" ".join(prune(root, today, a.ttl_days or cfg["pending_ttl_days"])))
+        return 0
+    if a.cmd == "inject":
+        sys.stdout.write(inject(root, today, cfg))
+        return 0
+    if a.cmd == "ingest":
+        objs = extract_json_array(stdin.read())
+        r = ingest(root, objs, today, a.project_name or Path(root).name)
+        print(json.dumps(r))
+        return 0
+    if a.cmd == "rejected-ids":
+        print("\n".join(status(root, today, cfg)["rejected_ids"]))
+        return 0
+    print(f"{a.cmd}: not implemented", file=sys.stderr)
+    return 2
+
+
+if __name__ == "__main__":
+    sys.exit(main())
