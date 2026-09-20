@@ -1,5 +1,6 @@
 # Tool artifacts
 .playwright-mcp/
+__pycache__/
 
 # MarkItDown converted-doc output (file-to-markdown skill / document-project ingest)
 **/.ingested/
