@@ -25,7 +25,12 @@ DEFAULTS = {
 def _coerce(raw, default):
     raw = raw.split("#", 1)[0].strip().strip('"').strip("'")
     if isinstance(default, bool):
-        return raw.lower() in ("true", "yes", "on", "1")
+        raw_lower = raw.lower()
+        if raw_lower in ("true", "yes", "on", "1"):
+            return True
+        if raw_lower in ("false", "no", "off", "0"):
+            return False
+        return default
     if isinstance(default, int):
         try:
             return int(raw)

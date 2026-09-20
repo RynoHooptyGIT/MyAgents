@@ -38,6 +38,16 @@ def test_bad_values_fall_back(tmp_path):
     assert cfg["min_candidates"] == config.DEFAULTS["min_candidates"]
     assert cfg["enabled"] is True
 
+    # Test unparsable bool falls back to default
+    (tmp_path / ".agents" / "config.yaml").write_text("instincts:\n  enabled: banana\n")
+    cfg = config.load(tmp_path)
+    assert cfg["enabled"] is True  # falls back to default
+
+    # Test recognized false word
+    (tmp_path / ".agents" / "config.yaml").write_text("instincts:\n  enabled: off\n")
+    cfg = config.load(tmp_path)
+    assert cfg["enabled"] is False
+
 def test_cli_prints_requested_keys(tmp_path):
     (tmp_path / ".agents").mkdir()
     (tmp_path / ".agents" / "config.yaml").write_text("instincts:\n  model: haiku\n  min_candidates: 4\n")
