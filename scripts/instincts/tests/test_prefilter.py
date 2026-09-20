@@ -52,6 +52,15 @@ def test_read_new_honors_offset_and_rotation(tmp_path):
     events, off2 = prefilter.read_new(p, off)
     assert [e["a"] for e in events] == [3] and off2 == p.stat().st_size
 
+def test_read_new_leaves_unterminated_tail_for_next_run(tmp_path):
+    p = tmp_path / "o.jsonl"
+    p.write_text('{"a":1}\n{"a":2')
+    events, off = prefilter.read_new(p, 0)
+    assert [e["a"] for e in events] == [1] and off == 8
+    p.write_text('{"a":1}\n{"a":2}\n{"a":3}\n')
+    events, off2 = prefilter.read_new(p, 8)
+    assert [e["a"] for e in events] == [2, 3] and off2 == p.stat().st_size
+
 def test_main_commit_writes_watermark_and_rejected_ids(tmp_path, monkeypatch, capsys):
     monkeypatch.setenv("INSTINCTS_USER_DIR", str(tmp_path / "u"))
     (tmp_path / ".agents").mkdir()

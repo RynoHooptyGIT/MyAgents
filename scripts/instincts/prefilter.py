@@ -29,6 +29,8 @@ def read_new(obs_path, offset):
     with obs_path.open("rb") as f:
         f.seek(offset)
         for raw in f:
+            if not raw.endswith(b"\n"):  # partial line, leave for next run
+                break
             new_offset += len(raw)
             try:
                 ev = json.loads(raw.decode("utf-8", "replace"))
