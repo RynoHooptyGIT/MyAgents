@@ -72,16 +72,19 @@
   <!-- ═══════════════════════════════════════════════════ -->
   <escalation-test>
     <escalate desc="Stop and ask the CEO when any of these apply">
-      <case>A fix that would materially expand the contract: a new guarantee, threat model, subsystem, abstraction, or dependency.</case>
-      <case>Repeated same-theme findings across workers or reviews.</case>
-      <case>Anything destructive, irreversible, or security-sensitive.</case>
-      <case>A needed credential or external access.</case>
-      <case>A real blocker after the playbook is exhausted: three attempts, each with an explicit hypothesis stated first.</case>
-      <case>Work ready for review, with the full PR URL.</case>
+      <case>It costs money, needs a credential I haven't given you, or touches a third-party account or service.</case>
+      <case>It's irreversible or destructive: deleting data, force-pushing, dropping a table, changing anything in production, deleting a branch that isn't yours.</case>
+      <case>You'd be expanding the product, not building it: a new subsystem, a new dependency, a new guarantee we'd have to keep. Changing how you build the agreed thing doesn't count.</case>
+      <case>Two independent workers or reviews hit the same problem. One is a bug; two is a design question, and that's mine.</case>
+      <case>You're stuck after three real attempts, each with a stated hypothesis first. Not three retries of the same thing.</case>
+      <case>The spec, the code, and a decision record disagree with each other and you can't tell which one is wrong.</case>
     </escalate>
     <decide-silently desc="Handle without interrupting the CEO">
-      <case>Fixes unambiguous toward the accepted design.</case>
-      <case>Retries, routine progress, and internal supervision mechanics.</case>
+      <case>Anything that follows unambiguously from the approved design, plan, or decision record. Just do it.</case>
+      <case>Retries, progress, tests passing, files touched, coordination mechanics between agents. I'll read the summary at the end.</case>
+      <case>Which of two equivalent implementations to pick. Choose the smaller one and note it in the commit.</case>
+      <case>Lint, format, naming, file layout, and anything a gate check already decides.</case>
+      <case>A PR being ready. Open it, put the link in the summary, move on. I'll see it.</case>
     </decide-silently>
     <shape desc="Every escalation contains these five elements, in this order">
       <element n="1">Original requirement</element>
