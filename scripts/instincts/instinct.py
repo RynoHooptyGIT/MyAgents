@@ -188,6 +188,14 @@ def weeks_since(day_str, today):
     return max(0.0, (today - d).days / 7.0)
 
 
+def days_since(day_str, today):
+    try:
+        d = date.fromisoformat(str(day_str))
+    except (TypeError, ValueError):
+        return 0
+    return max(0, (today - d).days)
+
+
 def effective_confidence(inst, today, decay_per_week):
     base = float(inst.get("confidence", 0.3))
     return clamp(base - decay_per_week * weeks_since(inst.get("last_seen"), today))
@@ -318,7 +326,7 @@ def set_status(root, ids, new_status, min_confidence=None):
 def prune(root, today, ttl_days, rejected_ttl_days=90):
     removed = []
     for d in load_tier(project_dir(root), "project")[0]:
-        age = weeks_since(d.get("last_seen"), today) * 7
+        age = days_since(d.get("last_seen"), today)
         if (d["status"] == "pending" and age > ttl_days) or (d["status"] == "rejected" and age > rejected_ttl_days):
             try:
                 os.remove(d["_path"])
@@ -445,7 +453,7 @@ def main(argv=None, stdin=None):
         _review(root, today, cfg, stdin)
         return 0
     if a.cmd == "prune":
-        print(" ".join(prune(root, today, a.ttl_days or cfg["pending_ttl_days"])))
+        print(" ".join(prune(root, today, a.ttl_days if a.ttl_days is not None else cfg["pending_ttl_days"])))
         return 0
     if a.cmd == "inject":
         sys.stdout.write(inject(root, today, cfg))

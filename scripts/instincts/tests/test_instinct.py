@@ -156,3 +156,15 @@ def test_cli_status_json_and_rejected_ids(root, capsys):
     assert json.loads(capsys.readouterr().out)["rejected_ids"] == ["r1"]
     assert instinct.main(["--root", str(root), "rejected-ids"]) == 0
     assert capsys.readouterr().out.strip() == "r1"
+
+def test_prune_boundary_is_strictly_older(root):
+    seed(root, id="exactly-29", last_seen="2026-08-21")  # exactly 29 days before TODAY (2026-09-19)
+    assert instinct.prune(root, TODAY, 29) == []  # 29 is NOT older than 29
+    assert (instinct.project_dir(root) / "exactly-29.yaml").exists()
+    assert instinct.prune(root, TODAY, 28) == ["exactly-29"]  # 29 IS older than 28
+
+def test_cli_prune_ttl_zero_is_honored(root):
+    seed(root, id="yesterday", last_seen="2026-09-18")
+    rc = instinct.main(["--root", str(root), "--today", "2026-09-19", "prune", "--ttl-days", "0"])
+    assert rc == 0
+    assert not (instinct.project_dir(root) / "yesterday.yaml").exists()
