@@ -72,15 +72,15 @@ Registered twice in `.claude/settings.local.json` (and the template):
    - **error_resolution** — a `tool` event with `is_error` followed within 3 events by a non-error event of the same tool; bundled as the window.
    - **repetition** — a `(tool, normalized_input_signature)` pair seen ≥ 3× since the watermark; signature = tool name + first token of a Bash command or the file extension of an Edit/Write path. Bundled as one representative window plus the count.
    Each candidate is `{kind, window: [events…], count}` with event strings re-truncated to 1,000 chars.
-4. If `count < instincts.min_candidates` → advance watermark, release lock, exit 0.
+4. If `count < instincts.min_candidates` → leave the watermark untouched (sparse corrections accumulate across turns until they reach the threshold), release lock, exit 0. Safety valve: if the unmined backlog (`new_offset - start_offset`) exceeds 2 MB, advance the watermark without mining and log `watermark advanced without mining (backlog > 2MB, candidates=N)`.
 5. Otherwise spawn, detached (`nohup … &`, stdout/stderr → `miner.log`):
    ```
-   claude -p --model <instincts.model> --max-turns 4 \
+   claude -p --model <instincts.model> --max-turns 1 --tools "" --strict-mcp-config \
      --append-system-prompt "$(cat team/agents/instinct-observer.md)" \
      < candidates.json | scripts/instincts/instinct.py ingest
    ```
-   The observer prompt instructs the model to output **only** a JSON array of instinct objects (schema below). A wrapper (`scripts/instincts/instinct.py ingest`) validates each object and writes/merges YAML files. The model never writes files directly.
-6. Advance watermark; the detached miner removes the lock when it finishes (stale after 10 min either way). The Stop hook must return in < 1s regardless of miner duration.
+   `--tools ""` disables every built-in tool so no Pre/PostToolUse hooks (including `observe.sh`) fire inside the miner; `--strict-mcp-config` ignores the user's MCP servers; `--max-turns 1` because the miner only has to answer once. The observer prompt instructs the model to output **only** a JSON array of instinct objects (schema below). A wrapper (`scripts/instincts/instinct.py ingest`) validates each object and writes/merges YAML files. The model never writes files directly.
+6. Advance the watermark (only on spawn, or via the 2 MB safety valve in step 4); the detached miner removes the lock when it finishes (stale after 10 min either way). The Stop hook must return in < 1s regardless of miner duration.
 
 ### Stage 3 — Store
 
@@ -207,7 +207,7 @@ Each worktree has its own `team/_memory/_learnings/` — observations and pendin
 
 **Bash harnesses** (pattern: `.agents/hooks/test-claim-check.sh`):
 - `test-observe.sh`: prompt event → one JSONL line with expected keys; tool event with `exit_code: 1` → `is_error: true`; `API_KEY=abc` in input → `[REDACTED]`; 5KB truncation; rotation when file > threshold; no git root → no write; `.instincts-off` → no write; stdout always empty.
-- `test-instinct-mine.sh`: fake `claude` shim on PATH records invocation; below `min_candidates` → no spawn, watermark advanced; at threshold → spawn once, lock released, hook returns < 1s; stale lock → proceeds; live lock → skips.
+- `test-instinct-mine.sh`: fake `claude` shim on PATH records invocation; below `min_candidates` → no spawn, watermark NOT advanced; accumulates to threshold → spawn once with `--tools ""` and `--strict-mcp-config`, watermark advanced, lock released, hook returns < 1s; stale lock → proceeds; live lock → skips.
 - `test-instinct-inject.sh`: seeded instinct dir → expected block, respects limit/min_confidence/max_chars; empty → no output.
 
 **pytest** (`scripts/instincts/tests/`):

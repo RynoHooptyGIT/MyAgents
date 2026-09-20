@@ -2,6 +2,9 @@
 # Hook: Instinct miner (Stop)
 # Pre-filters new observations; only when enough candidates exist, spawns a DETACHED
 # `claude -p` (Haiku) whose JSON output is piped into `instinct.py ingest`.
+# The watermark advances only when a miner spawns (so sparse corrections accumulate across
+# turns) or when the unmined backlog exceeds 2 MB (safety valve).
+# The miner runs with no built-in tools and no MCP servers, so no hooks fire inside it.
 # Exit 0 always. Returns immediately; the miner runs in the background and removes the lock.
 
 [ -n "${INSTINCTS_SKIP:-}" ] && exit 0
@@ -20,6 +23,8 @@ mkdir -p "$LEARN" 2>/dev/null || exit 0
 LOG="$LEARN/miner.log"
 LOCK="$LEARN/.miner.lock"
 CAND="$LEARN/.candidates.json"
+WATERMARK="$LEARN/.instinct-watermark"
+BACKLOG_MAX=2097152   # 2 MB: advance the watermark without mining past this much unmined data
 PROMPT_FILE="$ROOT/team/agents/instinct-observer.md"
 STAMP() { date -u +%Y-%m-%dT%H:%M:%SZ; }
 
@@ -41,20 +46,25 @@ if [ -f "$LOCK" ]; then
 fi
 echo "$$ $(date +%s)" > "$LOCK"
 
-if ! python3 "$ROOT/scripts/instincts/prefilter.py" --root "$ROOT" --commit > "$CAND" 2>> "$LOG"; then
+if ! python3 "$ROOT/scripts/instincts/prefilter.py" --root "$ROOT" > "$CAND" 2>> "$LOG"; then
   rm -f "$LOCK"
   exit 0
 fi
-COUNT="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1])).get("count",0))' "$CAND" 2>/dev/null || echo 0)"
+read -r COUNT NEW_OFF START_OFF <<< "$(python3 -c 'import json,sys;d=json.load(open(sys.argv[1]));print(d.get("count",0),d.get("new_offset",0),d.get("start_offset",0))' "$CAND" 2>/dev/null || echo "0 0 0")"
 if [ "${COUNT:-0}" -lt "${MIN_C:-3}" ]; then
+  if [ $((${NEW_OFF:-0} - ${START_OFF:-0})) -gt "$BACKLOG_MAX" ]; then
+    echo "$NEW_OFF" > "$WATERMARK"
+    echo "$(STAMP) watermark advanced without mining (backlog > 2MB, candidates=$COUNT)" >> "$LOG"
+  fi
   rm -f "$LOCK"
   exit 0
 fi
 
+echo "$NEW_OFF" > "$WATERMARK"
 echo "$(STAMP) miner spawned (candidates=$COUNT, model=$MODEL)" >> "$LOG"
 INSTINCTS_SKIP=1 nohup bash -c '
   ROOT="$1"; CAND="$2"; PROMPT_FILE="$3"; MODEL="$4"; LOG="$5"; LOCK="$6"
-  claude -p --model "$MODEL" --max-turns 4 --append-system-prompt "$(cat "$PROMPT_FILE")" < "$CAND" \
+  claude -p --model "$MODEL" --max-turns 1 --tools "" --strict-mcp-config --append-system-prompt "$(cat "$PROMPT_FILE")" < "$CAND" \
     | python3 "$ROOT/scripts/instincts/instinct.py" --root "$ROOT" ingest >> "$LOG" 2>&1
   echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) miner finished" >> "$LOG"
   rm -f "$LOCK"

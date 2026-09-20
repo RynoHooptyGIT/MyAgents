@@ -14,7 +14,7 @@ setup() {
   rm -f "$LEARN/observations.jsonl" "$LEARN/.instinct-watermark" "$LEARN/.miner.lock" "$LEARN/miner.log" "$LEARN/.candidates.json" "$LEARN/instincts/mined-from-shim.yaml"
   cat > "$SHIM_DIR/claude" << 'EOF'
 #!/usr/bin/env bash
-printf 'CALL %s %s %s\n' "$1" "$2" "$3" >> "${SHIM_LOG:?}"
+printf 'CALL %s %s %s %s %s %s %s %s\n' "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" >> "${SHIM_LOG:?}"
 cat > /dev/null
 echo 'Sure! [{"id":"mined-from-shim","trigger":"when testing","action":"use the shim","observed_count":3,"evidence":["e"]}]'
 EOF
@@ -36,20 +36,22 @@ echo "=== Instinct Mine Hook Tests ==="
 setup
 trap teardown EXIT
 
-# 1. below threshold: no spawn, watermark advanced
+# 1. below threshold: no spawn, watermark NOT advanced (the lone correction must accumulate)
 printf '%s\n' '{"event":"prompt","text":"no, use gh"}' > "$LEARN/observations.jsonl"
 run_hook
 check "below threshold: no claude call" "$([ ! -f "$SHIM_LOG" ] && echo 1 || echo 0)"
-check "below threshold: watermark written" "$([ -s "$LEARN/.instinct-watermark" ] && echo 1 || echo 0)"
+check "below threshold: watermark NOT advanced" "$([ ! -e "$LEARN/.instinct-watermark" ] && echo 1 || echo 0)"
 check "below threshold: lock released" "$([ ! -f "$LEARN/.miner.lock" ] && echo 1 || echo 0)"
 
-# 2. at threshold: spawn once, ingest lands, lock cleared, hook returns fast
-printf '%s\n' '{"event":"prompt","text":"no, use gh"}' '{"event":"prompt","text":"actually do X"}' '{"event":"prompt","text":"stop, wrong file"}' >> "$LEARN/observations.jsonl"
+# 2. accumulates to threshold (1 prior + 2 new = 3): spawn once, watermark written, ingest lands, lock cleared, hook returns fast
+printf '%s\n' '{"event":"prompt","text":"actually do X"}' '{"event":"prompt","text":"stop, wrong file"}' >> "$LEARN/observations.jsonl"
 START=$(date +%s)
 run_hook
 check "hook returns in < 3s" "$([ $(( $(date +%s) - START )) -lt 3 ] && echo 1 || echo 0)"
 check "claude called once" "$(wait_for "$SHIM_LOG" && [ "$(wc -l < "$SHIM_LOG")" -eq 1 ] && echo 1 || echo 0)"
 check "claude called with -p and --model" "$(grep -q -- '-p' "$SHIM_LOG" && grep -q -- '--model' "$SHIM_LOG" && echo 1 || echo 0)"
+check "claude sandboxed: --tools and --strict-mcp-config" "$(grep -q -- '--tools' "$SHIM_LOG" && grep -q -- '--strict-mcp-config' "$SHIM_LOG" && echo 1 || echo 0)"
+check "at threshold: watermark written on spawn" "$([ -s "$LEARN/.instinct-watermark" ] && echo 1 || echo 0)"
 check "instinct ingested as pending" "$(wait_for "$LEARN/instincts/mined-from-shim.yaml" && grep -q 'status: "pending"' "$LEARN/instincts/mined-from-shim.yaml" && echo 1 || echo 0)"
 check "lock removed after miner" "$(wait_gone "$LEARN/.miner.lock" && echo 1 || echo 0)"
 

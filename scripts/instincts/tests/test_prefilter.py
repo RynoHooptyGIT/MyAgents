@@ -78,3 +78,16 @@ def test_main_commit_writes_watermark_and_rejected_ids(tmp_path, monkeypatch, ca
     assert int((instinct.learnings_dir(tmp_path) / ".instinct-watermark").read_text()) == out["new_offset"]
     assert prefilter.main(["--root", str(tmp_path)]) == 0
     assert json.loads(capsys.readouterr().out)["count"] == 0
+
+def test_main_reports_start_offset_without_commit(tmp_path, monkeypatch, capsys):
+    monkeypatch.setenv("INSTINCTS_USER_DIR", str(tmp_path / "u"))
+    (tmp_path / ".agents").mkdir()
+    write(tmp_path, [ev("prompt", text="no, wrong")])
+    wm = instinct.learnings_dir(tmp_path) / ".instinct-watermark"
+    assert prefilter.main(["--root", str(tmp_path)]) == 0
+    out = json.loads(capsys.readouterr().out)
+    assert out["start_offset"] == 0 and out["new_offset"] > 0 and out["count"] == 1
+    assert not wm.exists()  # no --commit: watermark untouched
+    wm.write_text("5")
+    assert prefilter.main(["--root", str(tmp_path)]) == 0
+    assert json.loads(capsys.readouterr().out)["start_offset"] == 5

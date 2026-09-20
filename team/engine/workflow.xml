@@ -139,7 +139,7 @@
 
       <substep n="3a" title="Capture Learnings" optional="true">
         <check if="workflow produced review findings, debugging insights, or architectural decisions">
-          <action>Instinct capture is automatic (Stop-hook miner). If this review surfaced a reusable pattern, tell the user it will appear under /team:instincts review after the session ends</action>
+          <action>Instinct capture is automatic (Stop-hook miner). If this review surfaced a reusable pattern, tell the user it will appear under /team:instincts review after a later turn's miner run</action>
           <action>Capture any patterns, pitfalls, decisions, or architecture insights discovered during this workflow</action>
         </check>
       </substep>

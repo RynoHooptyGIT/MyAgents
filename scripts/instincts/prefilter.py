@@ -102,12 +102,14 @@ def main(argv=None):
     except ValueError:
         offset = 0
     events, new_offset = read_new(ldir / "observations.jsonl", offset)
+    start_offset = offset if new_offset >= offset else 0  # read_new restarts at 0 after rotation
     cands = find_candidates(events)
     rejected = [d["id"] for d in instinct.load_tier(instinct.project_dir(root), "project")[0] if d["status"] == "rejected"]
     if a.commit:
         ldir.mkdir(parents=True, exist_ok=True)
         wm.write_text(str(new_offset))
-    print(json.dumps({"count": len(cands), "candidates": cands, "rejected_ids": rejected, "new_offset": new_offset}))
+    print(json.dumps({"count": len(cands), "candidates": cands, "rejected_ids": rejected,
+                      "start_offset": start_offset, "new_offset": new_offset}))
     return 0
 
 
