@@ -329,6 +329,19 @@ The post-commit hook is registered in `.claude/settings.local.json`:
 
 The hook only triggers on `git commit` commands and exits silently (with zero overhead) for all other Bash operations.
 
+### Instinct Capture Loop Hooks
+
+Registered in `.claude/settings.local.json` (see `docs/specs/2026-09-19-instinct-capture-loop-design.md`):
+
+| Event | Hook | Does |
+|---|---|---|
+| `UserPromptSubmit` | `.agents/hooks/observe.sh prompt` | Log the prompt (scrubbed, ≤ 2 KB) to `team/_memory/_learnings/observations.jsonl` |
+| `PostToolUse` | `.agents/hooks/observe.sh tool` | Log tool name, input, response (scrubbed, ≤ 5 KB each), error flag |
+| `Stop` | `.agents/hooks/instinct-mine.sh` | Pre-filter new observations; if ≥ `min_candidates`, spawn a detached `claude -p --model haiku` whose JSON is ingested as `pending` instincts |
+| `SessionStart` | `.agents/hooks/instinct-inject.sh` | Print the top active instincts as a `[instincts]` context block |
+
+All four exit 0 unconditionally; `INSTINCTS_SKIP=1` or a `.instincts-off` marker disables them. CLI: `python3 scripts/instincts/instinct.py`.
+
 ## Sprint Status as Single Source of Truth
 
 `sprint-status.yaml` is the central tracking file that the Oracle reads before every decision. It tracks:
