@@ -192,11 +192,35 @@ def test_promote_requires_two_projects_high_confidence_and_domain(root, tmp_path
     assert g["scope"] == "global" and g["status"] == "active" and "project_name" not in g
     assert instinct.promote(root, TODAY) == []  # idempotent
 
+def test_promote_skips_malformed_and_unreadable_registry(root, tmp_path):
+    import os
+    p2 = other_project(tmp_path, "p2")
+    instinct.register_project(p2)
+    # Malformed instinct (missing trigger)
+    instinct.write_instinct(instinct.project_dir(root) / "malformed.yaml",
+                           {"id": "malformed", "status": "active", "confidence": 0.9, "domain": "tooling"})
+    # Valid instincts in root and p2
+    seed(root, id="valid", status="active", confidence=0.85, domain="tooling")
+    instinct.write_instinct(instinct.project_dir(p2) / "valid.yaml",
+                           sample(id="valid", status="active", confidence=0.8, domain="tooling"))
+    # Test with unreadable registry (skip if running as root)
+    if os.geteuid() != 0:
+        reg = instinct.user_dir() / ".projects"
+        original_mode = reg.stat().st_mode
+        reg.chmod(0)
+        try:
+            # With unreadable registry, only root is scanned, so no promotion (malformed blocks it)
+            assert instinct.promote(root, TODAY) == []
+        finally:
+            reg.chmod(original_mode)
+    # With readable registry, both projects scanned, promotion succeeds
+    assert instinct.promote(root, TODAY) == ["valid"]
+
 def test_export_import_roundtrip(root, tmp_path):
-    seed(root, id="a1", status="active"); seed(root, id="r1", status="rejected")
+    seed(root, id="a1-export", status="active"); seed(root, id="r1", status="rejected")
     bundle = instinct.export_bundle(root)
-    assert [d["id"] for d in bundle] == ["a1"]
+    assert [d["id"] for d in bundle] == ["a1-export"]
     dest = other_project(tmp_path, "dest")
     assert instinct.import_bundle(dest, bundle + [{"id": "BAD", "status": "active"}]) == 1
     assert instinct.import_bundle(dest, bundle) == 0
-    assert instinct.read_instinct(instinct.project_dir(dest) / "a1.yaml")["status"] == "active"
+    assert instinct.read_instinct(instinct.project_dir(dest) / "a1-export.yaml")["status"] == "active"

@@ -398,10 +398,13 @@ def _registered_projects(root):
     paths = {str(Path(root).resolve())}
     reg = user_dir() / ".projects"
     if reg.is_file():
-        for line in reg.read_text(encoding="utf-8").splitlines():
-            p = line.split("\t")[0].strip()
-            if p and Path(p).is_dir():
-                paths.add(p)
+        try:
+            for line in reg.read_text(encoding="utf-8").splitlines():
+                p = line.split("\t")[0].strip()
+                if p and Path(p).is_dir():
+                    paths.add(p)
+        except OSError:
+            pass
     return sorted(paths)
 
 
@@ -410,6 +413,8 @@ def promote(root, today):
     for p in _registered_projects(root):
         for d in load_tier(project_dir(p), "project")[0]:
             if d["status"] != "active" or d.get("domain") not in GLOBAL_DOMAINS:
+                continue
+            if not d.get("trigger"):
                 continue
             d["_project"] = p
             for g in groups:
@@ -422,7 +427,7 @@ def promote(root, today):
     promoted = []
     for g in groups:
         projects = {d["_project"] for d in g}
-        mean = sum(float(d["confidence"]) for d in g) / len(g)
+        mean = sum(float(d.get("confidence", 0.3)) for d in g) / len(g)
         if len(projects) < 2 or mean < 0.8 or g[0]["id"] in existing:
             continue
         new = _public(g[0])
@@ -442,7 +447,7 @@ def export_bundle(root):
 def import_bundle(root, objs):
     n = 0
     for d in objs:
-        if not isinstance(d, dict) or not re.match(r"^[a-z0-9][a-z0-9-]{0,60}$", str(d.get("id", ""))) or d.get("status") not in STATUSES:
+        if not isinstance(d, dict) or not ID_RE.match(str(d.get("id", ""))) or d.get("status") not in STATUSES:
             continue
         tier_dir = user_dir() if d.get("scope") == "global" else project_dir(root)
         path = tier_dir / f"{d['id']}.yaml"
