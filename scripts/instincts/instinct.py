@@ -54,6 +54,28 @@ def user_dir():
     return Path(os.environ.get("INSTINCTS_USER_DIR") or Path.home() / ".claude" / "instincts")
 
 
+def project_identity(path):
+    """Stable identity for a checkout: the git common dir, so worktrees share one identity.
+    Falls back to the resolved path when git is unavailable or the path is not a repository."""
+    path = Path(path).resolve()
+    for args in (["--path-format=absolute", "--git-common-dir"], ["--git-common-dir"]):
+        try:
+            out = subprocess.run(["git", "-C", str(path), "rev-parse", *args],
+                                 capture_output=True, text=True, check=True)
+        except (OSError, subprocess.CalledProcessError):
+            continue
+        common = out.stdout.strip()
+        if common:
+            return str((path / common).resolve())
+    return str(path)
+
+
+def project_name_for(root):
+    """Project name for ingest: the main checkout's directory name, even when root is a worktree."""
+    ident = Path(project_identity(root))
+    return ident.parent.name if ident.name == ".git" else Path(root).resolve().name
+
+
 # ---------- flat YAML ----------
 
 def dump_instinct(d):
@@ -82,6 +104,7 @@ def _scalar(raw):
             return json.loads(raw)
         except ValueError:
             return raw.strip('"')
+    raw = re.sub(r"\s+#.*$", "", raw)
     if raw in ("true", "false"):
         return raw == "true"
     for cast in (int, float):
@@ -117,7 +140,7 @@ def parse_instinct(text):
 def read_instinct(path):
     try:
         d = parse_instinct(Path(path).read_text(encoding="utf-8"))
-    except OSError:
+    except (OSError, UnicodeDecodeError):
         return None
     if not d.get("id") or d.get("status") not in STATUSES:
         return None
@@ -232,18 +255,34 @@ def validate(obj):
     return out
 
 
+def _is_object_list(data):
+    return isinstance(data, list) and bool(data) and all(isinstance(x, dict) for x in data)
+
+
 def extract_json_array(text):
-    m = re.search(r"\[.*\]", text, re.S)
-    if not m:
-        return []
+    """First JSON array of objects in the miner's output; prose like "[2] patterns" is skipped."""
     try:
-        data = json.loads(m.group(0))
+        data = json.loads(text.strip())
+        if isinstance(data, list):
+            return data
     except ValueError:
-        return []
-    return data if isinstance(data, list) else []
+        pass
+    dec = json.JSONDecoder()
+    for i, ch in enumerate(text):
+        if ch != "[":
+            continue
+        try:
+            data, _ = dec.raw_decode(text, i)
+        except ValueError:
+            continue
+        if _is_object_list(data):
+            return data
+    return []
 
 
-def ingest(root, objs, today, project_name):
+def ingest(root, objs, today, project_name=None):
+    if project_name is None:
+        project_name = project_name_for(root)
     result = {"created": [], "merged": [], "contradicted": [], "dropped": 0}
     existing = {d["id"]: d for d in load_tier(project_dir(root), "project")[0]}
     day = today.isoformat()
@@ -416,7 +455,8 @@ def promote(root, today):
                 continue
             if not d.get("trigger"):
                 continue
-            d["_project"] = p
+            d["_project"] = project_identity(p)
+            # Canopy grouping: each candidate is compared to the group's first member only (non-transitive by design; instinct sets are small).
             for g in groups:
                 if g[0]["id"] == d["id"] or similar(g[0]["trigger"], d["trigger"]):
                     g.append(d)
@@ -505,6 +545,8 @@ def main(argv=None, stdin=None):
     sub.add_parser("export")
     sub.add_parser("import")
     a = ap.parse_args(argv)
+    if a.cmd == "accept" and not a.ids and a.min_confidence is None:
+        ap.error("accept needs instinct ids or --min-confidence")
 
     root = resolve_root(a.root)
     cfg = _config.load(root)
@@ -534,7 +576,7 @@ def main(argv=None, stdin=None):
         return 0
     if a.cmd == "ingest":
         objs = extract_json_array(stdin.read())
-        r = ingest(root, objs, today, a.project_name or Path(root).name)
+        r = ingest(root, objs, today, a.project_name)
         print(json.dumps(r))
         return 0
     if a.cmd == "rejected-ids":

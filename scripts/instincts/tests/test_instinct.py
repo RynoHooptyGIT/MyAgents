@@ -1,4 +1,4 @@
-import io, json, sys
+import io, json, os, sys
 from datetime import date
 from pathlib import Path
 
@@ -224,3 +224,45 @@ def test_export_import_roundtrip(root, tmp_path):
     assert instinct.import_bundle(dest, bundle + [{"id": "BAD", "status": "active"}]) == 1
     assert instinct.import_bundle(dest, bundle) == 0
     assert instinct.read_instinct(instinct.project_dir(dest) / "a1-export.yaml")["status"] == "active"
+
+# ---------- final fix wave ----------
+
+def test_cli_accept_requires_ids_or_threshold(root):
+    seed(root, id="p1"); seed(root, id="p2")
+    with pytest.raises(SystemExit) as e:
+        instinct.main(["--root", str(root), "accept"])
+    assert e.value.code == 2
+    assert instinct.read_instinct(instinct.project_dir(root) / "p1.yaml")["status"] == "pending"
+    assert instinct.read_instinct(instinct.project_dir(root) / "p2.yaml")["status"] == "pending"
+
+def test_extract_json_array_skips_prose_brackets():
+    assert instinct.extract_json_array('Found [2] patterns: [{"id": "a-b-c"}] done') == [{"id": "a-b-c"}]
+    assert instinct.extract_json_array("[not json") == []
+
+def test_load_tier_lists_undecodable_bytes_as_unreadable(root):
+    p = instinct.project_dir(root); p.mkdir(parents=True)
+    (p / "bad.yaml").write_bytes(b"\xff\xfe")
+    items, bad = instinct.load_tier(p, "project")
+    assert items == [] and bad == [str(p / "bad.yaml")]
+
+def test_parse_instinct_strips_inline_comments_on_unquoted_values():
+    assert instinct.parse_instinct('status: pending   # pending | active\nconfidence: 0.5 # x\n') == {"status": "pending", "confidence": 0.5}
+
+def test_promote_treats_worktree_as_same_project(root, tmp_path):
+    import shutil, subprocess
+    if not shutil.which("git"):
+        pytest.skip("git not available")
+    repo = tmp_path / "repo"; repo.mkdir()
+    env = {"GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@t", "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@t",
+           "HOME": str(tmp_path), "PATH": os.environ["PATH"]}
+    run = lambda *a: subprocess.run(["git", "-C", str(repo), *a], check=True, capture_output=True, env=env)
+    run("init", "-q"); (repo / "f").write_text("x"); run("add", "f"); run("commit", "-q", "-m", "init")
+    wt = tmp_path / "wt"
+    run("worktree", "add", "-q", str(wt))
+    assert instinct.project_identity(wt) == instinct.project_identity(repo)
+    for p in (repo, wt):
+        (p / ".agents").mkdir(exist_ok=True)
+        instinct.write_instinct(instinct.project_dir(p) / "use-gh.yaml", sample(id="use-gh", status="active", confidence=0.9, domain="tooling"))
+        instinct.register_project(p)
+    assert instinct.promote(repo, TODAY) == []
+    assert not (instinct.user_dir() / "use-gh.yaml").exists()
