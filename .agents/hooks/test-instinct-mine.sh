@@ -14,7 +14,7 @@ setup() {
   rm -f "$LEARN/observations.jsonl" "$LEARN/.instinct-watermark" "$LEARN/.miner.lock" "$LEARN/miner.log" "$LEARN/.candidates.json" "$LEARN/instincts/mined-from-shim.yaml"
   cat > "$SHIM_DIR/claude" << 'EOF'
 #!/usr/bin/env bash
-echo "$@" >> "${SHIM_LOG:?}"
+printf 'CALL %s %s %s\n' "$1" "$2" "$3" >> "${SHIM_LOG:?}"
 cat > /dev/null
 echo 'Sure! [{"id":"mined-from-shim","trigger":"when testing","action":"use the shim","observed_count":3,"evidence":["e"]}]'
 EOF
