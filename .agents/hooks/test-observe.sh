@@ -23,8 +23,9 @@ OUT="$(echo '{"session_id":"s1","prompt":"hello"}' | CLAUDE_PROJECT_DIR="$ROOT" 
 check "prompt event exits 0 and prints nothing" "$([ $RC -eq 0 ] && [ -z "$OUT" ] && echo 1 || echo 0)"
 check "prompt event written" "$(grep -q '"event": *"prompt"' "$OBS" 2>/dev/null && echo 1 || echo 0)"
 
-echo '{"session_id":"s1","tool_name":"Bash","tool_input":{"command":"echo API_KEY=abc"},"tool_response":{"exit_code":1,"stdout":"boom"}}' \
-  | CLAUDE_PROJECT_DIR="$ROOT" bash "$HOOK" tool
+OUT="$(echo '{"session_id":"s1","tool_name":"Bash","tool_input":{"command":"echo API_KEY=abc"},"tool_response":{"exit_code":1,"stdout":"boom"}}' \
+  | CLAUDE_PROJECT_DIR="$ROOT" bash "$HOOK" tool)"
+check "tool event prints nothing" "$([ -z "$OUT" ] && echo 1 || echo 0)"
 check "tool event scrubbed" "$(grep -q 'API_KEY=\[REDACTED\]' "$OBS" && echo 1 || echo 0)"
 check "tool event flagged is_error" "$(grep -q '"is_error": *true' "$OBS" && echo 1 || echo 0)"
 
