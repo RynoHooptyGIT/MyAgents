@@ -12,7 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import instinct  # noqa: E402
 
-CORRECTION_RE = re.compile(r"\b(no,|nope|actually|instead|don't|do not|stop|wrong|not that)\b", re.I)
+CORRECTION_RE = re.compile(r"(\bno,|\b(?:nope|actually|instead|don't|do not|stop|wrong|not that)\b)", re.I)
 WINDOW_STR_MAX = 1000
 
 

@@ -25,6 +25,11 @@ def test_correction_bundles_preceding_tools():
 def test_correction_ignores_late_matches():
     assert prefilter.find_candidates([ev("prompt", text="x" * 130 + " actually")]) == []
 
+def test_correction_matches_leading_no_comma():
+    c = prefilter.find_candidates([ev("prompt", text="no, use gh")])
+    assert [x["kind"] for x in c] == ["correction"]
+    assert prefilter.find_candidates([ev("prompt", text="I know, thanks")]) == []
+
 def test_error_resolution_same_tool_within_three():
     events = [tool("Bash", {"command": "pytest"}, err=True), tool("Read", {"file_path": "t.py"}), tool("Bash", {"command": "pytest"})]
     c = prefilter.find_candidates(events)
