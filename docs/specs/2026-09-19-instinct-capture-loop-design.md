@@ -80,7 +80,7 @@ Registered twice in `.claude/settings.local.json` (and the template):
      < candidates.json | scripts/instincts/instinct.py ingest
    ```
    The observer prompt instructs the model to output **only** a JSON array of instinct objects (schema below). A wrapper (`scripts/instincts/instinct.py ingest`) validates each object and writes/merges YAML files. The model never writes files directly.
-6. Advance watermark and release the lock immediately after spawning. The Stop hook must return in < 1s regardless of miner duration.
+6. Advance watermark; the detached miner removes the lock when it finishes (stale after 10 min either way). The Stop hook must return in < 1s regardless of miner duration.
 
 ### Stage 3 — Store
 
