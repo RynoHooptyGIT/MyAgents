@@ -53,3 +53,10 @@ def test_main_respects_off_marker_and_disabled(tmp_path):
 def test_main_bad_json_is_noop(tmp_path):
     (tmp_path / ".agents").mkdir()
     assert observe.main(["tool", "--root", str(tmp_path)], stdin=io.StringIO("not json")) == 0
+
+def test_scrub_bearer_token_prefixes_and_url_credentials():
+    assert observe.scrub("Authorization: Bearer eyJabc.def") == "Authorization: Bearer [REDACTED]"
+    assert observe.scrub("DATABASE_URL=postgres://user:hunter2@db/x") == "DATABASE_URL=postgres://user:[REDACTED]@db/x"
+    assert observe.scrub("key sk-abcdefghijklmnop") == "key [REDACTED]"
+    assert observe.scrub("ghp_ABCDEFGHIJKLMNOP1234 and AKIAABCDEFGHIJKLMNOP") == "[REDACTED] and [REDACTED]"
+    assert observe.scrub("xoxb-123456789-abc") == "[REDACTED]"

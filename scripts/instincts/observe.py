@@ -22,8 +22,31 @@ MAX_IO = 5000
 MAX_PROMPT = 2000
 
 
+EXTRA_SECRET_RE = re.compile(
+    r"(?i)(bearer\s+)\S+"
+    r"|(\b(?:sk-|ghp_|gho_|github_pat_|xox[abprs]-)[A-Za-z0-9_-]{8,})"
+    r"|(\bAKIA[0-9A-Z]{16}\b)"
+    r"|(://[^:/\s@]+:)[^@\s]+(@)"
+)
+
+
+def _scrub_kv(m):
+    # Leave "Authorization: Bearer <token>" to the bearer pass so the scheme word survives and the token is redacted.
+    if m.group(3).lower() == "bearer":
+        return m.group(0)
+    return m.group(1) + m.group(2) + "[REDACTED]"
+
+
+def _scrub_extra(m):
+    if m.group(1):  # bearer token
+        return m.group(1) + "[REDACTED]"
+    if m.group(4):  # URL credentials
+        return m.group(4) + "[REDACTED]" + m.group(5)
+    return "[REDACTED]"  # token prefixes, AKIA
+
+
 def scrub(s):
-    return SECRET_RE.sub(lambda m: m.group(1) + m.group(2) + "[REDACTED]", s)
+    return EXTRA_SECRET_RE.sub(_scrub_extra, SECRET_RE.sub(_scrub_kv, s))
 
 
 def serialize(obj):

@@ -98,6 +98,10 @@ substitute() {
 # ── Step 1: Copy team system ────────────────────────────────────
 echo -e "\n${CYAN}[1/6] Copying team system...${NC}"
 cp -R "$TEAM_ROOT/team" "$TARGET_DIR/team"
+# Never ship this repo's local learning state or project-tier instincts into a target project
+rm -rf "$TARGET_DIR/team/_memory/_learnings"
+mkdir -p "$TARGET_DIR/team/_memory/_learnings/instincts"
+touch "$TARGET_DIR/team/_memory/_learnings/instincts/.gitkeep"
 
 echo -e "  ${GREEN}✓${NC} team/ directory installed (27 agents, 70+ workflows)"
 
