@@ -39,6 +39,11 @@
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/slim-prompt.sh\"",
             "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.agents/hooks/observe.sh\" prompt",
+            "timeout": 3000
           }
         ]
       }
@@ -72,6 +77,11 @@
           {
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.agents/hooks/heartbeat.sh\"",
+            "timeout": 3000
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.agents/hooks/observe.sh\" tool",
             "timeout": 3000
           }
         ]
