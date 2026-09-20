@@ -55,7 +55,6 @@ Instinct domains map onto these: pattern/architecture → workflow|code-style, p
 
 ## Enforcement
 
-- **Before implementation:** Invoke `learnings-search` protocol. Surface relevant entries.
-- **After code-review:** If review found patterns, pitfalls, or architectural insights, invoke `learnings-capture` protocol.
-- **After debugging:** If root cause reveals a non-obvious failure mode, capture as a pitfall learning.
-- **Pruning:** Periodically invoke `learnings-prune` to remove stale entries referencing deleted files.
+- **Before implementation:** Run `python3 scripts/instincts/instinct.py status` and read the `[instincts]` block injected at session start. Apply active instincts as context, not policy.
+- **After code-review / debugging:** Capture is automatic via the Stop-hook miner. If a pattern was learned, make sure it surfaced — state the correction plainly in a prompt so the miner sees it. Review pending instincts with `/team:instincts review` before committing.
+- **Pruning:** `python3 scripts/instincts/instinct.py prune` (or Athena's [IN] menu) removes stale pending/rejected instincts.
