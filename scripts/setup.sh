@@ -103,7 +103,7 @@ rm -rf "$TARGET_DIR/team/_memory/_learnings"
 mkdir -p "$TARGET_DIR/team/_memory/_learnings/instincts"
 touch "$TARGET_DIR/team/_memory/_learnings/instincts/.gitkeep"
 
-echo -e "  ${GREEN}✓${NC} team/ directory installed (27 agents, 70+ workflows)"
+echo -e "  ${GREEN}✓${NC} team/ directory installed (28 agents, 70+ workflows)"
 
 # ── Step 2: Generate config ─────────────────────────────────────
 echo -e "${CYAN}[2/6] Generating configuration...${NC}"
@@ -159,7 +159,7 @@ team/_memory/_learnings/.instinct-watermark
 team/_memory/_learnings/.candidates.json
 EOF
 
-    echo -e "  ${GREEN}✓${NC} Claude Code: CLAUDE.md, 76 slash commands, hooks"
+    echo -e "  ${GREEN}✓${NC} Claude Code: CLAUDE.md, 83 slash commands, hooks"
 fi
 
 # GitHub Copilot (options 2, 4)

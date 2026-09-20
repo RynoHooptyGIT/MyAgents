@@ -111,6 +111,15 @@ Load and fully activate the agent: $ARGUMENTS
 
 ---
 
+### Authority contract
+
+Every agent must declare `role:` (`supervisor | worker | advisor`) in its frontmatter and load
+`team/engine/authority-contract.xml` in activation step 2a. After creating the agent file, run
+`bash scripts/apply-contract.sh` — it adds the role, the activation step, and the AUTHORITY rule
+idempotently, and `bash scripts/apply-contract.sh --check` is a release gate. Then run
+`bash scripts/sync-user-agents.sh` to copy agents to `~/.claude/agents/` (overwrites;
+`--check` shows drift).
+
 ## Adding Custom Workflows
 
 ### Using the Workflow Builder (Recommended)

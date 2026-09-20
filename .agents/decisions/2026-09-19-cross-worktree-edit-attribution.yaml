@@ -1,0 +1,7 @@
+decided_by: oracle
+story_id: "SP1"
+date: 2026-09-19
+decision: "claim-check resolves identity from the edited file's worktree first, so an agent editing inside another agent's worktree is attributed to that worktree's owner and its claim is skipped. Accepted for SP1; SP4's PreToolUse path guard must block edits whose file-worktree differs from the cwd-worktree."
+rationale: "Resolving cwd-first has the mirror hole (path never matches the claim). Editing inside another agent's worktree is already policy-forbidden; the mechanical block belongs with the SP4 path guard."
+affects_agents: all
+acknowledged_by: []

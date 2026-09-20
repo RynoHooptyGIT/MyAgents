@@ -1,6 +1,6 @@
 name: issue-triage
 description: "Detect issues across the project, prioritize them, and assign agents to fix, design, or build"
-author: "Maestro"
+author: "Oracle"
 
 # Critical variables from config
 config_source: "{project-root}/team/config.yaml"

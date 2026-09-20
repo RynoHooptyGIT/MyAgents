@@ -31,3 +31,7 @@ team/_memory/_learnings/miner.log
 team/_memory/_learnings/.miner.lock
 team/_memory/_learnings/.instinct-watermark
 team/_memory/_learnings/.candidates.json
+
+# Worktree identity markers written by /agent-coordinator (ephemeral)
+.agent-id
+.agent-coord-root

@@ -1,7 +1,7 @@
 # Multi-Agent Coordination System
 
 **Date**: 2026-04-26
-**Status**: Draft (Rev 1 — post-review fixes applied)
+**Status**: Draft (Rev 1 — post-review fixes applied). **Partially superseded 2026-09-18:** Maestro was absorbed into Oracle (`.agents/config.yaml`); "supervisor mode" and merge orchestration are now designed in `2026-09-18-authority-contract-design.md` (SP1) and its successors SP2–SP4. Hook identity resolution changed to worktree = identity (`.agent-id`) in SP1.
 **Author**: CEO + Claude
 **Scope**: Multi-instance Claude Code coordination for parallel autonomous development
 

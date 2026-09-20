@@ -3,16 +3,17 @@
 # Updates agent's last_heartbeat timestamp every ~20 tool calls.
 # Exit 0 always (never blocks).
 
-COORD_ROOT=""
-for rootfile in .agents/registry/.coord-root-* ; do
-  [ -f "$rootfile" ] && COORD_ROOT="$(cat "$rootfile")" && break
-done
-[ -z "$COORD_ROOT" ] && exit 0
+HOOK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib-identity.sh
+. "$HOOK_DIR/lib-identity.sh"
 
-MY_ID=""
-for idfile in "$COORD_ROOT/.agents/registry/.current-agent-id-"* ; do
-  [ -f "$idfile" ] && MY_ID="$(cat "$idfile")" && break
-done
+INPUT="$(cat)"
+CWD="$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('cwd',''))" 2>/dev/null)" || CWD=""
+FILE_PATH="$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('tool_input',{}).get('file_path',''))" 2>/dev/null)" || FILE_PATH=""
+[ -z "$CWD" ] && CWD="$PWD"
+
+resolve_identity "$FILE_PATH" "$CWD"
+[ -z "$COORD_ROOT" ] && exit 0
 [ -z "$MY_ID" ] && exit 0
 
 COUNTER_FILE="$COORD_ROOT/.agents/registry/${MY_ID}.counter"
@@ -21,6 +22,7 @@ STATUS_FILE="$COORD_ROOT/.agents/status/agent-${MY_ID}.yaml"
 
 COUNT=0
 [ -f "$COUNTER_FILE" ] && COUNT="$(cat "$COUNTER_FILE")"
+case "$COUNT" in ''|*[!0-9]*) COUNT=0 ;; esac
 COUNT=$((COUNT + 1))
 
 if [ "$COUNT" -lt 20 ]; then
@@ -31,12 +33,15 @@ fi
 echo "0" > "$COUNTER_FILE"
 NOW="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-if [ -f "$REGISTRY_FILE" ]; then
-  sed -i '' "s/^last_heartbeat:.*$/last_heartbeat: $NOW/" "$REGISTRY_FILE" 2>/dev/null || true
-fi
+# Portable in-place edit (BSD and GNU sed): write to a temp file, then move.
+replace_line() {  # file, key, value
+  local tmp
+  [ -f "$1" ] || return 0
+  tmp="$(mktemp)" || return 0
+  sed "s/^$2:.*$/$2: $3/" "$1" > "$tmp" && mv "$tmp" "$1" || rm -f "$tmp"
+}
 
-if [ -f "$STATUS_FILE" ]; then
-  sed -i '' "s/^last_updated:.*$/last_updated: $NOW/" "$STATUS_FILE" 2>/dev/null || true
-fi
+replace_line "$REGISTRY_FILE" "last_heartbeat" "$NOW"
+replace_line "$STATUS_FILE" "last_updated" "$NOW"
 
 exit 0

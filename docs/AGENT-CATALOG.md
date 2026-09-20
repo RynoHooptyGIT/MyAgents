@@ -1,6 +1,6 @@
 # My Dev Team — Agent Catalog
 
-26 specialist agents, each agent has a persona with a unique name, communication style, domain expertise, and activation protocol. This catalog documents every agent, when to use them, and how to invoke them.
+28 specialist agents, each agent has a persona with a unique name, communication style, domain expertise, and activation protocol. This catalog documents every agent, when to use them, and how to invoke them.
 
 ---
 
@@ -9,7 +9,7 @@
 ### Oracle / Athena
 
 - **Domain**: Sole orchestrator — both reactive tactical fixes and proactive strategic scan-and-plan, sprint orchestration, lifecycle enforcement, full-landscape scanning, agent assignment, mission briefing generation, master plan creation, CEO approval gate, inter-agent communication hub
-- **When to use**: For all orchestration, project-level and sprint-level alike. For day-to-day sprint work, Oracle reads sprint state, presents a project brief, and enforces the implementation lifecycle (create-story, dev-story, code-review, ship). For new projects and major initiatives, Oracle scans the entire project, identifies gaps, assigns agents to their parts, builds per-agent mission briefings (memory), and produces the master plan — say "Let's ride" to trigger a full scan, or use the [OV] Onboard Venture / [IT] Issue Triage / [AP] Approval Queue menu items. It translates directives into workflow sequences and executes them directly, routes to specialist agents for domain expertise, enforces CEO approval gates, and is the central inter-agent communication hub. Enforces verification discipline at all workflow completion checkpoints.
+- **When to use**: For all orchestration, project-level and sprint-level alike. For day-to-day sprint work, Oracle reads sprint state, presents a project brief, and enforces the implementation lifecycle (create-story, dev-story, code-review, ship). For new projects and major initiatives, Oracle scans the entire project, identifies gaps, assigns agents to their parts, builds per-agent mission briefings (memory), and produces the master plan — say "Let's ride" to trigger a full scan, or use the [OV] Onboard Venture / [IT] Issue Triage / [AP] Approval Queue menu items. It translates directives into workflow sequences, runs the planning steps itself, and briefs workers for implementation and review, routes to specialist agents for domain expertise, enforces CEO approval gates, and is the central inter-agent communication hub. Enforces verification discipline at all workflow completion checkpoints.
 - **Slash command**: `/team:oracle`
 
 ---
@@ -49,6 +49,12 @@
 - **Domain**: Full-stack software engineering, story implementation, test-driven development, engineering discipline enforcement
 - **When to use**: When implementing stories outside of the Oracle's dev-story workflow, or when you need a dedicated coding agent. Amelia follows strict adherence to acceptance criteria, uses the story file as single source of truth, and follows red-green-refactor cycles. Ultra-succinct -- speaks in file paths and AC IDs. Enforces TDD discipline (code written before a failing test is deleted), verification discipline (no completion claims without fresh output), and debugging discipline (hypothesis before fix, escalate at 3 failures).
 - **Slash command**: `/team:dev`
+
+### Frontend Engineer / Pixel
+
+- **Domain**: Frontend implementation — components, state, styling, accessibility, and browser behavior
+- **When to use**: When a story's scope is primarily UI. Pixel follows the same story-file, TDD, and verification discipline as Amelia but brings frontend-specific judgment on component boundaries, design-system usage, and accessibility.
+- **Slash command**: `/team:frontend-dev`
 
 ### Tech Writer / Paige
 
@@ -216,7 +222,7 @@
 |----------|--------|
 | Orchestration | 1 |
 | Core Planning | 4 |
-| Implementation | 3 |
+| Implementation | 4 |
 | Quality & Testing | 2 |
 | Infrastructure | 2 |
 | Security & Compliance | 2 |
@@ -225,4 +231,4 @@
 | Creative Innovation | 3 |
 | Builders | 3 |
 | Platform | 1 |
-| **Total** | **27** |
+| **Total** | **28** |

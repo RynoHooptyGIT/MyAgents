@@ -1,6 +1,6 @@
 name: scan-and-plan
 description: "Full project scan, gap analysis, agent assignment, memory building, and master plan generation"
-author: "Maestro"
+author: "Oracle"
 
 # Critical variables from config
 config_source: "{project-root}/team/config.yaml"
