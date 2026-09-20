@@ -168,3 +168,35 @@ def test_cli_prune_ttl_zero_is_honored(root):
     rc = instinct.main(["--root", str(root), "--today", "2026-09-19", "prune", "--ttl-days", "0"])
     assert rc == 0
     assert not (instinct.project_dir(root) / "yesterday.yaml").exists()
+
+def other_project(tmp_path, name):
+    p = tmp_path / name; (p / ".agents").mkdir(parents=True); return p
+
+def test_similar_triggers():
+    assert instinct.similar("when calling the GitHub API", "when calling the github api!")
+    assert not instinct.similar("when calling the GitHub API", "when writing tests")
+
+def test_promote_requires_two_projects_high_confidence_and_domain(root, tmp_path):
+    p2 = other_project(tmp_path, "p2"); p3 = other_project(tmp_path, "p3")
+    instinct.register_project(p2); instinct.register_project(p3)
+    seed(root, id="use-gh", status="active", confidence=0.85, domain="tooling")
+    instinct.write_instinct(instinct.project_dir(p2) / "use-gh.yaml", sample(id="use-gh", status="active", confidence=0.8, domain="tooling"))
+    # distinct triggers so these do not group with use-gh by similarity
+    seed(root, id="lonely", status="active", confidence=0.9, domain="tooling", trigger="when only one project")   # one project only
+    seed(root, id="style", status="active", confidence=0.9, domain="code-style", trigger="when styling code")     # domain not promotable
+    instinct.write_instinct(instinct.project_dir(p3) / "style.yaml", sample(id="style", status="active", confidence=0.9, domain="code-style", trigger="when styling code"))
+    seed(root, id="weak", status="active", confidence=0.6, domain="git", trigger="when confidence is weak")
+    instinct.write_instinct(instinct.project_dir(p3) / "weak.yaml", sample(id="weak", status="active", confidence=0.6, domain="git", trigger="when confidence is weak"))
+    assert instinct.promote(root, TODAY) == ["use-gh"]
+    g = instinct.read_instinct(instinct.user_dir() / "use-gh.yaml")
+    assert g["scope"] == "global" and g["status"] == "active" and "project_name" not in g
+    assert instinct.promote(root, TODAY) == []  # idempotent
+
+def test_export_import_roundtrip(root, tmp_path):
+    seed(root, id="a1", status="active"); seed(root, id="r1", status="rejected")
+    bundle = instinct.export_bundle(root)
+    assert [d["id"] for d in bundle] == ["a1"]
+    dest = other_project(tmp_path, "dest")
+    assert instinct.import_bundle(dest, bundle + [{"id": "BAD", "status": "active"}]) == 1
+    assert instinct.import_bundle(dest, bundle) == 0
+    assert instinct.read_instinct(instinct.project_dir(dest) / "a1.yaml")["status"] == "active"

@@ -384,6 +384,75 @@ def inject(root, today, cfg):
     return "\n".join(lines) + "\n"
 
 
+# ---------- promote / export / import ----------
+
+def similar(a, b):
+    ta = set(re.findall(r"[a-z0-9]+", a.lower()))
+    tb = set(re.findall(r"[a-z0-9]+", b.lower()))
+    if not ta or not tb:
+        return False
+    return len(ta & tb) / len(ta | tb) >= 0.8
+
+
+def _registered_projects(root):
+    paths = {str(Path(root).resolve())}
+    reg = user_dir() / ".projects"
+    if reg.is_file():
+        for line in reg.read_text(encoding="utf-8").splitlines():
+            p = line.split("\t")[0].strip()
+            if p and Path(p).is_dir():
+                paths.add(p)
+    return sorted(paths)
+
+
+def promote(root, today):
+    groups = []
+    for p in _registered_projects(root):
+        for d in load_tier(project_dir(p), "project")[0]:
+            if d["status"] != "active" or d.get("domain") not in GLOBAL_DOMAINS:
+                continue
+            d["_project"] = p
+            for g in groups:
+                if g[0]["id"] == d["id"] or similar(g[0]["trigger"], d["trigger"]):
+                    g.append(d)
+                    break
+            else:
+                groups.append([d])
+    existing = {d["id"] for d in load_tier(user_dir(), "user")[0]}
+    promoted = []
+    for g in groups:
+        projects = {d["_project"] for d in g}
+        mean = sum(float(d["confidence"]) for d in g) / len(g)
+        if len(projects) < 2 or mean < 0.8 or g[0]["id"] in existing:
+            continue
+        new = _public(g[0])
+        new.pop("project_name", None)
+        new.update({"scope": "global", "status": "active", "confidence": clamp(mean), "last_seen": today.isoformat(),
+                    "evidence": (new.get("evidence", []) + [f"{today.isoformat()} promoted: seen in {len(projects)} projects"])[-20:]})
+        write_instinct(user_dir() / f"{new['id']}.yaml", new)
+        promoted.append(new["id"])
+    return promoted
+
+
+def export_bundle(root):
+    items, _ = load_all(root)
+    return [_public(d) for d in items if d["status"] != "rejected"]
+
+
+def import_bundle(root, objs):
+    n = 0
+    for d in objs:
+        if not isinstance(d, dict) or not re.match(r"^[a-z0-9][a-z0-9-]{0,60}$", str(d.get("id", ""))) or d.get("status") not in STATUSES:
+            continue
+        tier_dir = user_dir() if d.get("scope") == "global" else project_dir(root)
+        path = tier_dir / f"{d['id']}.yaml"
+        if path.exists():
+            continue
+        write_instinct(path, d)
+        n += 1
+    return n
+
+
 # ---------- CLI ----------
 
 def _print_status(s):
@@ -466,7 +535,19 @@ def main(argv=None, stdin=None):
     if a.cmd == "rejected-ids":
         print("\n".join(status(root, today, cfg)["rejected_ids"]))
         return 0
-    print(f"{a.cmd}: not implemented", file=sys.stderr)
+    if a.cmd == "promote":
+        print(" ".join(promote(root, today)))
+        return 0
+    if a.cmd == "export":
+        print(json.dumps(export_bundle(root), indent=1))
+        return 0
+    if a.cmd == "import":
+        try:
+            objs = json.loads(stdin.read())
+        except ValueError:
+            objs = []
+        print(import_bundle(root, objs if isinstance(objs, list) else []))
+        return 0
     return 2
 
 
