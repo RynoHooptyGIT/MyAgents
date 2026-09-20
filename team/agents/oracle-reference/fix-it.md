@@ -32,7 +32,7 @@ DISPATCH using {dispatch_map}:
 
 OUTPUT depends on mode:
 - If {oracle_mode} = "auto" OR user said "just fix it" / "fix it now":
-  Execute immediately. Skills invoke directly. Agent routes present as recommendations.
+  For each problem: read-only skills (analysis, verification, review) invoke directly; anything that would edit a project file gets a brief at {project-root}/output/briefs/{slug}.md and the /team:X command that executes it, presented immediately. Oracle never edits project files.
   Increment {oracle_issues_detected}. Update {oracle_last_action}.
 - Otherwise (plan mode):
   Present:
@@ -43,6 +43,6 @@ OUTPUT depends on mode:
   2. [SEVERITY] Description → dispatch target
   ...
 
-  Approve? (sh = execute all, or pick numbers to execute selectively)"
+  Approve? (sh = brief and route all, or pick numbers to brief selectively)"
 
-  Wait for user response. "sh" = execute all. Numbers = execute selected. Anything else = discuss.
+  Wait for user response. "sh" = write briefs for all and present their /team:X commands. Numbers = brief the selected ones. Anything else = discuss. Oracle never edits project files itself.

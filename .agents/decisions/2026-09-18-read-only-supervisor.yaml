@@ -1,0 +1,7 @@
+decided_by: oracle
+story_id: "SP1"
+date: 2026-09-18
+decision: "Oracle is a read-only supervisor. It never edits project files; all implementation is briefed to a worker. Merges require the CEO's explicit word or a per-project +yolo grant. See team/engine/authority-contract.xml."
+rationale: "A supervisor that also does work cannot watch the fleet; prompt-only ambient monitoring degrades over long contexts. Keeping the supervisor read-only enables zero-token supervision (SP4) and clean merge authority."
+affects_agents: all
+acknowledged_by: []

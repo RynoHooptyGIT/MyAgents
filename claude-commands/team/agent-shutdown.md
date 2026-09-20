@@ -15,7 +15,7 @@ Read your agent ID and coordination root:
 
 ```bash
 REPO_ROOT="$(cat .agent-coord-root 2>/dev/null || git rev-parse --path-format=absolute --git-common-dir | sed 's|/.git$||')"
-AGENT_ID="$(cat "$REPO_ROOT/.agents/registry/.current-agent-id-"* 2>/dev/null | head -1)"
+AGENT_ID="$(cat .agent-id 2>/dev/null || cat "$REPO_ROOT/.agents/registry/.current-agent-id-"* 2>/dev/null | head -1)"
 echo "Agent: $AGENT_ID, Root: $REPO_ROOT"
 ```
 
@@ -88,17 +88,22 @@ First, change directory back to the repo root (you can't remove a worktree you'r
 
 ```bash
 cd "$REPO_ROOT"
+rm -f ".worktrees/agent-${AGENT_ID}/.agent-id" ".worktrees/agent-${AGENT_ID}/.agent-coord-root"
 git worktree remove ".worktrees/agent-${AGENT_ID}" 2>&1
 ```
 
-If removal fails (e.g., unclean), force is NOT used — report the issue instead.
+The identity markers are removed first so the worktree stops resolving as this agent even when removal is refused. If removal fails (e.g., unclean), force is NOT used — report the issue instead.
 
 ## Step 7: Deregister
 
 ```bash
 rm -f "$REPO_ROOT/.agents/registry/agent-${AGENT_ID}.yaml"
-rm -f "$REPO_ROOT/.agents/registry/.current-agent-id-"*
-rm -f "$REPO_ROOT/.agents/registry/.coord-root-"*
+# Remove only THIS agent's PID-scoped identity files — other instances keep theirs
+for idfile in "$REPO_ROOT/.agents/registry/.current-agent-id-"*; do
+  [ -f "$idfile" ] && [ "$(cat "$idfile")" = "$AGENT_ID" ] || continue
+  pid="${idfile##*-}"
+  rm -f "$idfile" "$REPO_ROOT/.agents/registry/.coord-root-$pid"
+done
 rm -f "$REPO_ROOT/.agents/registry/${AGENT_ID}.counter"
 rm -f "$REPO_ROOT/.agents/status/agent-${AGENT_ID}.yaml"
 ```

@@ -1,6 +1,6 @@
 name: onboard-venture
 description: "Deep-dive CEO interaction to understand a new company or effort, then cascade the vision to all agents"
-author: "Maestro"
+author: "Oracle"
 
 # Critical variables from config
 config_source: "{project-root}/team/config.yaml"

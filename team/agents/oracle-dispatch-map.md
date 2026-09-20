@@ -8,18 +8,18 @@ version: 1.0.0
 
 Athena loads this file on activation and references it when determining how to handle detected problems. Edit this file to add new skills or agents without touching oracle.md.
 
-## Claude Code Skills (direct execution)
+## Claude Code Skills — read-only skills Athena invokes directly; skills that edit files produce a brief instead
 
-Athena invokes these directly — they run in the current session.
+Mode `direct` runs in the current session. Mode `brief` means Athena writes a brief and presents `/team:X` for a worker to run the skill.
 
-| Category | Skill | When to Use |
-|----------|-------|-------------|
-| Bug / error / test failure | systematic-debugging | Single error, test failure, unexpected behavior, build failure |
-| Multiple independent bugs | dispatching-parallel-agents | 2+ independent problems with no shared state |
-| Code quality | simplify | Code smell, redundancy, unnecessary complexity |
-| New feature or fix | test-driven-development | Implementation needs tests first |
-| Completion check | verification-before-completion | Before claiming anything is done or shipping |
-| Feature planning | brainstorming | User wants to explore an idea before fixing |
+| Category | Skill | Mode | When to Use |
+|----------|-------|------|-------------|
+| Bug / error / test failure | systematic-debugging | diagnose directly; fix phase → brief | Single error, test failure, unexpected behavior, build failure |
+| Multiple independent bugs | dispatching-parallel-agents | brief one worker per independent problem | 2+ independent problems with no shared state |
+| Code quality | simplify | brief | Code smell, redundancy, unnecessary complexity |
+| New feature or fix | test-driven-development | brief | Implementation needs tests first |
+| Completion check | verification-before-completion | direct | Before claiming anything is done or shipping |
+| Feature planning | brainstorming | direct | User wants to explore an idea before fixing |
 
 ## Team Agents (domain routing)
 

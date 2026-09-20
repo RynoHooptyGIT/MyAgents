@@ -1,6 +1,6 @@
 # My Dev Team
 
-**27 specialist AI agents**, **70+ workflows**, and an **Oracle orchestrator** that together guide your project from initial concept through production deployment. Works with Claude Code, Cursor, or GitHub Copilot to enforce lifecycle discipline, maintain sprint state, and ensure consistent quality.
+**28 specialist AI agents**, **70+ workflows**, and an **Oracle orchestrator** that together guide your project from initial concept through production deployment. Works with Claude Code, Cursor, or GitHub Copilot to enforce lifecycle discipline, maintain sprint state, and ensure consistent quality.
 
 ## What It Does
 
@@ -29,7 +29,7 @@ Every session begins with the Oracle reading `sprint-status.yaml`, presenting a 
 
 ### Ambient Intelligence
 
-Once activated, the Oracle enters **ambient monitoring mode** — continuously watching session output for errors, test failures, security signals, and completion events. Instead of waiting for you to diagnose problems, Athena detects them and either suggests or auto-executes the right fix.
+Once activated, the Oracle enters **ambient monitoring mode** — continuously watching session output for errors, test failures, security signals, and completion events. Instead of waiting for you to diagnose problems, Athena detects them and either suggests the right fix or writes a brief and routes it to a worker.
 
 | Mode | Behavior | Toggle |
 |------|----------|--------|
@@ -37,7 +37,7 @@ Once activated, the Oracle enters **ambient monitoring mode** — continuously w
 | **auto** | Dispatches fixes immediately | `oracle auto` |
 | **off** | Silent — menu commands only | `oracle off` |
 
-The Oracle bridges two systems: **Claude Code skills** (systematic-debugging, parallel agents, TDD) for immediate fixes, and **team agents** (security auditor, architect, test architect, etc.) for domain expertise. Say `fix it` for a triaged plan, or `just fix it` for hands-free execution.
+The Oracle bridges two systems: **Claude Code skills** (systematic-debugging, parallel agents, TDD) for immediate fixes, and **team agents** (security auditor, architect, test architect, etc.) for domain expertise. Say `fix it` for a triaged plan, or `just fix it` to brief and route without waiting.
 
 See the [dispatch map](team/agents/oracle-dispatch-map.md) for the full routing table.
 
@@ -88,10 +88,11 @@ See [docs/TOOL-COMPATIBILITY.md](docs/TOOL-COMPATIBILITY.md) for a detailed feat
 |----------|-------------|
 | [Quick Start Guide](docs/QUICKSTART.md) | Step-by-step new project setup |
 | [Architecture](docs/ARCHITECTURE.md) | How the system works internally |
-| [Agent Catalog](docs/AGENT-CATALOG.md) | All 27 agents with descriptions |
+| [Agent Catalog](docs/AGENT-CATALOG.md) | All 28 agents with descriptions |
 | [Workflow Catalog](docs/WORKFLOW-CATALOG.md) | All 70+ workflows by phase |
 | [Tool Compatibility](docs/TOOL-COMPATIBILITY.md) | Feature matrix for Claude Code, Cursor, Copilot |
 | [Customization](docs/CUSTOMIZATION.md) | Adding agents, workflows, and project rules |
+| [Authority Contract](team/engine/authority-contract.xml) | Roles and hard rules every agent loads; run `scripts/apply-contract.sh --check` after adding an agent |
 | [Claude Code Guide](ide-guides/claude-code.md) | Full Claude Code integration setup |
 | [Cursor Guide](ide-guides/cursor.md) | Cursor IDE adaptation |
 | [Copilot Guide](ide-guides/copilot.md) | GitHub Copilot adaptation |
@@ -104,7 +105,7 @@ my-dev-team/
     config.yaml             # Unified configuration
     manifest.yaml           # Team definitions
     agent-manifest.csv      # Agent registry
-    agents/                 # All 27 agents (flat)
+    agents/                 # All 28 agents (flat)
     workflows/              # All workflows by category
     engine/                 # Workflow execution engine + discipline gates
     resources/              # Shared resources (excalidraw helpers)

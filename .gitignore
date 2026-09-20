@@ -23,3 +23,7 @@ Thumbs.db
 .agents/registry/.current-agent-id-*
 .agents/registry/.coord-root-*
 .agents/registry/*.counter
+
+# Worktree identity markers written by /agent-coordinator (ephemeral)
+.agent-id
+.agent-coord-root

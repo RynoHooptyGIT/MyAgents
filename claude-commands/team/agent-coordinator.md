@@ -18,7 +18,7 @@ AGENT_ID=$(date +%s%N | shasum | head -c 6)
 echo "$AGENT_ID"
 ```
 
-Store the ID in a PID-scoped file so hooks can read it:
+Store the ID in a PID-scoped file (fallback identity for the main checkout; worktree hooks read `.agent-id` written in Step 2):
 
 ```bash
 REPO_ROOT="$(git rev-parse --path-format=absolute --git-common-dir | sed 's|/.git$||')"
@@ -59,10 +59,11 @@ git worktree add .worktrees/agent-{AGENT_ID} -b agent/{AGENT_ID}/{task-slug}
 cd .worktrees/agent-{AGENT_ID}
 ```
 
-5. Write the coordination root path into the worktree:
+5. Write the coordination root path and your agent ID into the worktree (hooks resolve identity from these — worktree = identity):
 
 ```bash
 echo "$REPO_ROOT" > .agent-coord-root
+echo "$AGENT_ID" > .agent-id
 ```
 
 ## Step 3: Scan and Clean Registry
