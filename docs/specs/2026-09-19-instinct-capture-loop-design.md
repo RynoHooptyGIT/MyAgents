@@ -176,7 +176,7 @@ Hooks and CLI read this block via a shared `scripts/instincts/config.py` (stdlib
 
 - `team/engine/learnings.xml`: protocols `learnings-search|capture|prune` marked `deprecated` with a pointer to the instinct CLI; file removed in a later release once nothing references it (nothing does today).
 - `team/data/discipline/knowledge/learnings.md`: rewritten — "search before building" → `instinct.py status`; "capture after shipping" → automatic via hooks, plus `/team:instincts review`.
-- `docs/plans/2026-04-26-learnings-specialists-autodecision.md`: add a header note pointing here.
+- `docs/archive/2026-04-26-learnings-specialists-autodecision.md`: add a header note pointing here.
 - `.agents/decisions/2026-09-19-instincts-supersede-learnings.yaml` recorded per the coordination format.
 
 ### Multi-agent / worktree behavior
@@ -231,7 +231,7 @@ Each worktree has its own `team/_memory/_learnings/` — observations and pendin
 - `.gitignore` — `team/_memory/_learnings/observations.jsonl*`, `miner.log`, `.miner.lock`, `.instinct-watermark`
 - `.agents/config.yaml` — `instincts:` block
 - `team/agents/oracle.md`, `team/agents/oracle-dispatch-map.md`, `CLAUDE.md`
-- `team/engine/learnings.xml`, `team/data/discipline/knowledge/learnings.md`, `docs/plans/2026-04-26-learnings-specialists-autodecision.md`
+- `team/engine/learnings.xml`, `team/data/discipline/knowledge/learnings.md`, `docs/archive/2026-04-26-learnings-specialists-autodecision.md`
 - `scripts/setup.sh` — copy the new command; `docs/ARCHITECTURE.md` — hook table
 
 ### Rollback
