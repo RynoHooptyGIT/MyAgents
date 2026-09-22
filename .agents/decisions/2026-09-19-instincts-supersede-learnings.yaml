@@ -1,0 +1,7 @@
+decided_by: ceo
+story_id: "instinct-capture-loop"
+date: 2026-09-19
+decision: "Learned behaviors are stored as confidence-scored instincts (team/_memory/_learnings/instincts/*.yaml, committed) mined by a Stop-hook-gated Haiku miner and reviewed via Oracle or /team:instincts. team/engine/learnings.xml and learnings.jsonl are deprecated; do not wire workflows to them."
+rationale: "learnings.xml was designed but never wired; instincts add automatic capture, confidence, evidence, a review gate, and cross-project promotion without a second memory format. Spec: docs/specs/2026-09-19-instinct-capture-loop-design.md"
+affects_agents: all
+acknowledged_by: []

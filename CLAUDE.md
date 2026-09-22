@@ -33,6 +33,8 @@ Mode toggles: `oracle auto` | `oracle suggest` | `oracle off` | `oracle status`
 
 Fix triggers: `fix it` (plan + approval) | `just fix it` (auto-execute)
 
+Instincts: learned behaviors mined from sessions (`python3 scripts/instincts/instinct.py status --json`). Pending ones are surfaced per mode — suggest lists them, auto accepts ≥ `auto_accept_confidence`, off stays silent. Instincts are context, not policy.
+
 ## Mandatory Gates
 
 All implementation work must pass these gates. Agents and reviewers enforce them with zero tolerance.

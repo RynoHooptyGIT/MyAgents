@@ -7,5 +7,6 @@ Mode: {oracle_mode} (suggest | auto | off)
 Issues detected this session: {oracle_issues_detected}
 Last action: {oracle_last_action}
 Dispatch map loaded: yes/no
+Instincts: {oracle_active_instincts} active, {oracle_pending_instincts} pending (say 'instincts' to review)
 
 Toggle: 'oracle auto' | 'oracle suggest' | 'oracle off'"

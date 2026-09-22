@@ -4,12 +4,24 @@
 
 **Search learnings before building. Capture learnings after shipping. The team's memory is only as good as what gets recorded.**
 
+## How It Works Now
+
+Learnings are captured automatically by the instinct capture loop — you do not write `learnings.jsonl` by hand.
+
+| Step | Mechanism |
+|---|---|
+| Capture | `UserPromptSubmit` + `PostToolUse` hooks append to `team/_memory/_learnings/observations.jsonl` (local, gitignored) |
+| Mine | `Stop` hook pre-filters corrections, error resolutions, and repeated workflows; spawns a Haiku miner only when ≥ `min_candidates` exist |
+| Review | Instincts land as `pending`; Athena surfaces them per Oracle mode, or run `/team:instincts review` |
+| Recall | `SessionStart` injects the top active instincts; `python3 scripts/instincts/instinct.py status` shows all |
+
+Config: `instincts:` block in `.agents/config.yaml`. Off switch: `.instincts-off` at repo root.
+
 ## When This Applies
 
-- Before starting any implementation workflow (quick-dev, create-story)
-- After completing any review workflow (code-review)
-- After debugging sessions that reveal architectural patterns
-- After discovering framework quirks or version-specific behavior
+- "Search before building" → read the `[instincts]` block at session start, or run `python3 scripts/instincts/instinct.py status`
+- "Capture after shipping" → automatic; review pending instincts before you commit so accepted ones ship with the branch
+- After a review or debugging session reveals a pattern → make sure it was captured; if not, say the correction out loud in a prompt ("no, use X instead") so the next Stop picks it up
 
 ## Red Flags
 
@@ -39,9 +51,10 @@
 | **decision** | Made an architectural choice with rationale | "Chose Playwright over Puppeteer for CDP stability" |
 | **architecture** | Discovered structural constraint | "Auth middleware must run before RLS policy check" |
 
+Instinct domains map onto these: pattern/architecture → workflow|code-style, pitfall → debugging|tooling, decision → (belongs in .agents/decisions/, not an instinct).
+
 ## Enforcement
 
-- **Before implementation:** Invoke `learnings-search` protocol. Surface relevant entries.
-- **After code-review:** If review found patterns, pitfalls, or architectural insights, invoke `learnings-capture` protocol.
-- **After debugging:** If root cause reveals a non-obvious failure mode, capture as a pitfall learning.
-- **Pruning:** Periodically invoke `learnings-prune` to remove stale entries referencing deleted files.
+- **Before implementation:** Run `python3 scripts/instincts/instinct.py status` and read the `[instincts]` block injected at session start. Apply active instincts as context, not policy.
+- **After code-review / debugging:** Capture is automatic via the Stop-hook miner. If a pattern was learned, make sure it surfaced — state the correction plainly in a prompt so the miner sees it. Review pending instincts with `/team:instincts review` before committing.
+- **Pruning:** `python3 scripts/instincts/instinct.py prune` (or Athena's [IN] menu) removes stale pending/rejected instincts.

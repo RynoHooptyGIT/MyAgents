@@ -47,6 +47,7 @@ Athena recommends these via their `/team:` command. The user invokes them.
 | Design / innovation | Maya | /team:design-strategy-coach | Design thinking, innovation strategy |
 | Storytelling | Sophia | /team:storyteller-presenter | Narratives, presentations |
 | Sprint lifecycle | Athena | Self (CS, DS, CR, SH) | Story creation, dev, review, ship |
+| Learning | Athena | /team:instincts | Repeated user corrections, "we keep doing this", `[instincts] … pending` banner at session start |
 
 **BRAINSTORMING LIFECYCLE:** After brainstorming, ideas must flow Brainstorm → Update Epics/PRD → CS → DS. No shortcut from brainstorm to implementation.
 

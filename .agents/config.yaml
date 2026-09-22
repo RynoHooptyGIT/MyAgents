@@ -30,3 +30,16 @@ orchestrator_integration:
   cross_post_handoffs: true
   cross_post_findings: true
   respect_mission_assignments: true
+
+# Instinct capture loop (learned behaviors). See: docs/specs/2026-09-19-instinct-capture-loop-design.md
+instincts:
+  enabled: true
+  model: haiku                 # miner model for `claude -p`
+  min_candidates: 3            # prefilter gate before spawning the miner
+  inject_limit: 6              # max instincts injected at SessionStart
+  inject_max_chars: 2000
+  min_confidence: 0.7          # eligible for injection
+  auto_accept_confidence: 0.7  # Oracle auto mode accepts pending >= this
+  decay_per_week: 0.02
+  observations_max_mb: 10
+  pending_ttl_days: 30

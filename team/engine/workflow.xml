@@ -36,9 +36,9 @@
       </substep>
 
       <substep n="1b.1" title="Search Project Learnings">
-        <action>If {project-root}/team/engine/learnings.xml exists, invoke the learnings-search protocol</action>
+        <action>Run python3 scripts/instincts/instinct.py status — surface active instincts relevant to this task as context (not policy)</action>
         <action>Pass context: workflow name, input file patterns, any story/epic identifiers</action>
-        <action>If relevant learnings found, display them to the user before proceeding</action>
+        <action>If relevant instincts found, display them to the user before proceeding</action>
         <note>This surfaces prior patterns and pitfalls before work begins</note>
       </substep>
 
@@ -139,7 +139,7 @@
 
       <substep n="3a" title="Capture Learnings" optional="true">
         <check if="workflow produced review findings, debugging insights, or architectural decisions">
-          <action>If {project-root}/team/engine/learnings.xml exists, invoke the learnings-capture protocol</action>
+          <action>Instinct capture is automatic (Stop-hook miner). If this review surfaced a reusable pattern, tell the user it will appear under /team:instincts review after a later turn's miner run</action>
           <action>Capture any patterns, pitfalls, decisions, or architecture insights discovered during this workflow</action>
         </check>
       </substep>

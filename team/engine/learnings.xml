@@ -1,4 +1,5 @@
 <task id="team/engine/learnings.xml" name="Project Learnings">
+  <deprecated>Superseded by the instinct capture loop (docs/specs/2026-09-19-instinct-capture-loop-design.md; CLI scripts/instincts/instinct.py). Do not wire new workflows to these protocols; this file is removed once nothing references it.</deprecated>
   <objective>Capture, search, and manage cross-session project learnings</objective>
 
   <llm critical="true">

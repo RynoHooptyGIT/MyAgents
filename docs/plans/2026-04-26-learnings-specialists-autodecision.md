@@ -1,5 +1,7 @@
 # Learnings, Specialist Dispatch, and Principled Auto-Decision Implementation Plan
 
+> **Superseded (2026-09-19):** the JSONL learnings design here was never wired in. It is replaced by the instinct capture loop — see `docs/specs/2026-09-19-instinct-capture-loop-design.md` and `docs/plans/2026-09-19-instinct-capture-loop.md`.
+
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add three capabilities adapted from gstack: (1) cross-session project learnings system, (2) parallel specialist dispatch during code review, (3) principled auto-decision engine replacing naive YOLO mode.

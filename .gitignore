@@ -1,5 +1,6 @@
 # Tool artifacts
 .playwright-mcp/
+__pycache__/
 
 # MarkItDown converted-doc output (file-to-markdown skill / document-project ingest)
 **/.ingested/
@@ -23,6 +24,13 @@ Thumbs.db
 .agents/registry/.current-agent-id-*
 .agents/registry/.coord-root-*
 .agents/registry/*.counter
+
+# Instinct capture loop — raw observations and miner state are local only
+team/_memory/_learnings/observations.jsonl*
+team/_memory/_learnings/miner.log
+team/_memory/_learnings/.miner.lock
+team/_memory/_learnings/.instinct-watermark
+team/_memory/_learnings/.candidates.json
 
 # Worktree identity markers written by /agent-coordinator (ephemeral)
 .agent-id

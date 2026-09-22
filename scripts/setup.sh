@@ -98,6 +98,10 @@ substitute() {
 # ── Step 1: Copy team system ────────────────────────────────────
 echo -e "\n${CYAN}[1/6] Copying team system...${NC}"
 cp -R "$TEAM_ROOT/team" "$TARGET_DIR/team"
+# Never ship this repo's local learning state or project-tier instincts into a target project
+rm -rf "$TARGET_DIR/team/_memory/_learnings"
+mkdir -p "$TARGET_DIR/team/_memory/_learnings/instincts"
+touch "$TARGET_DIR/team/_memory/_learnings/instincts/.gitkeep"
 
 echo -e "  ${GREEN}✓${NC} team/ directory installed (28 agents, 70+ workflows)"
 
@@ -135,6 +139,25 @@ if [ "$TOOL_CHOICE" != "5" ]; then
     # Hook
     cp "$TEAM_ROOT/hooks/post-commit-context.sh" "$TARGET_DIR/.claude/hooks/post-commit-context.sh"
     chmod +x "$TARGET_DIR/.claude/hooks/post-commit-context.sh"
+
+    # Instinct capture loop: hooks, CLI, config (see docs/specs/2026-09-19-instinct-capture-loop-design.md)
+    mkdir -p "$TARGET_DIR/.agents/hooks" "$TARGET_DIR/scripts/instincts" "$TARGET_DIR/team/_memory/_learnings/instincts"
+    for h in observe.sh instinct-mine.sh instinct-inject.sh; do
+        cp "$TEAM_ROOT/.agents/hooks/$h" "$TARGET_DIR/.agents/hooks/$h"
+        chmod +x "$TARGET_DIR/.agents/hooks/$h"
+    done
+    cp "$TEAM_ROOT/scripts/instincts/"*.py "$TARGET_DIR/scripts/instincts/"
+    [ -f "$TARGET_DIR/.agents/config.yaml" ] || cp "$TEAM_ROOT/.agents/config.yaml" "$TARGET_DIR/.agents/config.yaml"
+    touch "$TARGET_DIR/team/_memory/_learnings/instincts/.gitkeep"
+    grep -q 'team/_memory/_learnings/observations.jsonl' "$TARGET_DIR/.gitignore" 2>/dev/null || cat >> "$TARGET_DIR/.gitignore" << 'EOF'
+
+# Instinct capture loop — raw observations and miner state are local only
+team/_memory/_learnings/observations.jsonl*
+team/_memory/_learnings/miner.log
+team/_memory/_learnings/.miner.lock
+team/_memory/_learnings/.instinct-watermark
+team/_memory/_learnings/.candidates.json
+EOF
 
     echo -e "  ${GREEN}✓${NC} Claude Code: CLAUDE.md, 83 slash commands, hooks"
 fi
