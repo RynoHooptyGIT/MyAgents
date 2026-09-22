@@ -81,6 +81,10 @@ TOOL_CHOICE="${TOOL_CHOICE:-1}"
 
 INSTALL_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
 
+# ── Shared install manifest (also used by scripts/team-update.sh) ─
+# shellcheck source=lib/install-manifest.sh
+source "$TEAM_ROOT/scripts/lib/install-manifest.sh"
+
 # ── Helper: template substitution ────────────────────────────────
 substitute() {
     local file="$1"
@@ -130,25 +134,22 @@ if [ "$TOOL_CHOICE" != "5" ]; then
     cp "$TEAM_ROOT/templates/CLAUDE.md.template" "$TARGET_DIR/CLAUDE.md"
     substitute "$TARGET_DIR/CLAUDE.md"
 
-    # Settings
-    cp "$TEAM_ROOT/templates/settings.local.json.template" "$TARGET_DIR/.claude/settings.local.json"
-
     # Slash commands (flat namespace)
     cp "$TEAM_ROOT/claude-commands/team/"* "$TARGET_DIR/.claude/commands/team/"
 
-    # Hook
-    cp "$TEAM_ROOT/hooks/post-commit-context.sh" "$TARGET_DIR/.claude/hooks/post-commit-context.sh"
-    chmod +x "$TARGET_DIR/.claude/hooks/post-commit-context.sh"
+    # Tooling — hooks (Claude Code, coordination, instinct capture loop), settings,
+    # scripts/{instincts,lib,context}, update/check/test scripts, .agents/config.yaml.
+    # The single list lives in templates/install-manifest.txt; team-update.sh reads
+    # the same manifest, so a fresh install and an update ship the same files.
+    # `init` entries (settings.local.json, .agents/config.yaml, context-config.yaml)
+    # are only written when absent.
+    MANIFEST_OUT="$(apply_manifest "$TEAM_ROOT" "$TARGET_DIR")"
+    printf '%s\n' "$MANIFEST_OUT" | sed 's/^/    /'
+    MANIFEST_INSTALLED=$(printf '%s\n' "$MANIFEST_OUT" | grep -c '^installed ' || true)
+    MANIFEST_KEPT=$(printf '%s\n' "$MANIFEST_OUT" | grep -c '^kept ' || true)
 
-    # Instinct capture loop: hooks, CLI, config (see docs/specs/2026-09-19-instinct-capture-loop-design.md)
-    mkdir -p "$TARGET_DIR/.agents/hooks" "$TARGET_DIR/scripts/instincts" "$TARGET_DIR/team/_memory/_learnings/instincts"
-    for h in observe.sh instinct-mine.sh instinct-inject.sh; do
-        cp "$TEAM_ROOT/.agents/hooks/$h" "$TARGET_DIR/.agents/hooks/$h"
-        chmod +x "$TARGET_DIR/.agents/hooks/$h"
-    done
-    cp "$TEAM_ROOT/scripts/instincts/"*.py "$TARGET_DIR/scripts/instincts/"
-    mkdir -p "$TARGET_DIR/scripts/lib" && cp "$TEAM_ROOT/scripts/lib/"*.py "$TARGET_DIR/scripts/lib/"
-    [ -f "$TARGET_DIR/.agents/config.yaml" ] || cp "$TEAM_ROOT/.agents/config.yaml" "$TARGET_DIR/.agents/config.yaml"
+    # Instinct capture loop state (see docs/specs/2026-09-19-instinct-capture-loop-design.md)
+    mkdir -p "$TARGET_DIR/team/_memory/_learnings/instincts"
     touch "$TARGET_DIR/team/_memory/_learnings/instincts/.gitkeep"
     grep -q 'team/_memory/_learnings/observations.jsonl' "$TARGET_DIR/.gitignore" 2>/dev/null || cat >> "$TARGET_DIR/.gitignore" << 'EOF'
 
@@ -160,7 +161,8 @@ team/_memory/_learnings/.instinct-watermark
 team/_memory/_learnings/.candidates.json
 EOF
 
-    echo -e "  ${GREEN}✓${NC} Claude Code: CLAUDE.md, 83 slash commands, hooks"
+    echo -e "  ${GREEN}✓${NC} Claude Code: CLAUDE.md, 83 slash commands"
+    echo -e "  ${GREEN}✓${NC} Tooling: ${MANIFEST_INSTALLED} files installed, ${MANIFEST_KEPT} kept (templates/install-manifest.txt)"
 fi
 
 # GitHub Copilot (options 2, 4)
@@ -178,24 +180,14 @@ if [ "$TOOL_CHOICE" = "3" ] || [ "$TOOL_CHOICE" = "4" ]; then
     echo -e "  ${GREEN}✓${NC} Cursor: .cursor/rules/ (3 rule files)"
 fi
 
-# ── Step 4: Set up context generators ────────────────────────────
-echo -e "${CYAN}[4/6] Setting up context generators...${NC}"
-mkdir -p "$TARGET_DIR/scripts/context"
-cp "$TEAM_ROOT/scripts/context/"*.py "$TARGET_DIR/scripts/context/"
-cp "$TEAM_ROOT/scripts/context/context-config.yaml" "$TARGET_DIR/scripts/context/context-config.yaml"
-cp "$TEAM_ROOT/scripts/context/context-config.example.yaml" "$TARGET_DIR/scripts/context/context-config.example.yaml"
-echo -e "  ${GREEN}✓${NC} Context generators installed (edit scripts/context/context-config.yaml)"
-
-# Update and check scripts
-cp "$TEAM_ROOT/scripts/team-update.sh" "$TARGET_DIR/scripts/team-update.sh"
-cp "$TEAM_ROOT/scripts/team-check.sh" "$TARGET_DIR/scripts/team-check.sh"
-chmod +x "$TARGET_DIR/scripts/team-update.sh"
-chmod +x "$TARGET_DIR/scripts/team-check.sh"
-
-# Update check hook (runs once per 24h on session start)
+# ── Step 4: Context generators + update system ───────────────────
+# Context generators, team-update.sh, team-check.sh and the update-check hook are
+# manifest entries installed in Step 3 (Claude Code block).
+echo -e "${CYAN}[4/6] Setting up context generators and update system...${NC}"
 if [ "$TOOL_CHOICE" != "5" ]; then
-    cp "$TEAM_ROOT/.claude/hooks/check-for-updates.sh" "$TARGET_DIR/.claude/hooks/check-for-updates.sh"
-    chmod +x "$TARGET_DIR/.claude/hooks/check-for-updates.sh"
+    echo -e "  ${GREEN}✓${NC} Context generators installed (edit scripts/context/context-config.yaml)"
+else
+    echo -e "  ${YELLOW}!${NC} Tool choice 5: tooling (hooks, context generators, update scripts) not installed"
 fi
 
 # VERSION file
@@ -210,7 +202,11 @@ else
     echo "$TEAM_ROOT" > "$TARGET_DIR/.team-upstream"
 fi
 
-echo -e "  ${GREEN}✓${NC} Update system installed (check + update scripts, auto-notify hook)"
+if [ "$TOOL_CHOICE" != "5" ]; then
+    echo -e "  ${GREEN}✓${NC} Update system installed (check + update scripts, auto-notify hook)"
+else
+    echo -e "  ${GREEN}✓${NC} VERSION and .team-upstream recorded"
+fi
 
 # ── Step 5: Create output directory structure ────────────────────
 echo -e "${CYAN}[5/6] Creating output directory structure...${NC}"

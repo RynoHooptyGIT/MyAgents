@@ -205,6 +205,7 @@ echo -e "    ✓ *.customize.yaml (your agent customizations)"
 echo -e "    ✓ output/ (all project artifacts)"
 echo -e "    ✓ CLAUDE.md (your project rules)"
 echo -e "    ✓ .claude/settings.local.json (your permissions)"
+echo -e "    ✓ .agents/config.yaml, scripts/context/context-config.yaml (init-only entries)"
 echo ""
 
 if [ "$DRY_RUN" = true ]; then
@@ -325,26 +326,20 @@ if [ -n "$COMMANDS_TARGET" ] && [ -d "$UPSTREAM_DIR/claude-commands/team" ]; the
     cp "$UPSTREAM_DIR/claude-commands/team/"* "$COMMANDS_TARGET/"
 fi
 
-# ── Step 5: Update scripts ──────────────────────────────────────
-if [ -d "$UPSTREAM_DIR/scripts/context" ]; then
-    cp "$UPSTREAM_DIR/scripts/context/"*.py "$PROJECT_ROOT/scripts/context/" 2>/dev/null || true
-fi
-
-# Copy update and check scripts
-if [ -f "$UPSTREAM_DIR/scripts/team-update.sh" ]; then
-    cp "$UPSTREAM_DIR/scripts/team-update.sh" "$PROJECT_ROOT/scripts/team-update.sh"
-    chmod +x "$PROJECT_ROOT/scripts/team-update.sh"
-fi
-if [ -f "$UPSTREAM_DIR/scripts/team-check.sh" ]; then
-    cp "$UPSTREAM_DIR/scripts/team-check.sh" "$PROJECT_ROOT/scripts/team-check.sh"
-    chmod +x "$PROJECT_ROOT/scripts/team-check.sh"
-fi
-
-# Copy update check hook
-if [ -f "$UPSTREAM_DIR/.claude/hooks/check-for-updates.sh" ]; then
-    mkdir -p "$PROJECT_ROOT/.claude/hooks"
-    cp "$UPSTREAM_DIR/.claude/hooks/check-for-updates.sh" "$PROJECT_ROOT/.claude/hooks/check-for-updates.sh"
-    chmod +x "$PROJECT_ROOT/.claude/hooks/check-for-updates.sh"
+# ── Step 5: Update tooling (shared install manifest) ────────────
+# Hooks (Claude Code, coordination, instinct loop), scripts/{instincts,lib,context},
+# update/check/test scripts: the same templates/install-manifest.txt that
+# scripts/setup.sh installs from. `init` entries (.claude/settings.local.json,
+# .agents/config.yaml, scripts/context/context-config.yaml) are never clobbered.
+MANIFEST_LIB="$UPSTREAM_DIR/scripts/lib/install-manifest.sh"
+[ -f "$MANIFEST_LIB" ] || MANIFEST_LIB="$PROJECT_ROOT/scripts/lib/install-manifest.sh"
+if [ -f "$MANIFEST_LIB" ] && [ -f "$UPSTREAM_DIR/templates/install-manifest.txt" ]; then
+    # shellcheck source=lib/install-manifest.sh
+    source "$MANIFEST_LIB"
+    MANIFEST_OUT="$(apply_manifest "$UPSTREAM_DIR" "$PROJECT_ROOT")"
+    echo -e "  ${DIM}Tooling: $(printf '%s\n' "$MANIFEST_OUT" | grep -c '^installed ' || true) files installed, $(printf '%s\n' "$MANIFEST_OUT" | grep -c '^kept ' || true) kept (templates/install-manifest.txt)${NC}"
+else
+    echo -e "  ${YELLOW}WARNING: upstream has no install manifest — tooling (hooks, scripts) not updated${NC}"
 fi
 
 # ── Step 6: Update version and manifest ──────────────────────────
@@ -405,7 +400,7 @@ echo -e "${GREEN}  ════════════════════�
 echo ""
 echo -e "  ${BLUE}Updated:${NC}"
 echo -e "    • Agents, workflows, engine, data, standards"
-echo -e "    • Slash commands, context scripts, plugins"
+echo -e "    • Slash commands, hooks and scripts (install manifest), plugins"
 echo ""
 echo -e "  ${BLUE}Preserved:${NC}"
 echo -e "    • config.yaml, CLAUDE.md, settings"
