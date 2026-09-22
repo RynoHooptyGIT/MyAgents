@@ -16,12 +16,32 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT"
 
 PYTEST_PASSED=0
-PYTEST_FAILED=0
 HARNESS_PASSED=0
-HARNESS_FAILED=0
 HARNESSES_TOTAL=0
 CONTRACT_OK=true
 FAILURES=()
+
+# --- Unified check function ---
+# run_check NAME EXIT_CODE OUTPUT
+# Returns: 0 if green, 1 if red
+# On red: appends to FAILURES array and prints tail (always, even in quiet mode)
+run_check() {
+  local name=$1
+  local exit_code=$2
+  local output=$3
+
+  if [[ $exit_code -eq 0 ]]; then
+    if [[ "$QUIET" == "false" ]]; then
+      echo "$name OK"
+    fi
+    return 0
+  else
+    FAILURES+=("$name")
+    echo "$name FAILED — last 15 lines:"
+    printf '%s\n' "$output" | tail -15
+    return 1
+  fi
+}
 
 # --- Run pytest ---
 if [[ "$QUIET" == "false" ]]; then
@@ -30,16 +50,13 @@ fi
 PYTEST_OUTPUT=$(python3 -m pytest -q 2>&1)
 PYTEST_EXIT=$?
 
-# Parse pytest output for passed count
-PYTEST_PASSED=$(echo "$PYTEST_OUTPUT" | grep -oE '[0-9]+ passed' | grep -oE '[0-9]+' | head -1 || echo "0")
+# Parse pytest output for passed count (robust: handle all-failed, collection crash, etc)
+PYTEST_PASSED=$(printf '%s\n' "$PYTEST_OUTPUT" | grep -oE '[0-9]+ passed' | grep -oE '[0-9]+' | head -1)
+[ -n "$PYTEST_PASSED" ] || PYTEST_PASSED=0
 
-if [[ $PYTEST_EXIT -ne 0 ]]; then
-  PYTEST_FAILED=1
-  if [[ "$QUIET" == "false" ]]; then
-    echo "pytest FAILED"
-    echo "$PYTEST_OUTPUT" | tail -15
-  fi
-  FAILURES+=("pytest")
+# Check pytest result
+if run_check "pytest" "$PYTEST_EXIT" "$PYTEST_OUTPUT"; then
+  :  # success, no-op
 fi
 
 # --- Run all test harnesses ---
@@ -58,18 +75,15 @@ for harness in "${HARNESSES[@]:-}"; do
   HARNESS_OUTPUT=$(bash "$harness" 2>&1)
   HARNESS_EXIT=$?
 
-  if [[ $HARNESS_EXIT -eq 0 ]] && echo "$HARNESS_OUTPUT" | grep -q "0 failed"; then
+  # Harness passes if exit 0 AND output contains "0 failed"
+  if [[ $HARNESS_EXIT -eq 0 ]] && printf '%s\n' "$HARNESS_OUTPUT" | grep -q "0 failed"; then
     HARNESS_PASSED=$((HARNESS_PASSED + 1))
-  else
-    HARNESS_FAILED=$((HARNESS_FAILED + 1))
     if [[ "$QUIET" == "false" ]]; then
-      echo "$harness FAILED"
-      echo "$HARNESS_OUTPUT" | tail -15
-    else
-      # Even in quiet mode, record the failure
-      FAILURES+=("$harness")
-      echo "$harness FAILED — last 15 lines:"
-      echo "$HARNESS_OUTPUT" | tail -15
+      echo "$harness OK"
+    fi
+  else
+    if run_check "$harness" 1 "$HARNESS_OUTPUT"; then
+      :  # impossible, but keeps symmetry
     fi
   fi
 done
@@ -81,16 +95,10 @@ fi
 CONTRACT_OUTPUT=$(bash "$REPO_ROOT/scripts/apply-contract.sh" --check 2>&1)
 CONTRACT_EXIT=$?
 
-if [[ $CONTRACT_EXIT -ne 0 ]]; then
+if run_check "apply-contract" "$CONTRACT_EXIT" "$CONTRACT_OUTPUT"; then
+  CONTRACT_OK=true
+else
   CONTRACT_OK=false
-  if [[ "$QUIET" == "false" ]]; then
-    echo "apply-contract FAILED"
-    echo "$CONTRACT_OUTPUT" | tail -15
-  else
-    FAILURES+=("apply-contract")
-    echo "apply-contract FAILED"
-    echo "$CONTRACT_OUTPUT" | tail -15
-  fi
 fi
 
 # --- Summary ---
@@ -101,16 +109,11 @@ fi
 
 SUMMARY="TESTS: pytest $PYTEST_PASSED passed · harnesses $HARNESS_PASSED/$HARNESSES_TOTAL green · contract $CONTRACT_STATUS"
 
-if [[ "$QUIET" == "true" ]]; then
-  echo "$SUMMARY"
-else
-  echo ""
-  echo "$SUMMARY"
-fi
+echo "$SUMMARY"
 
 # --- Exit code ---
 EXIT_CODE=0
-if [[ $PYTEST_FAILED -ne 0 ]] || [[ $HARNESS_FAILED -ne 0 ]] || [[ "$CONTRACT_OK" == "false" ]]; then
+if [[ ${#FAILURES[@]} -gt 0 ]]; then
   EXIT_CODE=1
 fi
 
