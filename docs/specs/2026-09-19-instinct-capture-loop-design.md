@@ -76,7 +76,7 @@ Registered twice in `.claude/settings.local.json` (and the template):
 5. Otherwise spawn, detached (`nohup … &`, stdout/stderr → `miner.log`):
    ```
    claude -p --model <instincts.model> --max-turns 1 --tools "" --strict-mcp-config \
-     --append-system-prompt "$(cat team/agents/instinct-observer.md)" \
+     --append-system-prompt "$(cat team/prompts/instinct-observer.md)" \
      < candidates.json | scripts/instincts/instinct.py ingest
    ```
    `--tools ""` disables every built-in tool so no Pre/PostToolUse hooks (including `observe.sh`) fire inside the miner; `--strict-mcp-config` ignores the user's MCP servers; `--max-turns 1` because the miner only has to answer once. The observer prompt instructs the model to output **only** a JSON array of instinct objects (schema below). A wrapper (`scripts/instincts/instinct.py ingest`) validates each object and writes/merges YAML files. The model never writes files directly.
@@ -220,7 +220,7 @@ Each worktree has its own `team/_memory/_learnings/` — observations and pendin
 **New**
 - `.agents/hooks/observe.sh`, `instinct-mine.sh`, `instinct-inject.sh` + three `test-*.sh`
 - `scripts/instincts/{prefilter.py, instinct.py, config.py}` + `tests/`
-- `team/agents/instinct-observer.md`
+- `team/prompts/instinct-observer.md`
 - `team/agents/oracle-reference/instinct-review.md`
 - `claude-commands/team/instincts.md`
 - `.agents/decisions/2026-09-19-instincts-supersede-learnings.yaml`
