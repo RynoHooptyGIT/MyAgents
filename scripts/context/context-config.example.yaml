@@ -1,7 +1,7 @@
 # Example: React + FastAPI full-stack project
 # Copy this to context-config.yaml and adjust paths to match your project.
 
-output_dir: "_bmad-output/context"
+output_dir: "output/context"
 
 generators:
   sprint-digest:
