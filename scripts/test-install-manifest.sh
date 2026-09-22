@@ -85,6 +85,27 @@ check "manifest has both core and claude group entries" $?
 printf '%s\n' "${EXPECTED[@]}" | grep -v '	claude$' | grep -q '^[a-z]*	\.claude/'
 [ $? -ne 0 ]; check "every .claude/ destination is in the claude group" $?
 
+# --- Real sources: every non-glob src in the real manifest must exist as a
+# file under the repo root, and every glob src must match >= 1 real file.
+missing_src=0; empty_glob=0; real_checked=0
+while IFS=$'\t' read -r mode src dst group || [ -n "${mode:-}" ]; do
+  case "$mode" in ''|'#'*) continue ;; esac
+  real_checked=$((real_checked + 1))
+  case "$src" in
+    *'*'*|*'?'*|*'['*)
+      dir="${src%/*}"; [ "$dir" = "$src" ] && dir=""
+      name="${src##*/}"
+      n=$(find "$REPO_ROOT${dir:+/$dir}" -mindepth 1 -maxdepth 1 -type f -name "$name" 2>/dev/null | wc -l | tr -d ' ')
+      [ "$n" -ge 1 ] || { empty_glob=$((empty_glob + 1)); echo "    glob matches nothing: $src"; }
+      ;;
+    *)
+      [ -f "$REPO_ROOT/$src" ] || { missing_src=$((missing_src + 1)); echo "    missing real source: $src"; }
+      ;;
+  esac
+done < "$MANIFEST"
+[ "$missing_src" -eq 0 ]; check "every non-glob real manifest src exists under the repo root ($real_checked entries checked)" $?
+[ "$empty_glob" -eq 0 ];  check "every glob real manifest src matches >= 1 real file" $?
+
 # --- Run 1: fresh destination
 OUT1="$(apply_manifest "$SRC" "$DST" 2> "$TMP/err1")"; RC1=$?
 [ "$RC1" -eq 0 ]; check "first apply exits 0 (got $RC1)" $?
@@ -151,6 +172,16 @@ grep -qi 'no match' "$TMP/err4";               check "unmatched glob: warning on
 [ -x "$DST3/scripts/team-check.sh" ];          check "unmatched glob: remaining entries still installed" $?
 [ ! -e "$DST3/nothing" ];                      check "unmatched glob: no directory created for the empty entry" $?
 
+# --- dst traversal guard: a manifest line whose dst escapes DST_ROOT is warned, not written
+DST_ESCAPE="$TMP/dst-escape"
+ESCAPE_MANIFEST="$TMP/escape-manifest.txt"
+printf 'copy\tscripts/team-check.sh\t../escaped\nexec\tscripts/team-check.sh\tscripts/\n' > "$ESCAPE_MANIFEST"
+OUTE="$(apply_manifest "$SRC" "$DST_ESCAPE" --manifest "$ESCAPE_MANIFEST" 2> "$TMP/erre")"; RCE=$?
+[ "$RCE" -eq 0 ];                     check "dst traversal guard: exit 0 (got $RCE)" $?
+grep -qi 'dst' "$TMP/erre";           check "dst traversal guard: warning on stderr" $?
+[ ! -e "$TMP/escaped" ];              check "dst traversal guard: nothing written outside DST ($TMP/escaped)" $?
+[ -x "$DST_ESCAPE/scripts/team-check.sh" ]; check "dst traversal guard: the other, valid entry still installs" $?
+
 # --- Group filter: --group installs only matching entries; missing column defaults to core
 DST5="$TMP/dst-core"
 OUT5="$(apply_manifest "$SRC" "$DST5" --group core 2> "$TMP/err5")"; RC5=$?
@@ -198,6 +229,12 @@ apply_manifest "$SRC" "$DST4" > /dev/null 2>&1
 
 apply_manifest "$SRC" > /dev/null 2>&1
 [ $? -ne 0 ]; check "usage error (missing DST_ROOT): non-zero exit" $?
+
+apply_manifest "$SRC" "$TMP/dst-trailing-group" --group > /dev/null 2>&1; RCG=$?
+[ "$RCG" -eq 2 ]; check "trailing --group with no value: rc 2 (got $RCG)" $?
+
+apply_manifest "$SRC" "$TMP/dst-trailing-manifest" --manifest > /dev/null 2>&1; RCM=$?
+[ "$RCM" -eq 2 ]; check "trailing --manifest with no value: rc 2 (got $RCM)" $?
 
 # --- Works under set -e in a caller (setup.sh / team-update.sh both use it)
 bash -ec "source \"$LIB\"; apply_manifest \"$SRC\" \"$TMP/dst-sete\" > /dev/null"

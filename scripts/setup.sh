@@ -145,9 +145,8 @@ if [ "$TOOL_CHOICE" != "5" ]; then
     MANIFEST_INSTALLED=$(printf '%s\n' "$MANIFEST_OUT" | grep -c '^installed ' || true)
     MANIFEST_KEPT=$(printf '%s\n' "$MANIFEST_OUT" | grep -c '^kept ' || true)
 
-    # Instinct capture loop state (see docs/specs/2026-09-19-instinct-capture-loop-design.md)
-    mkdir -p "$TARGET_DIR/team/_memory/_learnings/instincts"
-    touch "$TARGET_DIR/team/_memory/_learnings/instincts/.gitkeep"
+    # Instinct capture loop state (see docs/specs/2026-09-19-instinct-capture-loop-design.md).
+    # team/_memory/_learnings/instincts/.gitkeep is created in Step 1.
     grep -q 'team/_memory/_learnings/observations.jsonl' "$TARGET_DIR/.gitignore" 2>/dev/null || cat >> "$TARGET_DIR/.gitignore" << 'EOF'
 
 # Instinct capture loop — raw observations and miner state are local only

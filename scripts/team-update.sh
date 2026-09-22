@@ -328,7 +328,7 @@ fi
 
 # ── Step 5: Update tooling (shared install manifest) ────────────
 # Hooks (Claude Code, coordination, instinct loop), scripts/{instincts,lib,context},
-# update/check/test scripts: the same templates/install-manifest.txt that
+# update/check scripts: the same templates/install-manifest.txt that
 # scripts/setup.sh installs from. `init` entries (.claude/settings.local.json,
 # .agents/config.yaml, scripts/context/context-config.yaml) are never clobbered.
 MANIFEST_LIB="$UPSTREAM_DIR/scripts/lib/install-manifest.sh"

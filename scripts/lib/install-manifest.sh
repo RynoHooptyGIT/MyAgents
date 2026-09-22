@@ -70,9 +70,23 @@ apply_manifest() {
     while [ $# -gt 0 ]; do
         case "$1" in
             --dry-run)    dry_run=1 ;;
-            --manifest)   shift; manifest="${1:-}" ;;
+            --manifest)
+                if [ $# -lt 2 ]; then
+                    echo "apply_manifest: option --manifest requires a value" >&2
+                    _apply_manifest_usage
+                    return 2
+                fi
+                shift; manifest="$1"
+                ;;
             --manifest=*) manifest="${1#--manifest=}" ;;
-            --group)      shift; groups="${groups:+$groups,}${1:-}" ;;
+            --group)
+                if [ $# -lt 2 ]; then
+                    echo "apply_manifest: option --group requires a value" >&2
+                    _apply_manifest_usage
+                    return 2
+                fi
+                shift; groups="${groups:+$groups,}$1"
+                ;;
             --group=*)    groups="${groups:+$groups,}${1#--group=}" ;;
             -*) echo "apply_manifest: unknown option: $1" >&2; _apply_manifest_usage; return 2 ;;
             *)
@@ -136,6 +150,12 @@ apply_manifest() {
         case "$src" in
             /*|*/../*|../*)
                 echo "apply_manifest: warning: line $lineno: src must be relative to the source root — skipped" >&2
+                continue
+                ;;
+        esac
+        case "$dst" in
+            /*|../*|*/../*|..)
+                echo "apply_manifest: warning: line $lineno: dst must be relative to the destination root — skipped" >&2
                 continue
                 ;;
         esac
