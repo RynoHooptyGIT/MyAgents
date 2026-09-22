@@ -1,3 +1,4 @@
+import re
 import sys
 import tempfile
 import unittest
@@ -142,6 +143,48 @@ class ConfigUtilsTests(unittest.TestCase):
             result = load_customization(root, skill)
 
             self.assertEqual(result["value"]["order"], "team-custom")
+
+    def test_customize_toml_headers_name_the_override_file_the_loader_reads(self):
+        # config_utils.load_customization keys overrides on the skill DIRECTORY
+        # name (skill_dir.name), not on any name embedded in the customize.toml
+        # header comment. Every customize.toml header that documents its
+        # team/custom/<name>.toml override file must name <name> matching its
+        # own parent directory -- otherwise the documented override path is a
+        # dead end that the loader never reads.
+        repo_root = Path(__file__).resolve().parents[3]
+        team_dir = repo_root / "team"
+        header_pattern = re.compile(r"team/custom/([\w.-]+)\.toml")
+
+        checked = 0
+        for customize_path in sorted(team_dir.rglob("customize.toml")):
+            content = customize_path.read_text(encoding="utf-8")
+            names = set()
+            for match in header_pattern.finditer(content):
+                name = match.group(1)
+                if name.endswith(".user"):
+                    name = name[: -len(".user")]
+                names.add(name)
+
+            if not names:
+                # No documented team/custom override path in this header
+                # (e.g. a customize.toml that doesn't advertise one) -- nothing
+                # to check.
+                continue
+
+            checked += 1
+            dir_name = customize_path.parent.name
+            self.assertEqual(
+                names,
+                {dir_name},
+                f"{customize_path}: header names team/custom{sorted(names)} "
+                f"but parent directory is {dir_name!r}",
+            )
+
+        self.assertEqual(
+            checked,
+            12,
+            "expected 12 customize.toml files with a team/custom/<name>.toml header",
+        )
 
 
 if __name__ == "__main__":

@@ -3,8 +3,8 @@
 # Workflow customization surface for bmad-product-brief.
 #
 # Override files (not edited here):
-#   {project-root}/team/custom/bmad-product-brief.toml         (team)
-#   {project-root}/team/custom/bmad-product-brief.user.toml    (personal)
+#   {project-root}/team/custom/create-product-brief.toml         (team)
+#   {project-root}/team/custom/create-product-brief.user.toml    (personal)
 
 [workflow]
 
