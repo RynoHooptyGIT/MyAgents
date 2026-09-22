@@ -486,3 +486,14 @@ teams:
 ```
 
 Teams can be invoked via `invoke-team` tags in workflow instructions or through the Oracle's Party Mode. Agent teams require the `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` environment variable (Claude Code only).
+
+## Testing
+
+Run all tests with a single command:
+
+```bash
+bash scripts/test.sh
+```
+
+This runs 177 pytest tests, 7 bash test harnesses (`.agents/hooks/test-*.sh`, `scripts/test-*.sh`), and validates agent contract wiring. The release preflight automatically runs this check before cutting a version.
+
