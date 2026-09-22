@@ -2,7 +2,7 @@
 set -u
 
 # Comprehensive test harness
-# Runs pytest, all test harnesses, and apply-contract check
+# Runs pytest, all test harnesses, apply-contract check, and settings drift check
 # Usage: bash scripts/test.sh [--quiet]
 
 QUIET=false
@@ -19,6 +19,7 @@ PYTEST_PASSED=0
 HARNESS_PASSED=0
 HARNESSES_TOTAL=0
 CONTRACT_OK=true
+SETTINGS_OK=true
 FAILURES=()
 
 # --- Unified check function ---
@@ -101,13 +102,30 @@ else
   CONTRACT_OK=false
 fi
 
+# --- Run settings drift check (template hooks == local hooks) ---
+if [[ "$QUIET" == "false" ]]; then
+  echo "Checking settings template drift..."
+fi
+SETTINGS_OUTPUT=$(bash "$REPO_ROOT/scripts/check-settings-drift.sh" 2>&1)
+SETTINGS_EXIT=$?
+
+if run_check "settings-drift" "$SETTINGS_EXIT" "$SETTINGS_OUTPUT"; then
+  SETTINGS_OK=true
+else
+  SETTINGS_OK=false
+fi
+
 # --- Summary ---
 CONTRACT_STATUS="ok"
 if [[ "$CONTRACT_OK" == "false" ]]; then
   CONTRACT_STATUS="FAIL"
 fi
+SETTINGS_STATUS="ok"
+if [[ "$SETTINGS_OK" == "false" ]]; then
+  SETTINGS_STATUS="FAIL"
+fi
 
-SUMMARY="TESTS: pytest $PYTEST_PASSED passed · harnesses $HARNESS_PASSED/$HARNESSES_TOTAL green · contract $CONTRACT_STATUS"
+SUMMARY="TESTS: pytest $PYTEST_PASSED passed · harnesses $HARNESS_PASSED/$HARNESSES_TOTAL green · contract $CONTRACT_STATUS · settings $SETTINGS_STATUS"
 
 echo "$SUMMARY"
 

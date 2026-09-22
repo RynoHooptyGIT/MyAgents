@@ -487,6 +487,10 @@ teams:
 
 Teams can be invoked via `invoke-team` tags in workflow instructions or through the Oracle's Party Mode. Agent teams require the `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` environment variable (Claude Code only).
 
+## Installation
+
+`templates/install-manifest.txt` is the single list of tooling files an installed project receives — hooks (`.claude/hooks/`, `.agents/hooks/`), `scripts/{instincts,lib,context}`, the update/check/test scripts, and the two project-owned files `.claude/settings.local.json` (from `templates/settings.local.json.template`) and `.agents/config.yaml`. Each line is `mode<TAB>src<TAB>dst` with `copy` (overwrite), `init` (only if absent) or `exec` (copy + `chmod +x`). Both `scripts/setup.sh` (fresh install) and `scripts/team-update.sh` (update from upstream) apply it through `apply_manifest` in `scripts/lib/install-manifest.sh`, so an install and an update ship the same files and `init` entries are never clobbered. `scripts/check-settings-drift.sh` guards the template: it fails when the hook commands registered in `templates/settings.local.json.template` differ from this repo's `.claude/settings.local.json` (the only allowed difference is `post-commit-context.sh`, template-only by design), and `scripts/test.sh` runs it.
+
 ## Testing
 
 Run all tests with a single command:
@@ -495,5 +499,5 @@ Run all tests with a single command:
 bash scripts/test.sh
 ```
 
-This runs 177 pytest tests, 7 bash test harnesses (`.agents/hooks/test-*.sh`, `scripts/test-*.sh`), and validates agent contract wiring. The release preflight automatically runs this check before cutting a version.
+This runs 177 pytest tests, 8 bash test harnesses (`.agents/hooks/test-*.sh`, `scripts/test-*.sh`), validates agent contract wiring, and checks the settings template for hook drift. It prints one summary line — `TESTS: pytest N passed · harnesses X/Y green · contract ok|FAIL · settings ok|FAIL` — and exits non-zero on any red. The release preflight automatically runs this check before cutting a version.
 
