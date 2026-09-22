@@ -43,29 +43,30 @@ trap 'rm -rf "$BASE"' EXIT
 # ($SRC_ROOT/templates/install-manifest.txt) is exercised, as in setup/update.
 cp "$MANIFEST" "$SRC/templates/install-manifest.txt"
 
-# --- Build SRC from the manifest; record expected "mode<TAB>relative-dst" per file
+# --- Build SRC from the manifest; record expected "mode<TAB>relative-dst<TAB>group" per file
 EXPECTED=()
 ENTRIES=0
 mk_src() {  # relpath content
   mkdir -p "$SRC/$(dirname "$1")"
   printf '%s\n' "$2" > "$SRC/$1"
 }
-while IFS=$'\t' read -r mode src dst || [ -n "${mode:-}" ]; do
+while IFS=$'\t' read -r mode src dst group || [ -n "${mode:-}" ]; do
   case "$mode" in ''|'#'*) continue ;; esac
   ENTRIES=$((ENTRIES + 1))
+  group="${group:-core}"
   name="${src##*/}"
   dir="${src%/*}"; [ "$dir" = "$src" ] && dir=""
   if [[ "$name" == *'*'* ]]; then
     for n in one two; do
       f="${name/\*/$n}"
       mk_src "${dir:+$dir/}$f" "v1 $src"
-      EXPECTED+=("$mode	${dst}${f}")
+      EXPECTED+=("$mode	${dst}${f}	$group")
     done
   else
     mk_src "$src" "v1 $src"
     case "$dst" in
-      */) EXPECTED+=("$mode	${dst}${name}") ;;
-      *)  EXPECTED+=("$mode	${dst}") ;;
+      */) EXPECTED+=("$mode	${dst}${name}	$group") ;;
+      *)  EXPECTED+=("$mode	${dst}	$group") ;;
     esac
   fi
 done < "$MANIFEST"
@@ -74,9 +75,15 @@ done < "$MANIFEST"
 printf '%s\n' "${EXPECTED[@]}" | grep -q '^exec	'; check "manifest has exec entries" $?
 printf '%s\n' "${EXPECTED[@]}" | grep -q '^init	'; check "manifest has init entries" $?
 printf '%s\n' "${EXPECTED[@]}" | grep -q '^copy	'; check "manifest has copy entries" $?
-grep -q '^init	templates/settings.local.json.template	.claude/settings.local.json$' "$MANIFEST"
+grep -qE '^init	templates/settings.local.json.template	.claude/settings.local.json(	|$)' "$MANIFEST"
 check "settings template is an init entry targeting .claude/settings.local.json" $?
 grep -q '^init	.agents/config.yaml	' "$MANIFEST"; check ".agents/config.yaml is an init entry" $?
+! grep -qE '	scripts/(test|check-settings-drift)\.sh	' "$MANIFEST"
+check "repo-only dev tools (test.sh, check-settings-drift.sh) are not in the manifest" $?
+printf '%s\n' "${EXPECTED[@]}" | grep -q '	claude$' && printf '%s\n' "${EXPECTED[@]}" | grep -q '	core$'
+check "manifest has both core and claude group entries" $?
+printf '%s\n' "${EXPECTED[@]}" | grep -v '	claude$' | grep -q '^[a-z]*	\.claude/'
+[ $? -ne 0 ]; check "every .claude/ destination is in the claude group" $?
 
 # --- Run 1: fresh destination
 OUT1="$(apply_manifest "$SRC" "$DST" 2> "$TMP/err1")"; RC1=$?
@@ -85,7 +92,7 @@ OUT1="$(apply_manifest "$SRC" "$DST" 2> "$TMP/err1")"; RC1=$?
 
 missing=0; not_exec=0; bad_content=0
 for e in "${EXPECTED[@]}"; do
-  mode="${e%%	*}"; rel="${e#*	}"
+  mode="${e%%	*}"; rel="${e#*	}"; rel="${rel%	*}"
   if [ ! -f "$DST/$rel" ]; then missing=$((missing + 1)); echo "    missing: $rel"; continue; fi
   if [ "$mode" = "exec" ] && [ ! -x "$DST/$rel" ]; then not_exec=$((not_exec + 1)); echo "    not executable: $rel"; fi
   grep -q '^v1 ' "$DST/$rel" 2>/dev/null || { bad_content=$((bad_content + 1)); echo "    wrong content: $rel"; }
@@ -101,7 +108,7 @@ check "first apply prints exactly one 'installed <dst>' line per file ($n_instal
 
 # --- Between runs: mark init destinations, bump every source
 for e in "${EXPECTED[@]}"; do
-  mode="${e%%	*}"; rel="${e#*	}"
+  mode="${e%%	*}"; rel="${e#*	}"; rel="${rel%	*}"
   [ "$mode" = "init" ] && [ -f "$DST/$rel" ] && printf '%s\n' "LOCAL-EDIT-MARKER" >> "$DST/$rel"
 done
 find "$SRC" -type f -not -path "$SRC/templates/*" | while IFS= read -r f; do printf '%s\n' "v2 $f" > "$f"; done
@@ -112,7 +119,7 @@ OUT2="$(apply_manifest "$SRC" "$DST" 2> "$TMP/err2")"; RC2=$?
 
 init_clobbered=0; init_not_kept=0; copy_stale=0; n_init=0
 for e in "${EXPECTED[@]}"; do
-  mode="${e%%	*}"; rel="${e#*	}"
+  mode="${e%%	*}"; rel="${e#*	}"; rel="${rel%	*}"
   if [ "$mode" = "init" ]; then
     n_init=$((n_init + 1))
     grep -q 'LOCAL-EDIT-MARKER' "$DST/$rel" 2>/dev/null || { init_clobbered=$((init_clobbered + 1)); echo "    clobbered: $rel"; }
@@ -143,6 +150,43 @@ OUT4="$(apply_manifest "$SRC" "$DST3" --manifest "$CUSTOM" 2> "$TMP/err4")"; RC4
 grep -qi 'no match' "$TMP/err4";               check "unmatched glob: warning on stderr" $?
 [ -x "$DST3/scripts/team-check.sh" ];          check "unmatched glob: remaining entries still installed" $?
 [ ! -e "$DST3/nothing" ];                      check "unmatched glob: no directory created for the empty entry" $?
+
+# --- Group filter: --group installs only matching entries; missing column defaults to core
+DST5="$TMP/dst-core"
+OUT5="$(apply_manifest "$SRC" "$DST5" --group core 2> "$TMP/err5")"; RC5=$?
+n_core_expected=$(printf '%s\n' "${EXPECTED[@]}" | grep -c '	core$')
+n_core_got=$(printf '%s\n' "$OUT5" | grep -c '^installed ')
+[ "$RC5" -eq 0 ] && [ "$n_core_got" -eq "$n_core_expected" ]
+check "--group core installs exactly the core entries ($n_core_got/$n_core_expected)" $?
+[ ! -e "$DST5/.claude" ] && [ ! -e "$DST5/.agents/hooks" ] && [ -f "$DST5/scripts/team-update.sh" ] && [ -f "$DST5/.agents/config.yaml" ]
+check "--group core: no .claude/ or .agents/hooks/, but scripts and .agents/config.yaml land" $?
+
+DST6="$TMP/dst-claude"
+OUT6="$(apply_manifest "$SRC" "$DST6" --group claude 2> "$TMP/err6")"; RC6=$?
+n_claude_expected=$(printf '%s\n' "${EXPECTED[@]}" | grep -c '	claude$')
+n_claude_got=$(printf '%s\n' "$OUT6" | grep -c '^installed ')
+[ "$RC6" -eq 0 ] && [ "$n_claude_got" -eq "$n_claude_expected" ]
+check "--group claude installs exactly the claude entries ($n_claude_got/$n_claude_expected)" $?
+[ -f "$DST6/.claude/settings.local.json" ] && [ -x "$DST6/.agents/hooks/heartbeat.sh" ] && [ ! -e "$DST6/scripts" ]
+check "--group claude: hooks and settings land, no scripts/" $?
+[ $((n_core_got + n_claude_got)) -eq "${#EXPECTED[@]}" ]
+check "core + claude cover every manifest entry" $?
+
+DST7="$TMP/dst-groups"
+OUT7="$(apply_manifest "$SRC" "$DST7" --group core,claude 2>/dev/null)"
+[ "$(printf '%s\n' "$OUT7" | grep -c '^installed ')" -eq "${#EXPECTED[@]}" ]
+check "--group core,claude (comma-separated) installs everything" $?
+
+DST8="$TMP/dst-nogroup"
+NOGROUP="$TMP/nogroup-manifest.txt"
+printf 'copy\tscripts/team-check.sh\tscripts/\nexec\t.agents/hooks/heartbeat.sh\t.agents/hooks/\tclaude\n' > "$NOGROUP"
+OUT8="$(apply_manifest "$SRC" "$DST8" --manifest "$NOGROUP" --group core 2>/dev/null)"
+[ -f "$DST8/scripts/team-check.sh" ] && [ ! -e "$DST8/.agents" ] && [ "$(printf '%s\n' "$OUT8" | grep -c '^installed ')" -eq 1 ]
+check "entry with no group column defaults to core" $?
+
+OUT9="$(apply_manifest "$SRC" "$TMP/dst-nosuch" --group nosuch 2>/dev/null)"; RC9=$?
+[ "$RC9" -eq 0 ] && [ -z "$OUT9" ] && [ ! -e "$TMP/dst-nosuch" ]
+check "--group with no matching entries: exit 0, nothing installed" $?
 
 # --- Error paths
 apply_manifest "$SRC" "$TMP/dst-x" --manifest "$TMP/does-not-exist.txt" > /dev/null 2>&1

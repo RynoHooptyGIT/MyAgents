@@ -137,13 +137,10 @@ if [ "$TOOL_CHOICE" != "5" ]; then
     # Slash commands (flat namespace)
     cp "$TEAM_ROOT/claude-commands/team/"* "$TARGET_DIR/.claude/commands/team/"
 
-    # Tooling — hooks (Claude Code, coordination, instinct capture loop), settings,
-    # scripts/{instincts,lib,context}, update/check/test scripts, .agents/config.yaml.
-    # The single list lives in templates/install-manifest.txt; team-update.sh reads
-    # the same manifest, so a fresh install and an update ship the same files.
-    # `init` entries (settings.local.json, .agents/config.yaml, context-config.yaml)
-    # are only written when absent.
-    MANIFEST_OUT="$(apply_manifest "$TEAM_ROOT" "$TARGET_DIR")"
+    # Claude Code group of the shared install manifest: hooks (.claude/hooks,
+    # coordination + instinct loop hooks in .agents/hooks) and settings.local.json
+    # (init — only written when absent). The core group is applied in Step 4.
+    MANIFEST_OUT="$(apply_manifest "$TEAM_ROOT" "$TARGET_DIR" --group claude)"
     printf '%s\n' "$MANIFEST_OUT" | sed 's/^/    /'
     MANIFEST_INSTALLED=$(printf '%s\n' "$MANIFEST_OUT" | grep -c '^installed ' || true)
     MANIFEST_KEPT=$(printf '%s\n' "$MANIFEST_OUT" | grep -c '^kept ' || true)
@@ -162,7 +159,7 @@ team/_memory/_learnings/.candidates.json
 EOF
 
     echo -e "  ${GREEN}✓${NC} Claude Code: CLAUDE.md, 83 slash commands"
-    echo -e "  ${GREEN}✓${NC} Tooling: ${MANIFEST_INSTALLED} files installed, ${MANIFEST_KEPT} kept (templates/install-manifest.txt)"
+    echo -e "  ${GREEN}✓${NC} Hooks and settings: ${MANIFEST_INSTALLED} files installed, ${MANIFEST_KEPT} kept (install-manifest group: claude)"
 fi
 
 # GitHub Copilot (options 2, 4)
@@ -181,14 +178,16 @@ if [ "$TOOL_CHOICE" = "3" ] || [ "$TOOL_CHOICE" = "4" ]; then
 fi
 
 # ── Step 4: Context generators + update system ───────────────────
-# Context generators, team-update.sh, team-check.sh and the update-check hook are
-# manifest entries installed in Step 3 (Claude Code block).
+# Core group of the shared install manifest (tool-agnostic, every tool choice):
+# scripts/{instincts,lib,context}, team-update.sh, team-check.sh, .agents/config.yaml.
+# team-update.sh applies the same manifest, so install and update ship the same files.
 echo -e "${CYAN}[4/6] Setting up context generators and update system...${NC}"
-if [ "$TOOL_CHOICE" != "5" ]; then
-    echo -e "  ${GREEN}✓${NC} Context generators installed (edit scripts/context/context-config.yaml)"
-else
-    echo -e "  ${YELLOW}!${NC} Tool choice 5: tooling (hooks, context generators, update scripts) not installed"
-fi
+MANIFEST_OUT="$(apply_manifest "$TEAM_ROOT" "$TARGET_DIR" --group core)"
+printf '%s\n' "$MANIFEST_OUT" | sed 's/^/    /'
+MANIFEST_INSTALLED=$(printf '%s\n' "$MANIFEST_OUT" | grep -c '^installed ' || true)
+MANIFEST_KEPT=$(printf '%s\n' "$MANIFEST_OUT" | grep -c '^kept ' || true)
+echo -e "  ${GREEN}✓${NC} Core tooling: ${MANIFEST_INSTALLED} files installed, ${MANIFEST_KEPT} kept (install-manifest group: core)"
+echo -e "  ${GREEN}✓${NC} Context generators installed (edit scripts/context/context-config.yaml)"
 
 # VERSION file
 cp "$TEAM_ROOT/VERSION" "$TARGET_DIR/VERSION"
@@ -205,7 +204,7 @@ fi
 if [ "$TOOL_CHOICE" != "5" ]; then
     echo -e "  ${GREEN}✓${NC} Update system installed (check + update scripts, auto-notify hook)"
 else
-    echo -e "  ${GREEN}✓${NC} VERSION and .team-upstream recorded"
+    echo -e "  ${GREEN}✓${NC} Update system installed (check + update scripts; no Claude Code hooks for tool choice 5)"
 fi
 
 # ── Step 5: Create output directory structure ────────────────────

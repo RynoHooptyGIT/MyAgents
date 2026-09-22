@@ -2,16 +2,20 @@
 # =============================================================================
 # scripts/lib/install-manifest.sh — sourced library (bash 3.2 compatible)
 # =============================================================================
-# apply_manifest SRC_ROOT DST_ROOT [--dry-run] [--manifest FILE]
+# apply_manifest SRC_ROOT DST_ROOT [--dry-run] [--manifest FILE] [--group NAME[,NAME]]
 #
-# Reads templates/install-manifest.txt (mode<TAB>src<TAB>dst per line; see the
-# header of that file for the format) under SRC_ROOT and installs each entry into
-# DST_ROOT. Used by scripts/setup.sh (fresh install) and scripts/team-update.sh
-# (update) so both ship the same tooling.
+# Reads templates/install-manifest.txt (mode<TAB>src<TAB>dst[<TAB>group] per
+# line; see the header of that file for the format) under SRC_ROOT and installs
+# each entry into DST_ROOT. Used by scripts/setup.sh (fresh install) and
+# scripts/team-update.sh (update) so both ship the same tooling.
 #
 #   copy  copy, overwriting dst
 #   init  copy only if dst is absent — prints "kept <dst>" otherwise
 #   exec  copy, overwriting dst, then chmod +x
+#
+# The optional 4th column is the entry's group (`core` when absent). With
+# --group only entries in the named group(s) are applied (repeatable or
+# comma-separated); without it every entry is applied.
 #
 # Prints one line per file: "installed <dst>", "kept <dst>" or (dry run)
 # "would-install <dst>", with <dst> relative to DST_ROOT. A src glob that matches
@@ -21,7 +25,7 @@
 # =============================================================================
 
 _apply_manifest_usage() {
-    echo "usage: apply_manifest SRC_ROOT DST_ROOT [--dry-run] [--manifest FILE]" >&2
+    echo "usage: apply_manifest SRC_ROOT DST_ROOT [--dry-run] [--manifest FILE] [--group NAME[,NAME]]" >&2
 }
 
 # _apply_manifest_one MODE SRC_FILE DST DST_ROOT DRY_RUN
@@ -61,13 +65,15 @@ _apply_manifest_one() {
 }
 
 apply_manifest() {
-    local src_root="" dst_root="" manifest="" dry_run=0
+    local src_root="" dst_root="" manifest="" dry_run=0 groups=""
 
     while [ $# -gt 0 ]; do
         case "$1" in
             --dry-run)    dry_run=1 ;;
             --manifest)   shift; manifest="${1:-}" ;;
             --manifest=*) manifest="${1#--manifest=}" ;;
+            --group)      shift; groups="${groups:+$groups,}${1:-}" ;;
+            --group=*)    groups="${groups:+$groups,}${1#--group=}" ;;
             -*) echo "apply_manifest: unknown option: $1" >&2; _apply_manifest_usage; return 2 ;;
             *)
                 if [ -z "$src_root" ]; then
@@ -96,15 +102,18 @@ apply_manifest() {
         return 2
     fi
 
-    local rc=0 lineno=0 matched mode src dst f src_dir
+    local rc=0 lineno=0 matched mode src dst group f src_dir
 
     # fd 3 keeps the manifest separate from stdin (so nothing in the loop can eat it).
-    while IFS=$'\t' read -r mode src dst <&3 || [ -n "${mode:-}" ]; do
+    while IFS=$'\t' read -r mode src dst group <&3 || [ -n "${mode:-}" ]; do
         lineno=$((lineno + 1))
         # Tolerate CRLF and trailing whitespace on the last field.
+        group="${group%$'\r'}"
+        group="${group%"${group##*[![:space:]]}"}"
         dst="${dst%$'\r'}"
         dst="${dst%"${dst##*[![:space:]]}"}"
         mode="${mode%$'\r'}"
+        [ -n "$group" ] || group="core"
 
         case "$mode" in
             ''|'#'*) continue ;;
@@ -117,6 +126,12 @@ apply_manifest() {
         if [ -z "$src" ] || [ -z "$dst" ]; then
             echo "apply_manifest: warning: line $lineno: expected mode<TAB>src<TAB>dst — skipped" >&2
             continue
+        fi
+        if [ -n "$groups" ]; then
+            case ",$groups," in
+                *",$group,"*) ;;
+                *) continue ;;
+            esac
         fi
         case "$src" in
             /*|*/../*|../*)
