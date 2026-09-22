@@ -80,6 +80,69 @@ class ConfigUtilsTests(unittest.TestCase):
             self.assertEqual(load_central_config(root)["value"]["order"], "custom-user")
             self.assertEqual(load_customization(root, skill)["value"]["order"], "user")
 
+    def test_load_central_config_missing_bmad_config_toml_returns_dict_no_raise(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            # No _bmad/config.toml (and no _bmad dir at all) anywhere under root.
+
+            result = load_central_config(root)
+
+            self.assertIsInstance(result, dict)
+            self.assertEqual(result, {})
+
+    def test_team_custom_override_applied_when_alone(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            skill = root / "_bmad" / "bmm" / "sample-skill"
+            team_custom = root / "team" / "custom"
+            skill.mkdir(parents=True)
+            team_custom.mkdir(parents=True)
+            (skill / "customize.toml").write_text('[value]\norder = "default"\n', encoding="utf-8")
+            (team_custom / "sample-skill.toml").write_text(
+                '[value]\norder = "team-custom"\n', encoding="utf-8"
+            )
+
+            result = load_customization(root, skill)
+
+            self.assertEqual(result["value"]["order"], "team-custom")
+
+    def test_bmad_custom_override_still_applied_when_alone(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            skill = root / "_bmad" / "bmm" / "sample-skill"
+            bmad_custom = root / "_bmad" / "custom"
+            skill.mkdir(parents=True)
+            bmad_custom.mkdir(parents=True)
+            (skill / "customize.toml").write_text('[value]\norder = "default"\n', encoding="utf-8")
+            (bmad_custom / "sample-skill.toml").write_text(
+                '[value]\norder = "bmad-custom"\n', encoding="utf-8"
+            )
+
+            result = load_customization(root, skill)
+
+            self.assertEqual(result["value"]["order"], "bmad-custom")
+
+    def test_team_custom_wins_over_bmad_custom_when_both_present(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            skill = root / "_bmad" / "bmm" / "sample-skill"
+            bmad_custom = root / "_bmad" / "custom"
+            team_custom = root / "team" / "custom"
+            skill.mkdir(parents=True)
+            bmad_custom.mkdir(parents=True)
+            team_custom.mkdir(parents=True)
+            (skill / "customize.toml").write_text('[value]\norder = "default"\n', encoding="utf-8")
+            (bmad_custom / "sample-skill.toml").write_text(
+                '[value]\norder = "bmad-custom"\n', encoding="utf-8"
+            )
+            (team_custom / "sample-skill.toml").write_text(
+                '[value]\norder = "team-custom"\n', encoding="utf-8"
+            )
+
+            result = load_customization(root, skill)
+
+            self.assertEqual(result["value"]["order"], "team-custom")
+
 
 if __name__ == "__main__":
     unittest.main()
