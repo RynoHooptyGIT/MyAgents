@@ -147,6 +147,7 @@ if [ "$TOOL_CHOICE" != "5" ]; then
         chmod +x "$TARGET_DIR/.agents/hooks/$h"
     done
     cp "$TEAM_ROOT/scripts/instincts/"*.py "$TARGET_DIR/scripts/instincts/"
+    mkdir -p "$TARGET_DIR/scripts/lib" && cp "$TEAM_ROOT/scripts/lib/"*.py "$TARGET_DIR/scripts/lib/"
     [ -f "$TARGET_DIR/.agents/config.yaml" ] || cp "$TEAM_ROOT/.agents/config.yaml" "$TARGET_DIR/.agents/config.yaml"
     touch "$TARGET_DIR/team/_memory/_learnings/instincts/.gitkeep"
     grep -q 'team/_memory/_learnings/observations.jsonl' "$TARGET_DIR/.gitignore" 2>/dev/null || cat >> "$TARGET_DIR/.gitignore" << 'EOF'
