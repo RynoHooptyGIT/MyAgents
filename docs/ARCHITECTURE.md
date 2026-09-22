@@ -486,3 +486,18 @@ teams:
 ```
 
 Teams can be invoked via `invoke-team` tags in workflow instructions or through the Oracle's Party Mode. Agent teams require the `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` environment variable (Claude Code only).
+
+## Installation
+
+`templates/install-manifest.txt` is the single list of tooling files an installed project receives — hooks (`.claude/hooks/`, `.agents/hooks/`), `scripts/{instincts,lib,context}`, the update/check scripts, and the two project-owned files `.claude/settings.local.json` (from `templates/settings.local.json.template`) and `.agents/config.yaml`. Each line is `mode<TAB>src<TAB>dst[<TAB>group]` with `copy` (overwrite), `init` (only if absent) or `exec` (copy + `chmod +x`); the optional group is `core` (tool-agnostic scripts and `.agents/config.yaml`, the default) or `claude` (Claude Code hooks and settings), and `apply_manifest --group NAME` applies only that group — `setup.sh` applies `core` for every tool choice and `claude` only when Claude Code is selected, while `team-update.sh` applies everything. Both `scripts/setup.sh` (fresh install) and `scripts/team-update.sh` (update from upstream) apply it through `apply_manifest` in `scripts/lib/install-manifest.sh`, so an install and an update ship the same files and `init` entries are never clobbered. Repo-only dev tools (`scripts/test.sh`, `scripts/check-settings-drift.sh`) are deliberately not in the manifest. `scripts/check-settings-drift.sh` guards the template: it fails when the hook commands registered in `templates/settings.local.json.template` differ from this repo's `.claude/settings.local.json` (the only allowed difference is `post-commit-context.sh`, template-only by design), and `scripts/test.sh` runs it.
+
+## Testing
+
+Run all tests with a single command:
+
+```bash
+bash scripts/test.sh
+```
+
+This runs all pytest tests and every `test-*.sh` harness (`.agents/hooks/test-*.sh`, `scripts/test-*.sh`), validates agent contract wiring, and checks the settings template for hook drift. It prints one summary line — `TESTS: pytest N passed · harnesses X/Y green · contract ok|FAIL · settings ok|FAIL` — and exits non-zero on any red. The release preflight automatically runs this check before cutting a version.
+

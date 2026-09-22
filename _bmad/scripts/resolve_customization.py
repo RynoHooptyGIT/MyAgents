@@ -53,7 +53,7 @@ def write_json_stdout(output) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Resolve skill customization using three-layer TOML merge."
+        description="Resolve skill customization using up to five-layer TOML merge."
     )
     parser.add_argument(
         "--skill", "-s", required=True, help="Absolute path to the skill directory"

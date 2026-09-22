@@ -3,8 +3,8 @@
 # Workflow customization surface for bmad-advanced-elicitation.
 #
 # Override files (not edited here):
-#   {project-root}/_bmad/custom/bmad-advanced-elicitation.toml         (team)
-#   {project-root}/_bmad/custom/bmad-advanced-elicitation.user.toml    (personal)
+#   {project-root}/team/custom/bmad-advanced-elicitation.toml         (team)
+#   {project-root}/team/custom/bmad-advanced-elicitation.user.toml    (personal)
 
 [workflow]
 

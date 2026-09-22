@@ -8,7 +8,7 @@ Usage:
     python scripts/context/generate_all.py --sprint  # Only regenerate sprint digest
     python scripts/context/generate_all.py --check   # Check if files are stale (exit 1 if so)
 
-Output directory: _bmad-output/context/
+Output directory: output/context/
 """
 
 import argparse
@@ -58,7 +58,7 @@ def _basic_yaml_parse(filepath: Path) -> dict:
         lines.append(line)
 
     # For basic configs, try to extract just the enabled generators
-    result = {"generators": {}, "output_dir": "_bmad-output/context"}
+    result = {"generators": {}, "output_dir": "output/context"}
 
     current_gen = None
     for line in lines:
@@ -83,7 +83,7 @@ def _basic_yaml_parse(filepath: Path) -> dict:
 
 def get_context_dir(config: dict) -> Path:
     """Get the output directory from config."""
-    output_dir = config.get("output_dir", "_bmad-output/context")
+    output_dir = config.get("output_dir", "output/context")
     return PROJECT_ROOT / output_dir
 
 

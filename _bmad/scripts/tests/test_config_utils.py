@@ -1,3 +1,4 @@
+import re
 import sys
 import tempfile
 import unittest
@@ -79,6 +80,111 @@ class ConfigUtilsTests(unittest.TestCase):
 
             self.assertEqual(load_central_config(root)["value"]["order"], "custom-user")
             self.assertEqual(load_customization(root, skill)["value"]["order"], "user")
+
+    def test_load_central_config_missing_bmad_config_toml_returns_dict_no_raise(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            # No _bmad/config.toml (and no _bmad dir at all) anywhere under root.
+
+            result = load_central_config(root)
+
+            self.assertIsInstance(result, dict)
+            self.assertEqual(result, {})
+
+    def test_team_custom_override_applied_when_alone(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            skill = root / "_bmad" / "bmm" / "sample-skill"
+            team_custom = root / "team" / "custom"
+            skill.mkdir(parents=True)
+            team_custom.mkdir(parents=True)
+            (skill / "customize.toml").write_text('[value]\norder = "default"\n', encoding="utf-8")
+            (team_custom / "sample-skill.toml").write_text(
+                '[value]\norder = "team-custom"\n', encoding="utf-8"
+            )
+
+            result = load_customization(root, skill)
+
+            self.assertEqual(result["value"]["order"], "team-custom")
+
+    def test_bmad_custom_override_still_applied_when_alone(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            skill = root / "_bmad" / "bmm" / "sample-skill"
+            bmad_custom = root / "_bmad" / "custom"
+            skill.mkdir(parents=True)
+            bmad_custom.mkdir(parents=True)
+            (skill / "customize.toml").write_text('[value]\norder = "default"\n', encoding="utf-8")
+            (bmad_custom / "sample-skill.toml").write_text(
+                '[value]\norder = "bmad-custom"\n', encoding="utf-8"
+            )
+
+            result = load_customization(root, skill)
+
+            self.assertEqual(result["value"]["order"], "bmad-custom")
+
+    def test_team_custom_wins_over_bmad_custom_when_both_present(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            skill = root / "_bmad" / "bmm" / "sample-skill"
+            bmad_custom = root / "_bmad" / "custom"
+            team_custom = root / "team" / "custom"
+            skill.mkdir(parents=True)
+            bmad_custom.mkdir(parents=True)
+            team_custom.mkdir(parents=True)
+            (skill / "customize.toml").write_text('[value]\norder = "default"\n', encoding="utf-8")
+            (bmad_custom / "sample-skill.toml").write_text(
+                '[value]\norder = "bmad-custom"\n', encoding="utf-8"
+            )
+            (team_custom / "sample-skill.toml").write_text(
+                '[value]\norder = "team-custom"\n', encoding="utf-8"
+            )
+
+            result = load_customization(root, skill)
+
+            self.assertEqual(result["value"]["order"], "team-custom")
+
+    def test_customize_toml_headers_name_the_override_file_the_loader_reads(self):
+        # config_utils.load_customization keys overrides on the skill DIRECTORY
+        # name (skill_dir.name), not on any name embedded in the customize.toml
+        # header comment. Every customize.toml header that documents its
+        # team/custom/<name>.toml override file must name <name> matching its
+        # own parent directory -- otherwise the documented override path is a
+        # dead end that the loader never reads.
+        repo_root = Path(__file__).resolve().parents[3]
+        team_dir = repo_root / "team"
+        header_pattern = re.compile(r"team/custom/([\w.-]+)\.toml")
+
+        checked = 0
+        for customize_path in sorted(team_dir.rglob("customize.toml")):
+            content = customize_path.read_text(encoding="utf-8")
+            names = set()
+            for match in header_pattern.finditer(content):
+                name = match.group(1)
+                if name.endswith(".user"):
+                    name = name[: -len(".user")]
+                names.add(name)
+
+            if not names:
+                # No documented team/custom override path in this header
+                # (e.g. a customize.toml that doesn't advertise one) -- nothing
+                # to check.
+                continue
+
+            checked += 1
+            dir_name = customize_path.parent.name
+            self.assertEqual(
+                names,
+                {dir_name},
+                f"{customize_path}: header names team/custom{sorted(names)} "
+                f"but parent directory is {dir_name!r}",
+            )
+
+        self.assertEqual(
+            checked,
+            12,
+            "expected 12 customize.toml files with a team/custom/<name>.toml header",
+        )
 
 
 if __name__ == "__main__":
