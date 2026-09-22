@@ -1,35 +1,13 @@
 # Multi-Agent Coordination Configuration
 # See: docs/specs/2026-04-26-multi-agent-coordination-design.md
+# Read by scripts/lib/config.py's generic section loader. Only keys with an
+# actual reader (a hook, script, or prompt that names the key) are listed —
+# see "Config keys (2026-09-22)" in the design doc for what was removed and why.
 
 coordination:
   # Heartbeat
-  heartbeat_interval_calls: 20       # Update heartbeat every N tool calls
-  stale_threshold_minutes: 10        # Consider agent dead after N minutes no heartbeat
-
-  # Claims
-  claim_conflict_action: block       # block | warn | allow
-  claim_path_matching: prefix        # prefix | exact
-
-  # Worktrees
-  auto_worktree: true                # Enforce worktree creation on startup
-  worktree_base_dir: .worktrees      # Relative to repo root
-  cleanup_orphaned_worktrees: true   # Clean stale worktrees on startup
-  branch_prefix: agent               # Branch naming: {prefix}/{id}/{slug}
-
-  # Decisions
-  decision_sync_on_startup: true     # Read all decisions on startup
-  decision_sync_interval_calls: 100  # Periodic re-sync (in addition to event-driven sync before architectural choices)
-
-  # Requests
-  request_check_interval_calls: 50   # Check for inbound requests periodically
-
-# Orchestrator integration (Oracle is the sole orchestrator; absorbed former Maestro role)
-orchestrator_integration:
-  enabled: auto                      # auto-detected from team/engine/ presence
-  cross_post_decisions: true
-  cross_post_handoffs: true
-  cross_post_findings: true
-  respect_mission_assignments: true
+  heartbeat_interval_calls: 20       # Update heartbeat every N tool calls (read by .agents/hooks/heartbeat.sh)
+  stale_threshold_minutes: 10        # Consider agent dead after N minutes no heartbeat (read by claude-commands/team/agent-coordinator.md)
 
 # Instinct capture loop (learned behaviors). See: docs/specs/2026-09-19-instinct-capture-loop-design.md
 instincts:
