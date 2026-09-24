@@ -141,14 +141,14 @@ if [ "$TOOL_CHOICE" != "5" ]; then
     chmod +x "$TARGET_DIR/.claude/hooks/post-commit-context.sh"
 
     # Instinct capture loop: hooks, CLI, config (see docs/specs/2026-09-19-instinct-capture-loop-design.md)
-    mkdir -p "$TARGET_DIR/.agents/hooks" "$TARGET_DIR/scripts/instincts" "$TARGET_DIR/team/_memory/_learnings/instincts"
+    # team/_memory/_learnings/instincts/.gitkeep was already created in Step 1.
+    mkdir -p "$TARGET_DIR/.agents/hooks" "$TARGET_DIR/scripts/instincts"
     for h in observe.sh instinct-mine.sh instinct-inject.sh; do
         cp "$TEAM_ROOT/.agents/hooks/$h" "$TARGET_DIR/.agents/hooks/$h"
         chmod +x "$TARGET_DIR/.agents/hooks/$h"
     done
     cp "$TEAM_ROOT/scripts/instincts/"*.py "$TARGET_DIR/scripts/instincts/"
     [ -f "$TARGET_DIR/.agents/config.yaml" ] || cp "$TEAM_ROOT/.agents/config.yaml" "$TARGET_DIR/.agents/config.yaml"
-    touch "$TARGET_DIR/team/_memory/_learnings/instincts/.gitkeep"
     grep -q 'team/_memory/_learnings/observations.jsonl' "$TARGET_DIR/.gitignore" 2>/dev/null || cat >> "$TARGET_DIR/.gitignore" << 'EOF'
 
 # Instinct capture loop — raw observations and miner state are local only
@@ -159,7 +159,7 @@ team/_memory/_learnings/.instinct-watermark
 team/_memory/_learnings/.candidates.json
 EOF
 
-    echo -e "  ${GREEN}✓${NC} Claude Code: CLAUDE.md, 83 slash commands, hooks"
+    echo -e "  ${GREEN}✓${NC} Claude Code: CLAUDE.md, $(ls "$TEAM_ROOT/claude-commands/team/" | wc -l | tr -d ' ') slash commands, hooks"
 fi
 
 # GitHub Copilot (options 2, 4)

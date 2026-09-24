@@ -35,3 +35,6 @@ team/_memory/_learnings/.candidates.json
 # Worktree identity markers written by /agent-coordinator (ephemeral)
 .agent-id
 .agent-coord-root
+
+# Superpowers SDD scratch (ledgers, briefs, reports)
+.superpowers/

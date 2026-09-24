@@ -2152,7 +2152,7 @@ git commit -m "feat(oracle): mode-aware instinct review, [IN] menu item, /team:i
 ### Task 10: Supersede learnings.xml, docs, decision record
 
 **Files:**
-- Modify: `team/engine/learnings.xml` (insert after line 1), `team/data/discipline/knowledge/learnings.md`, `docs/plans/2026-04-26-learnings-specialists-autodecision.md` (prepend note), `docs/ARCHITECTURE.md` (after the "Hook Configuration" block near line 314), `scripts/setup.sh` (after line ~137), `templates/CLAUDE.md.template`
+- Modify: `team/engine/learnings.xml` (insert after line 1), `team/data/discipline/knowledge/learnings.md`, `docs/archive/2026-04-26-learnings-specialists-autodecision.md` (prepend note), `docs/ARCHITECTURE.md` (after the "Hook Configuration" block near line 314), `scripts/setup.sh` (after line ~137), `templates/CLAUDE.md.template`
 - Create: `.agents/decisions/2026-09-19-instincts-supersede-learnings.yaml`
 
 - [ ] **Step 1: Deprecate learnings.xml**
@@ -2192,7 +2192,7 @@ Keep the Iron Law, Red Flags, Rationalization Defense, and Learning Types sectio
 
 - [ ] **Step 3: Note on the old plan**
 
-Prepend to `docs/plans/2026-04-26-learnings-specialists-autodecision.md`:
+Prepend to `docs/archive/2026-04-26-learnings-specialists-autodecision.md`:
 
 ```markdown
 > **Superseded (2026-09-19):** the JSONL learnings design here was never wired in. It is replaced by the instinct capture loop — see `docs/specs/2026-09-19-instinct-capture-loop-design.md` and `docs/plans/2026-09-19-instinct-capture-loop.md`.
@@ -2275,7 +2275,7 @@ Expected: `46 passed`; every harness `0 failed`; no stray references; `settings 
 - [ ] **Step 8: Commit**
 
 ```bash
-git add scripts/setup.sh templates/CLAUDE.md.template team/engine/learnings.xml team/data/discipline/knowledge/learnings.md docs/plans/2026-04-26-learnings-specialists-autodecision.md docs/ARCHITECTURE.md .agents/decisions/2026-09-19-instincts-supersede-learnings.yaml
+git add scripts/setup.sh templates/CLAUDE.md.template team/engine/learnings.xml team/data/discipline/knowledge/learnings.md docs/archive/2026-04-26-learnings-specialists-autodecision.md docs/ARCHITECTURE.md .agents/decisions/2026-09-19-instincts-supersede-learnings.yaml
 git commit -m "docs(instincts): supersede learnings.xml, architecture hooks table, decision record"
 ```
 
