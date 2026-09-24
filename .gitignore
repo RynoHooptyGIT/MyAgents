@@ -38,3 +38,6 @@ team/_memory/_learnings/.candidates.json
 
 # Superpowers SDD scratch (ledgers, briefs, reports)
 .superpowers/
+
+# Native Claude Code worktrees (EnterWorktree)
+.claude/worktrees/
