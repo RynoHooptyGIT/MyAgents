@@ -1,0 +1,92 @@
+name: upstream-watch
+
+# Weekly: port clean upstream fixes into a PR, sync registered plugins, and keep
+# one tracking issue listing what needs a human. Never merges anything.
+on:
+  schedule:
+    - cron: "0 13 * * 1"
+  workflow_dispatch:
+    inputs:
+      max_apply:
+        description: Most upstream commits to port this run
+        default: "10"
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency: upstream-watch
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  BRANCH_PREFIX: upstream/auto-
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Skip while an upstream PR is still open
+        id: gate
+        run: |
+          open=$(gh pr list --state open --json headRefName --jq "[.[] | select(.headRefName | startswith(\"$BRANCH_PREFIX\"))] | length")
+          echo "open=$open" >> "$GITHUB_OUTPUT"
+          [ "$open" = "0" ] || echo "An upstream PR is already open; reporting only."
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Install test deps
+        run: pip install pytest
+
+      - name: Port upstream fixes
+        run: |
+          git checkout -b "${BRANCH_PREFIX}$(date +%Y%m%d)"
+          mode=apply; [ "${{ steps.gate.outputs.open }}" = "0" ] || mode=scan
+          python3 scripts/upstream/watch.py "$mode" \
+            --max "${{ github.event.inputs.max_apply || 10 }}" --report "$RUNNER_TEMP/report.md"
+
+      - name: Sync registered plugins
+        if: steps.gate.outputs.open == '0'
+        run: bash scripts/plugin-sync.sh || true   # exit 1 means already up to date
+
+      - name: Commit ledger and plugin updates
+        if: steps.gate.outputs.open == '0'
+        run: |
+          git add -A
+          git diff --cached --quiet || git commit -q -m "chore(upstream): update sync ledger and plugins"
+
+      - name: Open the PR
+        if: steps.gate.outputs.open == '0'
+        run: |
+          ahead=$(git rev-list --count origin/${{ github.event.repository.default_branch }}..HEAD)
+          # Ledger-only change (nothing ported, no plugin update): not worth a PR.
+          ported=$(git log --format=%s origin/${{ github.event.repository.default_branch }}..HEAD | grep -c '^fix(upstream)' || true)
+          plugins=$(git diff --name-only origin/${{ github.event.repository.default_branch }}..HEAD -- plugins | wc -l)
+          if [ "$ahead" -gt 0 ] && { [ "$ported" -gt 0 ] || [ "$plugins" -gt 0 ]; }; then
+            git push -u origin HEAD
+            { cat "$RUNNER_TEMP/report.md"; echo; echo "Review each commit; CI-equivalent tests passed before it was kept. Nothing here is merged automatically."; } > "$RUNNER_TEMP/body.md"
+            gh pr create --title "chore(upstream): weekly sync $(date +%Y-%m-%d)" --body-file "$RUNNER_TEMP/body.md"
+          else
+            echo "Nothing to port; no PR."
+          fi
+
+      - name: Update the tracking issue
+        run: |
+          title="Upstream sync backlog"
+          num=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$num" ]; then
+            gh issue edit "$num" --body-file "$RUNNER_TEMP/report.md"
+          else
+            gh issue create --title "$title" --body-file "$RUNNER_TEMP/report.md"
+          fi

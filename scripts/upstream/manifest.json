@@ -1,0 +1,22 @@
+{
+  "ledger": ".team-upstream-ledger.json",
+  "test_cmd": ["python3", "-m", "pytest", "_bmad/scripts/tests", "team/core-skills", "-q"],
+  "max_apply": 10,
+  "upstreams": [
+    {
+      "name": "bmad",
+      "remote": "bmad",
+      "url": "https://github.com/bmad-code-org/BMAD-METHOD.git",
+      "branch": "main",
+      "baseline_file": ".team-last-sync-tag",
+      "path_map": [
+        ["skills/bmad/scripts/", "_bmad/scripts/"],
+        ["src/scripts/", "_bmad/scripts/"],
+        ["src/core-skills/", "team/core-skills/"],
+        ["skills/bmad-", "team/core-skills/bmad-"]
+      ],
+      "auto_port_pattern": "^(fix|perf)(\\([^)]*\\))?:",
+      "structural_pattern": "ticket|sofia|bmod|active_initiative|migrat|render|toolsmith|facilitate|jinja"
+    }
+  ]
+}
