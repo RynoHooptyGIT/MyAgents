@@ -1,0 +1,1949 @@
+{
+ "bmad": {
+  "00662b072d736a84b0a8ad313c0bb2407568286c": {
+   "date": "2026-08-10",
+   "status": "not-applicable",
+   "subject": "fix(project-context): admit commands whose obvious invocation is wrong (#2703)"
+  },
+  "0146907c2418b2f934d30fe509980fe5195410b0": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "chore(test): colocate website tests with the Astro site"
+  },
+  "0223cbd9d7d4b19e200e1ae72ec783a5d5a919d0": {
+   "date": "2026-08-29",
+   "status": "not-applicable",
+   "subject": "docs: move Finish an Epic to the Build chapter (#2791)"
+  },
+  "022bcbc66d12ba43eb9028f1aa770fe42698b06b": {
+   "date": "2026-07-29",
+   "status": "structural",
+   "subject": "Rename Quick Dev to Build (#2651)"
+  },
+  "022be9314e4facd16826104a9f8033e1c5ed4fdc": {
+   "date": "2026-11-02",
+   "status": "not-applicable",
+   "subject": "fix(tools): validate SKILL.md frontmatter as YAML (SKILL-08) (#3139)"
+  },
+  "0258223cb7be8418ce2512d9d2aa439a81d0ca8d": {
+   "date": "2026-08-30",
+   "status": "not-applicable",
+   "subject": "fix(tools): carry the Windows path-leak fix into the Python checker"
+  },
+  "029ba287bcd738412a7c5fd8e7855b7d69c4f992": {
+   "date": "2026-07-28",
+   "status": "not-applicable",
+   "subject": "docs: make Quick Dev the canonical implementation workflow (#2643)"
+  },
+  "04055f1236c96972ff202e466d5a5299ca251e24": {
+   "date": "2026-09-05",
+   "status": "conflict",
+   "subject": "chore: bump placeholder version to 6.12.0-next"
+  },
+  "0436165966a8c26e0168419478d7c31e1b0d03bd": {
+   "date": "2026-08-15",
+   "status": "conflict",
+   "subject": "refactor(help): disclose setup only on demand"
+  },
+  "048741334d1488d08bc14bac018e18020145d040": {
+   "date": "2026-10-31",
+   "status": "not-applicable",
+   "subject": "docs: move the v7 release ETA to mid-November 2026 (#3159)"
+  },
+  "05175bd569f8d8740bac8da5432c4114cb592604": {
+   "date": "2026-08-19",
+   "status": "structural",
+   "subject": "refactor!: rip out the classic installer, the packager, and bmad-help"
+  },
+  "056fe811f1192823728319b09bec3791b6fd1bd5": {
+   "date": "2026-09-25",
+   "status": "conflict",
+   "subject": "fix(build-auto): give the intent lens the work item's own words, not a bare id or path"
+  },
+  "05bfbd46d00766ec88eb9b42e76be2c575d64d7b": {
+   "date": "2026-09-04",
+   "status": "not-applicable",
+   "subject": "chore(release): v6.12.0 [skip ci]"
+  },
+  "05e295f48e9176de4e457204325b0444ab185a0f": {
+   "date": "2026-08-03",
+   "status": "ported",
+   "subject": "fix(review): clarify weak test evidence (#2683)"
+  },
+  "0601263bb161e6f762dc5bb3050e04b203998cfa": {
+   "date": "2026-08-06",
+   "status": "not-applicable",
+   "subject": "test(installer): make directory prompt tests deterministic (#2685)"
+  },
+  "06b09ee4819c4b428f9475efd9df3b9b413e3a7a": {
+   "date": "2026-10-04",
+   "status": "not-applicable",
+   "subject": "docs: restructure AGENTS.md and document the checks in CONTRIBUTING.md (#3034)"
+  },
+  "0940cc7ff9f7379ef8f6d390af75f585ad60ef8f": {
+   "date": "2026-09-15",
+   "status": "structural",
+   "subject": "feat(build): add the review lever and lens sets to bmad-build (#2875)"
+  },
+  "09f4b119d44111b76e07b0c6de2abbaf07d80125": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "chore: rewrite the deterministic skill validator in Python"
+  },
+  "0a00053409731db811f2595ceb521dff9dde9a19": {
+   "date": "2026-09-15",
+   "status": "not-applicable",
+   "subject": "fix(docs-site): remediate Astro AVIF advisory (#2876)"
+  },
+  "0b26ac989b6cf5ed688aabf5306e716bd6dbcae1": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "docs(bmad): add the standalone support skills to the routing guide"
+  },
+  "0cb0c7981f6e5a73800015ab24fa45f839a5eedc": {
+   "date": "2026-10-18",
+   "status": "structural",
+   "subject": "fix(walkthrough): drop Thoughts from the move menu and vary suggestions across blocks (#3117)"
+  },
+  "0cfe6865e02a7a153621ff6d8298db02f43c50ae": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "chore: delete orphaned format-workflow-md and workflow-path-regex tools"
+  },
+  "0d499b9b827d978968b9d16ed80324ae9a0f6a41": {
+   "date": "2026-09-28",
+   "status": "structural",
+   "subject": "feat(bmad): setup cleans up renamed and removed skills; help loads only for help requests (#2981)"
+  },
+  "0d4a9917a33d2ec83ef8305b23e99a447cfdad76": {
+   "date": "2026-08-14",
+   "status": "not-applicable",
+   "subject": "feat: add packager to flatten Method skills for npx"
+  },
+  "0e0831ba97e31dc0d9df50a34c6dd618298ecc5c": {
+   "date": "2026-09-26",
+   "status": "structural",
+   "subject": "fix(ticketing): keep pulled fields, bug refinement, and bad plans consistent (#2967)"
+  },
+  "0e3ac1f0b57e75b332f6f95901aabd04d08a469a": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "chore: align plugin and package versions with module manifests"
+  },
+  "0eb32bfe7895266cd05f67993974ed7a1ccf189b": {
+   "date": "2026-08-28",
+   "status": "not-applicable",
+   "subject": "docs: rewrite Build a Change wait-cost section (#2787)"
+  },
+  "0f08bbc4de85444dca5b36b347f348a43c5e688a": {
+   "date": "2026-09-21",
+   "status": "not-applicable",
+   "subject": "docs-site: centre the prose on a wide screen, and widen the measure (#2911)"
+  },
+  "0f20b63bc1ec3986169f1e9576defe2aa74271dc": {
+   "date": "2026-10-15",
+   "status": "structural",
+   "subject": "fix(skills): read the ticket first and in full; it is the spec at its altitude"
+  },
+  "0f5d51016e59ff7c0338752d46277dd77d546c42": {
+   "date": "2026-08-17",
+   "status": "not-applicable",
+   "subject": "fix(skills): judge each review finding before grouping (#2753)"
+  },
+  "0fe4f1490249f0379dc60daf6b928161d75b7f9d": {
+   "date": "2026-10-31",
+   "status": "not-applicable",
+   "subject": "fix(skills): scope the activation preflight to named roots, report pinned installs, reject bare-number backlog fallback "
+  },
+  "0fe55ba2c6ae2a9af8836382267610fe32a4c174": {
+   "date": "2026-10-06",
+   "status": "not-applicable",
+   "subject": "docs: remove docs translations (#3047)"
+  },
+  "105dae82436bdb5ab3aaaf88775473e57ef3680d": {
+   "date": "2026-09-05",
+   "status": "not-applicable",
+   "subject": "docs(contributing): fix stale text (#2835)"
+  },
+  "10d380270030ed34206b031da7092e9862cdac1a": {
+   "date": "2026-09-28",
+   "status": "not-applicable",
+   "subject": "docs(review): explain the quick default and when thorough review must still run (#2982)"
+  },
+  "116491165d850e9d074554c6271f452363bb607a": {
+   "date": "2026-07-30",
+   "status": "not-applicable",
+   "subject": "docs: move roadmap to end of sidebar (#2654)"
+  },
+  "116d52f5e0326cdc20057defbd900ad4eb47df50": {
+   "date": "2026-07-28",
+   "status": "not-applicable",
+   "subject": "feat: promote quick-dev to the official Phase 4 loop (#2637)"
+  },
+  "116e703d673404332e516df5bb586865d3e53fdb": {
+   "date": "2026-09-11",
+   "status": "not-applicable",
+   "subject": "docs: refresh the README banner, restore its diagram, and fix the favicon (#2854)"
+  },
+  "11bfd36d589efbdbf6cef3eaa0bd442e119fa69a": {
+   "date": "2026-08-26",
+   "status": "not-applicable",
+   "subject": "docs: route the landing page by task (#2776)"
+  },
+  "11f7721a16de2b44f7736276638e8a792fd6e7b3": {
+   "date": "2026-10-02",
+   "status": "structural",
+   "subject": "fix(migration): keep split-story ids, settle duplicate runs, and report references outside the store"
+  },
+  "120823d140e92e0575c4e5a35798f7fcfed3937d": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "feat(release): add version stamper and release runbook for the skills mirror"
+  },
+  "121889775e05ca0b63e566e0047615891f8d9612": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "refactor: rename website/ to docs-site"
+  },
+  "124ea1af2bbc79cc21a37df66e9e05686668f2fe": {
+   "date": "2026-09-10",
+   "status": "conflict",
+   "subject": "feat(build): add auto oneshot route and customizable route selection (#2853)"
+  },
+  "145ca99003159d2efbe3d163dde3c03cfd7f8817": {
+   "date": "2026-08-15",
+   "status": "conflict",
+   "subject": "fix(skills): keep review layers inside their output contract (#2745)"
+  },
+  "1479a58b2d604382541a184cd59105a580f4e48a": {
+   "date": "2026-08-24",
+   "status": "already-present",
+   "subject": "fix: pin UTF-8 stdout in resolve_config (#2693)"
+  },
+  "14bb68f401003921afa6481a9a594b39828cd0f3": {
+   "date": "2026-07-06",
+   "status": "not-applicable",
+   "subject": "perf(dev-auto): make review-layer fan-out atomic (#2565)"
+  },
+  "15f53756444d3f151c0532eed0b528937d394458": {
+   "date": "2026-08-10",
+   "status": "not-applicable",
+   "subject": "docs(project-context): say \"pitfall\" instead of \"pitfall line\" (#2709)"
+  },
+  "1911f8a04209504707ac86fb5e60f251fc28c403": {
+   "date": "2026-08-16",
+   "status": "not-applicable",
+   "subject": "fix(skills): pass the code-review diff to layers by path, not inline (#2749)"
+  },
+  "191219eadb2f89aa9094c732bd0563a2500f5159": {
+   "date": "2026-08-28",
+   "status": "not-applicable",
+   "subject": "docs: add Plan Larger Work chapter (#2790)"
+  },
+  "1a8fea5bd01fc3d0f77884d0ee1249aff021371a": {
+   "date": "2026-07-29",
+   "status": "not-applicable",
+   "subject": "fix(docs): resolve deployed validation findings (#2644)"
+  },
+  "1b59caa7f96459fda6750c225a9330283e108fd6": {
+   "date": "2026-09-22",
+   "status": "structural",
+   "subject": "feat(bmad): module migrations, with the method module's v6 to v7 migration (#2935)"
+  },
+  "1c086ac9873a8b59eb20418e2a003cec02a73605": {
+   "date": "2026-08-21",
+   "status": "not-applicable",
+   "subject": "feat(help): fall back to remote docs for unanswerable questions"
+  },
+  "1c5075627914e1325426daf68e9f007318230580": {
+   "date": "2026-08-18",
+   "status": "conflict",
+   "subject": "feat(bmad): answer help from module manifests"
+  },
+  "1c55fed905a83e5db5119c98100e70238b2f37b0": {
+   "date": "2026-10-17",
+   "status": "structural",
+   "subject": "docs: update requirements before the spine, and let spine review gate epic Requirements"
+  },
+  "1cbcfa272fe65787c06a1fa164a901f46117cca7": {
+   "date": "2026-09-28",
+   "status": "structural",
+   "subject": "feat(bmad): setup cleans up renamed and removed skills; help loads only for help requests (#2981) (#2983)"
+  },
+  "1cd4a7f5c06421727d779cbb3f3b5953b4c7282d": {
+   "date": "2026-07-14",
+   "status": "structural",
+   "subject": "fix(skills): HALT renderers on missing config keys and bad overrides (#2588)"
+  },
+  "1d6b0433edfa7545c7892db13421b0265d7300f2": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "fix(plugins): serve the Codex plugin from the repo root"
+  },
+  "1db98c5b14cc88c8ea8ca91c21a59eed90acd230": {
+   "date": "2026-08-21",
+   "status": "not-applicable",
+   "subject": "docs(release): point step 7 at the release script itself, not the removed README section"
+  },
+  "1e487b876c1b882ce8a5b23844f7086a79b100df": {
+   "date": "2026-08-14",
+   "status": "not-applicable",
+   "subject": "fix(build): replace scope menu letter codes (#2738)"
+  },
+  "1f29bd3d0a409e2e11b4d3ffb016ebf29f628e56": {
+   "date": "2026-07-05",
+   "status": "not-applicable",
+   "subject": "fix(review): harden finding triage independence (#2555)"
+  },
+  "1f2d879319c35481e68414e60fc12f93fd01573e": {
+   "date": "2026-10-31",
+   "status": "structural",
+   "subject": "fix(setup): keep _bmad/render/ out of git (#3150)"
+  },
+  "20a9854d134f465746b4c9a322c70cdac82b91cf": {
+   "date": "2026-08-20",
+   "status": "conflict",
+   "subject": "style(skills): finish the dot-slash reference sweep"
+  },
+  "22c76e8ba21fe566afae4c87fb95b91c176826b3": {
+   "date": "2026-08-26",
+   "status": "not-applicable",
+   "subject": "docs: add Start documentation section (#2777)"
+  },
+  "2357a50322758bd8cb02f60fb02e507113aca891": {
+   "date": "2026-09-06",
+   "status": "not-applicable",
+   "subject": "feat(docs-site): validate redirects against the built site (#2840)"
+  },
+  "23f134e2e57ed27b4b9d747ebf8fa776ac270f3a": {
+   "date": "2026-09-12",
+   "status": "conflict",
+   "subject": "feat(review): add the review lever and lens sets to build-auto and code-review (#2861)"
+  },
+  "243a4b2ff6400c066eeed442b2b39f08590cb6b8": {
+   "date": "2026-07-06",
+   "status": "not-applicable",
+   "subject": "feat(dev-auto): detect intent-alignment gaps in planning and review (#2560)"
+  },
+  "2498195af0faec18bb7920fd01fd59e7c69c3156": {
+   "date": "2026-09-03",
+   "status": "not-applicable",
+   "subject": "docs(changelog): add v6.12.0 entry and sync marketplace.json (#2824)"
+  },
+  "2522f6ac5d4fb5015b8192b7dfaa23f12af09a4b": {
+   "date": "2026-10-13",
+   "status": "structural",
+   "subject": "refactor(skills): cut Sofia's prose to what changes what the model does"
+  },
+  "2553fb6e09b71d6724e7494a680aea3e6f607f80": {
+   "date": "2026-08-19",
+   "status": "structural",
+   "subject": "refactor(skills): drop user name, language, and skill-level config"
+  },
+  "265e7d216ccb96dbe2213847804f6a3076b51ff5": {
+   "date": "2026-10-11",
+   "status": "structural",
+   "subject": "fix(toolsmith): restore the two-part skill description; agents carry their capabilities' phrases (#3077)"
+  },
+  "26695850a4090bc623de2f5a4ea14a30f5c7e4ce": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "fix(release): fail the stamp when a skill directory lacks its manifest"
+  },
+  "268dc28eb2dd034745ab2d4a23bf02074b20df27": {
+   "date": "2026-08-16",
+   "status": "not-applicable",
+   "subject": "feat(bmad-code-review): add claims falsification pass to edge case hunter (#2748)"
+  },
+  "2894d3691732fcec294eafb12ca41bad73571b57": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "chore: drop dead installer registry and unused npm tooling"
+  },
+  "29372f44bf9b93bcfcdacb255b8e4cc455b766ce": {
+   "date": "2026-09-23",
+   "status": "conflict",
+   "subject": "Remove the project_knowledge config key across skills and tooling"
+  },
+  "2bf1ac835ce334db22b596ed8e37f6f4da7e8492": {
+   "date": "2026-09-26",
+   "status": "structural",
+   "subject": "fix(ticketing): leave existing labels alone in GitHub store setup (#2960)"
+  },
+  "2c10d5ba45ab63e2bdf72bf855f3b3f95d12a5e3": {
+   "date": "2026-09-12",
+   "status": "structural",
+   "subject": "feat(build): add the route lever and route reporting (#2860)"
+  },
+  "2c6124f6251ab7ba8d9d6c9a3f66cd31ca0c617d": {
+   "date": "2026-11-02",
+   "status": "not-applicable",
+   "subject": "test: skip unreadable-file READ-ERR test when run as root (#3138)"
+  },
+  "2c91d65660d381973985ef51c6597ddafc387f09": {
+   "date": "2026-08-13",
+   "status": "not-applicable",
+   "subject": "fix(build): gate one-shot patches on evidence, widen defer (#2697)"
+  },
+  "2f6e46edbeb83550650071130c3b8006bb76bc37": {
+   "date": "2026-09-05",
+   "status": "not-applicable",
+   "subject": "refactor(docs-site): move the doc tooling out of tools/ (#2831)"
+  },
+  "2f8b437ea297546cc17e9a65e7ee2d1ad9333667": {
+   "date": "2026-08-03",
+   "status": "structural",
+   "subject": "docs(review): remove the adversarial-review explanation page (#2679)"
+  },
+  "2fb99ed7fc0cccb100435486a85bb7c67bab8af6": {
+   "date": "2026-10-06",
+   "status": "structural",
+   "subject": "refactor(skills): cut boilerplate and dead conventions from rendered workflows (#3061)"
+  },
+  "2fe54695d2619b666eb8a32a6cceeec209f66bf3": {
+   "date": "2026-10-03",
+   "status": "structural",
+   "subject": "fix(ticket): refuse a duplicate tracker_id and cut the risk, criteria, and done-when rules to one line each"
+  },
+  "3018779d53d68f1f98407fc696e1a94c276dba9d": {
+   "date": "2026-08-19",
+   "status": "not-applicable",
+   "subject": "chore: drop installer entry point and its dependencies"
+  },
+  "30cec3a7f9924fa15ab8100dabc4e86c931f93b1": {
+   "date": "2026-08-22",
+   "status": "conflict",
+   "subject": "refactor(skills): resolve config through the script, not bmm/config.yaml"
+  },
+  "3208f492d43165bcabc1c68d814766e43adb5dec": {
+   "date": "2026-10-12",
+   "status": "structural",
+   "subject": "fix(code-review): keep change-caused findings out of defer when no plan or no human (#3080)"
+  },
+  "32531126aade02f94d64687c39621e1ef2e94c70": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "chore(ci): drop the stale test:install step and its README entries"
+  },
+  "328d286d3581e00887db7fecd575c7551da36569": {
+   "date": "2026-08-09",
+   "status": "not-applicable",
+   "subject": "docs(bmm): restrict bmad-project-context routing to invocation by name (#2702)"
+  },
+  "329a9b2ba5ac1973ac82626e85f827d25b493115": {
+   "date": "2026-09-20",
+   "status": "structural",
+   "subject": "feat(core): read agents and party rooms from skill rosters (#2914)"
+  },
+  "33bdfb51324d4623ec7eaf043d709c1887ee435f": {
+   "date": "2026-09-03",
+   "status": "structural",
+   "subject": "feat(build): shorten completion handoff (#2822)"
+  },
+  "33d45c20ff8e01182a1ce8a3265a76c0a6c3ce99": {
+   "date": "2026-10-05",
+   "status": "not-applicable",
+   "subject": "docs(tools): document the post-checkout hook for dogfood.py (#3045)"
+  },
+  "3433612d2e49837d7612726ef7d10c2570076628": {
+   "date": "2026-08-28",
+   "status": "not-applicable",
+   "subject": "feat(skills): unify keep-or-dismiss and severity into one five-way triage verdict (#2758)"
+  },
+  "35d39c3e5d1dbf03b560f2d2005b3e53bdc8e3b7": {
+   "date": "2026-09-20",
+   "status": "structural",
+   "subject": "feat!: replace per-skill module metadata with bmod module records (#2916)"
+  },
+  "3645beac76f0f5021846717cfcaa5d6c54a696c5": {
+   "date": "2026-10-17",
+   "status": "structural",
+   "subject": "fix(skills): check memlogs before a fold writes, and match a moved leaf's parent line by its form"
+  },
+  "38156784da508a7590cf43a6ade4a80b286f88ef": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "docs(release): note the raw.githubusercontent CDN delay after a release"
+  },
+  "389b30cafb015de8479825ff205506204ef5b565": {
+   "date": "2026-10-11",
+   "status": "structural",
+   "subject": "refactor(skills): drop the no-greeting instruction from Sofia and the rendered agent shape"
+  },
+  "3a67c86f1195daf0b1337bc6bb82beb0db3344e2": {
+   "date": "2026-10-11",
+   "status": "structural",
+   "subject": "feat(skills): add Sofia, the Product Owner agent, in place of bmad-spec, bmad-ticket and bmad-correct-course"
+  },
+  "3aa110dfd345a0ca53fc87808e3a00f2c31e32b9": {
+   "date": "2026-08-30",
+   "status": "conflict",
+   "subject": "fix(customization): resolve the project root from the working directory (#2802)"
+  },
+  "3b317308ac7ff47eb48bdc2433e110f1438dd309": {
+   "date": "2026-10-09",
+   "status": "structural",
+   "subject": "v7 migration rework and v6 _bmad cleanup (#3033)"
+  },
+  "3b64cf6fad5dfe97f4f2dd964eeb880a00be7b9a": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "chore(test): colocate skill-validator fixtures with the Python tests"
+  },
+  "3baa7c64fef471b2c4e0ac2b6d5de9d1eb017ef2": {
+   "date": "2026-08-22",
+   "status": "conflict",
+   "subject": "fix(dist): point knowledge at references/help.md, the file that exists"
+  },
+  "3bc2271260e41da68c9ff3c3e63d98e6723017b5": {
+   "date": "2026-08-30",
+   "status": "not-applicable",
+   "subject": "docs: add Customize and Extend chapter (#2797)"
+  },
+  "3c12a07852d98c5471bf850afcbbde2eb0998b80": {
+   "date": "2026-08-19",
+   "status": "not-applicable",
+   "subject": "chore: drop the npm publish workflow and dead dependencies"
+  },
+  "3cf69d81b718385192fa6053c90a0732bc05580c": {
+   "date": "2026-08-01",
+   "status": "not-applicable",
+   "subject": "fix(bmm): colocate Build story specs (#2666)"
+  },
+  "3d91fddc85e53f0e7cca7f8e7a2fc262edd605c5": {
+   "date": "2026-09-05",
+   "status": "not-applicable",
+   "subject": "chore: remove .vscode/settings.json and ignore the directory (#2837)"
+  },
+  "3df9a1575188ded6c501ed544fe6805db9086835": {
+   "date": "2026-09-05",
+   "status": "not-applicable",
+   "subject": "docs: document skills and plugin install routes in README"
+  },
+  "3f0c83f1d95ab61999315c8abfb779ca81159d34": {
+   "date": "2026-08-21",
+   "status": "not-applicable",
+   "subject": "chore(dist): move the bmad hub skill to the toolbox module"
+  },
+  "3fd6929e54e65169d6a435b3d2c1578595461dfe": {
+   "date": "2026-08-15",
+   "status": "conflict",
+   "subject": "fix(skills): launch every review layer before handling any result (#2747)"
+  },
+  "3fe8a20094c25c6a5e4a7df846cdaa8c23552c53": {
+   "date": "2026-08-15",
+   "status": "conflict",
+   "subject": "feat(help): ship starter toml and fill user config from a file"
+  },
+  "401814f2deba6a35039c689ad109b18399dbb72d": {
+   "date": "2026-08-12",
+   "status": "not-applicable",
+   "subject": "fix(installer): stop copying __pycache__ into IDE skill trees (#2695)"
+  },
+  "40c4572a31e6d711a15c828ed34a188746054b5b": {
+   "date": "2026-09-05",
+   "status": "structural",
+   "subject": "build: declare the Python toolchain in pyproject.toml (#2830)"
+  },
+  "413ef0317a850ad2e4e79958245c99a620ede4aa": {
+   "date": "2026-09-15",
+   "status": "not-applicable",
+   "subject": "chore(docs-site): upgrade dependencies (#2878)"
+  },
+  "417814431d0e2b4309f3883e1618a27b67aceb36": {
+   "date": "2026-07-29",
+   "status": "already-present",
+   "subject": "fix(review): preserve deterministic test-only coverage (#2647)"
+  },
+  "41faf4f1da72d6759dfa5df4a28b96d5e5b2f5cf": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "chore: remove unused SVG visual-diff helper"
+  },
+  "42189fe1176b2a90ef1e4b2b835fedb28fc1556f": {
+   "date": "2026-08-22",
+   "status": "not-applicable",
+   "subject": "fix(release): reject build metadata in the version stamper"
+  },
+  "423690c3d7a334c9b3060609b18ca17a3cc2e3c0": {
+   "date": "2026-10-31",
+   "status": "structural",
+   "subject": "docs: describe v7 module install and the three-file config model (#3156)"
+  },
+  "42de7ff102b1c56900e9eb9262df6590764f5d22": {
+   "date": "2026-09-10",
+   "status": "not-applicable",
+   "subject": "fix(docs-site): act on the review findings from #2850 (#2851)"
+  },
+  "430501edb946826ab15dad14b920bc54326aae8a": {
+   "date": "2026-08-19",
+   "status": "conflict",
+   "subject": "feat(setup): leave classic-installer files alone and report them in doctor"
+  },
+  "43b54b8067a82141b070b9f2084c92aff8776db3": {
+   "date": "2026-07-28",
+   "status": "structural",
+   "subject": "fix(review): dispatch reviewers by prompt file (#2642)"
+  },
+  "4477585ee1f021722418771fef9b7d31ed94687b": {
+   "date": "2026-08-22",
+   "status": "conflict",
+   "subject": "fix(setup): stop rejecting a module's own knowledge value"
+  },
+  "44e0f806e15f3e6ade71a97e476833087522c1d6": {
+   "date": "2026-08-30",
+   "status": "clean",
+   "subject": "feat(review): add handle-lifetime and call-declaration checks to edge-case hunter (#2801)"
+  },
+  "47bab7d15cf8a9146d43dda0a6f35cda263577db": {
+   "date": "2026-08-08",
+   "status": "already-present",
+   "subject": "refactor(project-context): conversational skill, no script, AGENTS.md block (#2698)"
+  },
+  "485798f6c6f1c665d8618c326fd5aa54ce2fff25": {
+   "date": "2026-08-12",
+   "status": "not-applicable",
+   "subject": "fix(build): gate implicit routing on delegated outcomes (#2714)"
+  },
+  "489416b6580ef4dd2683be27e673d363f4d19416": {
+   "date": "2026-09-05",
+   "status": "not-applicable",
+   "subject": "chore(issues): update the version hint in the bug report template (#2836)"
+  },
+  "48ea66901432090750f1d610eb022350d6fe733c": {
+   "date": "2026-07-05",
+   "status": "not-applicable",
+   "subject": "chore(dev-auto): restore 'isolate' framing for plan-step exploration (#2557)"
+  },
+  "48f0ce37e1fc378d6255c90e1b155f2212a6fe33": {
+   "date": "2026-10-11",
+   "status": "structural",
+   "subject": "feat(toolsmith): serve [agent] in render_skill.py and add the rendered agent shape"
+  },
+  "49069b8b5276afd21402bc3b978b69ad78a7d2ef": {
+   "date": "2026-07-07",
+   "status": "structural",
+   "subject": "feat(quick-dev): render templates via stdlib Python at skill entry (#2281)"
+  },
+  "495ef6e0996d07b23359cc4d6c73a1aa2f3ba5ad": {
+   "date": "2026-10-15",
+   "status": "structural",
+   "subject": "docs(help): route by the state of the spec and talk to Sofia the Product Owner"
+  },
+  "499008ea97c53436e7c7fa598a4a25e7bb869e07": {
+   "date": "2026-10-31",
+   "status": "structural",
+   "subject": "feat(skills)!: rebuild advanced elicitation to start in one command with independent readers (#3162)"
+  },
+  "49c608f78224d2e442cccc0b615bf8ba811fcbbf": {
+   "date": "2026-08-02",
+   "status": "not-applicable",
+   "subject": "chore(build-auto): remove final_revision from the contract (#2668)"
+  },
+  "49fd27e452021a0e64cccab3c76110c1d1777ce1": {
+   "date": "2026-10-17",
+   "status": "structural",
+   "subject": "feat(skills): Sofia keeps tickets in a tickets folder, refines epics, and plans parent initiatives"
+  },
+  "4a0dbc336af9b3ec289db566aa7bfd7d137e3705": {
+   "date": "2026-10-01",
+   "status": "not-applicable",
+   "subject": "chore: remove web bundles"
+  },
+  "4d38f248bf1737fcb295c31941915ae5c182ef8b": {
+   "date": "2026-09-25",
+   "status": "conflict",
+   "subject": "Resolve {project-root} by walking up to the nearest _bmad/ (#2966)"
+  },
+  "4d562582c77eea5c7a57508161738c8f5e6dfa22": {
+   "date": "2026-08-19",
+   "status": "not-applicable",
+   "subject": "test(setup): cover doctor repair of a symlinked legacy scripts dir"
+  },
+  "4d8dec79b9ccc1601e9f49130ddcc83b96851480": {
+   "date": "2026-08-27",
+   "status": "not-applicable",
+   "subject": "docs: clarify BMad development paths (#2669)"
+  },
+  "4efb4c159d1ac8420443cd0c2c5a3b2d268791ff": {
+   "date": "2026-08-22",
+   "status": "not-applicable",
+   "subject": "feat(help): route from each module's own knowledge pointer"
+  },
+  "4f95bf7da514583a8d8a739ef2f5da04403628cc": {
+   "date": "2026-09-25",
+   "status": "conflict",
+   "subject": "fix(code-review): take verbatim_intent from the spec, never from the review request"
+  },
+  "4fc185c598dd594f37391e73839aba4a30033c07": {
+   "date": "2026-09-01",
+   "status": "not-applicable",
+   "subject": "feat(review): verification-gap findings self-triage at the layer (#2814)"
+  },
+  "4feb057634a9c0648f7bc68ea3c5793fd09e7f7b": {
+   "date": "2026-10-17",
+   "status": "not-applicable",
+   "subject": "fix(docs-site): update sharp and postcss-selector-parser for two Dependabot advisories (#3104)"
+  },
+  "50b3238abb598c8f00725536c8dd2463c87307db": {
+   "date": "2026-07-03",
+   "status": "clean",
+   "subject": "feat(review): add verification-gap reviewer as a third review layer (#2535)"
+  },
+  "50d93e04a7e09862958ec73112e777b34a24f6fd": {
+   "date": "2026-09-28",
+   "status": "not-applicable",
+   "subject": "docs(review): explain no-plan mode and tell PR review bots to pass the intent (#2984)"
+  },
+  "5247108ba3f45b2e9731fa41919029b3d2623023": {
+   "date": "2026-08-03",
+   "status": "not-applicable",
+   "subject": "fix(installer): plain-text directory prompt, retire WDS, position on AiDD (#2680)"
+  },
+  "52e4c634cea54eaee0938a5eac3a7f9689d0b54e": {
+   "date": "2026-07-06",
+   "status": "conflict",
+   "subject": "feat: add stories.yaml contract between bmad-spec and bmad-dev-auto (#2549)"
+  },
+  "5326e16cd81eafb4247c2e95747143e763af4e91": {
+   "date": "2026-08-18",
+   "status": "conflict",
+   "subject": "feat(packaging): fan out stamped module manifests"
+  },
+  "5349ac0823191be9f85db30c247ed03f466b9afe": {
+   "date": "2026-08-19",
+   "status": "not-applicable",
+   "subject": "fix(publish): preserve SECURITY.md in the artifact repo"
+  },
+  "53bf53a43b7d4560fabf091a22c27053473219ed": {
+   "date": "2026-09-25",
+   "status": "conflict",
+   "subject": "refactor(code-review): state temp-file requirement as outside the repository"
+  },
+  "54bc352f89f1ec7ec34d380c6c07649d68c8f21d": {
+   "date": "2026-09-05",
+   "status": "not-applicable",
+   "subject": "docs: direct contributions to dev and V6.12"
+  },
+  "561eeedf386bc7cb164c577c423dc4484056a759": {
+   "date": "2026-09-26",
+   "status": "structural",
+   "subject": "feat(skills): retire planning and implementation artifact folders for the initiative store (#2968)"
+  },
+  "568365e7ff68765a5fffc479e1ec32988f3ddca5": {
+   "date": "2026-08-16",
+   "status": "conflict",
+   "subject": "chore: default persistent_facts to an empty array (#2750)"
+  },
+  "56a081fcaa2b8de60b750c5a8e8ff3ae07ff5400": {
+   "date": "2026-07-06",
+   "status": "not-applicable",
+   "subject": "feat(dev-auto): make the implementation handoff deterministic (#2561)"
+  },
+  "57ad793167f37b33e51dbecbd27be781b65be1d4": {
+   "date": "2026-08-01",
+   "status": "structural",
+   "subject": "refactor(bmm): reorganize skills into agents / plan / ship; retire tech-writer agent (#2658)"
+  },
+  "57e70562e3776b47bce1a54710f1edb1f0bd3618": {
+   "date": "2026-08-02",
+   "status": "clean",
+   "subject": "feat: bmad-project-context skill \u2014 verified kernel + bundle context system (#2674)"
+  },
+  "5900982ba08ea2018dd19695e18178923c2ed882": {
+   "date": "2026-08-29",
+   "status": "not-applicable",
+   "subject": "feat: add Polytoken installer support (#2575)"
+  },
+  "5ab1e716b3f734b3f4a2ddeee85757b36c88a460": {
+   "date": "2026-09-07",
+   "status": "structural",
+   "subject": "refactor(walkthrough): run through the skill renderer (#2843)"
+  },
+  "5b05098b9f2e9aebef3bf4288033dc1aa12b7ee5": {
+   "date": "2026-09-29",
+   "status": "structural",
+   "subject": "fix(ticket): resolve the reported ticketing issues (#2986)"
+  },
+  "5c9a1c2a228914b2684447db972cb5588a11341f": {
+   "date": "2026-07-19",
+   "status": "not-applicable",
+   "subject": "fix(bmm): suppress epic/story comments and AI slop in generated code (#2544)"
+  },
+  "5e33d3c03ba53187a40ab679d5479cdd4b6ac2fb": {
+   "date": "2026-09-25",
+   "status": "structural",
+   "subject": "feat(ticketing): build from the ticket tree without ticket files (#2944)"
+  },
+  "5f3ebc91ed5d0a96ef48d4d33080b3c198c13370": {
+   "date": "2026-07-07",
+   "status": "not-applicable",
+   "subject": "feat: add Antigravity CLI (AGY) as supported installer platform (#2551)"
+  },
+  "60cf97fdf232cd8f4987fc5fd39f8698a1eb131c": {
+   "date": "2026-10-17",
+   "status": "structural",
+   "subject": "fix(skills): address review findings in code review and migrations"
+  },
+  "61e01f82644c4bb533750cfa0d6d61ab61d2cc9b": {
+   "date": "2026-10-18",
+   "status": "conflict",
+   "subject": "fix(skills): verification-gap lens files only gaps with a named regression, drops defer, and reports stale tests (#3106)"
+  },
+  "6245e34db45f6dd5367845677eb7539fda762141": {
+   "date": "2026-08-01",
+   "status": "structural",
+   "subject": "feat: unify build skills on shared renderer (#2657)"
+  },
+  "632b55f4fdb288a049b28c6a6ebbf836b7540e13": {
+   "date": "2026-08-20",
+   "status": "structural",
+   "subject": "chore(test): rewrite snapshot renderer tests in Python"
+  },
+  "636f8e277d64ca78c421d5063ce0a378aa925c55": {
+   "date": "2026-08-19",
+   "status": "conflict",
+   "subject": "refactor!: remove the publish script and the v6 shim skills"
+  },
+  "63a9b6ede95a7414ae14618c72deed47c616457f": {
+   "date": "2026-08-19",
+   "status": "not-applicable",
+   "subject": "feat(build): route an uninitialized project to bmad setup"
+  },
+  "64157d394ce1b5dd882637450a48515d0634a6b9": {
+   "date": "2026-07-14",
+   "status": "structural",
+   "subject": "feat(dev-auto): render templates via stdlib Python at skill entry (#2587)"
+  },
+  "6473d8bbcabe8a3f5b9dd374d681cb0e3e4cc2cf": {
+   "date": "2026-09-19",
+   "status": "structural",
+   "subject": "Carry module knowledge in the skills that need it (#2912)"
+  },
+  "6578db70ed050a612d79755a655650a55999680a": {
+   "date": "2026-09-29",
+   "status": "structural",
+   "subject": "fix(skills): resolve Codex audit leftovers from #2915 (#2988)"
+  },
+  "67d876f1c317a82123e429d0c078ff3c601a99a8": {
+   "date": "2026-08-19",
+   "status": "not-applicable",
+   "subject": "fix(build): remove Ask First / Block If from spec-template (#2761)"
+  },
+  "68ae63d74670d560c33822808ba3b2314c796ea3": {
+   "date": "2026-10-19",
+   "status": "conflict",
+   "subject": "fix(skills): say what bmad-build-auto does in its description (#3119)"
+  },
+  "68ea5b8e17485c6566608ed291480382838c77dd": {
+   "date": "2026-09-01",
+   "status": "not-applicable",
+   "subject": "refactor(tools): port the deterministic skill validator to Python (#2810)"
+  },
+  "690799d0a3007ea2c024437051da8cde6393e098": {
+   "date": "2026-08-15",
+   "status": "conflict",
+   "subject": "refactor(help): move setup.py into dest scripts"
+  },
+  "696cef517240a1b2c5d41fb33e15809647246908": {
+   "date": "2026-09-11",
+   "status": "not-applicable",
+   "subject": "docs(diagrams): let the delivery loop's two slogans carry the accent (#2859)"
+  },
+  "6a098b6e6e85519eae23bb0c86e13857c925b723": {
+   "date": "2026-08-20",
+   "status": "structural",
+   "subject": "chore: drop unused Augment review config and stale docs prompts"
+  },
+  "6a0a068eebb18b24e1dde3d27651883b87232bf1": {
+   "date": "2026-10-05",
+   "status": "structural",
+   "subject": "feat(toolsmith): Toolsmith module replaces BMad Builder (#3038)"
+  },
+  "6b83751711d34027fe2d0b8d67f6fcde135acb11": {
+   "date": "2026-08-28",
+   "status": "conflict",
+   "subject": "chore(docs): drop llms.txt generation and site banners (#2785)"
+  },
+  "6c36990123ee46012e5adb877d84adef80d8655b": {
+   "date": "2026-07-31",
+   "status": "not-applicable",
+   "subject": "docs: refocus getting started tutorials on activation (#2653)"
+  },
+  "6cc7317588f8004e5d2125e786d53fffb1fb04b4": {
+   "date": "2026-08-19",
+   "status": "not-applicable",
+   "subject": "fix(installer): never ship the bmad skill or module manifests"
+  },
+  "6cd3b646dd3599ed62312e20e6d3e7573da6c859": {
+   "date": "2026-08-01",
+   "status": "not-applicable",
+   "subject": "fix(review): stop verification-gap from demanding source-text tests (#2662)"
+  },
+  "6d3be2feb92bb6cebc350530176f8de15fe1370d": {
+   "date": "2026-09-12",
+   "status": "structural",
+   "subject": "fix(renderer): halt on persistent override keys the skill does not declare (#2862)"
+  },
+  "6de2a2515ec3bda4e89aee0896cac8a312325308": {
+   "date": "2026-08-29",
+   "status": "not-applicable",
+   "subject": "fix(validate-refs): flag single-separator Windows path leaks (#2794)"
+  },
+  "6f2b00786e5484cd18d91c6d3c8e6977a621dfde": {
+   "date": "2026-09-28",
+   "status": "structural",
+   "subject": "feat(build): default bmad-build and bmad-build-auto to quick review (#2975)"
+  },
+  "717479bc3f50f38119fd958b9e577a8bde2e0184": {
+   "date": "2026-07-15",
+   "status": "structural",
+   "subject": "fix(dev-auto): temporarily revert skill-entry renderer (#2598)"
+  },
+  "7376a4a0da04a4720f36e1eefc5e9e2dbee23f14": {
+   "date": "2026-07-27",
+   "status": "not-applicable",
+   "subject": "refactor(quick-dev,dev-auto): minimal handoff, drop Code Map nudge (#2635)"
+  },
+  "73ebd91fd18717ff34a86728c38ae44c2aefbfdb": {
+   "date": "2026-08-20",
+   "status": "ported",
+   "subject": "perf(test): parallel, quiet, cache-free Python test runs"
+  },
+  "744d08ddac1c7409e32742629c709a2eaea7e159": {
+   "date": "2026-08-11",
+   "status": "conflict",
+   "subject": "chore(skills): rewrite skill descriptions in plain language (#2701)"
+  },
+  "75c29b8c4f5caa7a0ca5f0e4085918a21026bc35": {
+   "date": "2026-07-05",
+   "status": "not-applicable",
+   "subject": "feat(dev-auto,quick-dev): audit matrix test coverage in step-03 (#2554)"
+  },
+  "763b6f4e8acef2744ee9bb00ed4c656ff3e86d80": {
+   "date": "2026-09-29",
+   "status": "conflict",
+   "subject": "fix(memlog): append without rewriting the log so concurrent appends all land (#2993)"
+  },
+  "7687d077f8457bb34a23a6bfa2cc797c0f23b16f": {
+   "date": "2026-11-04",
+   "status": "structural",
+   "subject": "feat: add bmad-facilitate and move John's planning documents onto it (#3172)"
+  },
+  "770d4259853b9600680745bb2c710bee82604cb4": {
+   "date": "2026-08-02",
+   "status": "not-applicable",
+   "subject": "fix(installer): apply --set core overrides before config collection (#2671)"
+  },
+  "7807036e2939c6c84bb11101877d2518c8b49e7f": {
+   "date": "2026-09-05",
+   "status": "conflict",
+   "subject": "fix(dist): point skill update sources at BMAD-METHOD"
+  },
+  "78ffe4031fbf30c89320c8f3af2530b6adf03a75": {
+   "date": "2026-09-06",
+   "status": "not-applicable",
+   "subject": "docs(customize): match the TEA catalog entry to Test Completed Work (#2839)"
+  },
+  "7b5cf7d4f030abddda987f3d92ab5d725e46272b": {
+   "date": "2026-09-24",
+   "status": "structural",
+   "subject": "fix(render): ignore stray files in a generation, name missing ones in the halt"
+  },
+  "7c3e58279bb0594024624e53941286c002b75609": {
+   "date": "2026-09-01",
+   "status": "not-applicable",
+   "subject": "feat(skills): carry forward triage verdicts on re-review (#2812)"
+  },
+  "7cc58806171773b3012533253ab6acc149062942": {
+   "date": "2026-10-17",
+   "status": "structural",
+   "subject": "feat(skills): render_skill.py prints the rendered workflow instead of its path"
+  },
+  "7cd7810a25cfd8dcb207df04c2861bd4e2b15791": {
+   "date": "2026-09-05",
+   "status": "not-applicable",
+   "subject": "ci: validate pushes to dev"
+  },
+  "7ce1d285a73c796048fe80cbb780d6a32925b316": {
+   "date": "2026-08-14",
+   "status": "conflict",
+   "subject": "feat(help): add first-run bmad-help setup"
+  },
+  "7dfd2c15569a40b99c7c8afcca59a8b4e6ef04a9": {
+   "date": "2026-08-18",
+   "status": "conflict",
+   "subject": "fix(setup): copy shared scripts instead of symlinking"
+  },
+  "7e571784ed5908985860fb7e50f52db93cf43da8": {
+   "date": "2026-08-27",
+   "status": "not-applicable",
+   "subject": "feat(build): route after design, not before investigation (#2762)"
+  },
+  "80a963107d2d039705f7d131adfa2468192a170a": {
+   "date": "2026-08-19",
+   "status": "conflict",
+   "subject": "revert(help): restore bmad-help SKILL.md to main"
+  },
+  "81420751241c57a741bdec04f1cedd663d2c19ca": {
+   "date": "2026-10-01",
+   "status": "conflict",
+   "subject": "fix(setup): keep the scripts folder of a module that declares no scripts"
+  },
+  "825099b2cb74e55debf02b3f69d6f239d8d0a888": {
+   "date": "2026-08-15",
+   "status": "not-applicable",
+   "subject": "fix(installer): ask about deprecated shims during Quick Update, and report the outcome (#2746)"
+  },
+  "826734f41e9cc4e2576cc8c524d1c97a750ecb1d": {
+   "date": "2026-09-29",
+   "status": "structural",
+   "subject": "feat(bmad): modules carry messages that bmad shows before and after an install or update (#2992)"
+  },
+  "82e8d4d57574489143749607a117acb6848c54e4": {
+   "date": "2026-09-29",
+   "status": "structural",
+   "subject": "fix(migration): v6 \u2192 v7 link and naming fixes, clearer questions, shorter guide (#2989)"
+  },
+  "83ad2caed62267df8bdd113a641a5efc979b58fd": {
+   "date": "2026-10-17",
+   "status": "structural",
+   "subject": "fix(setup): v6 spec fold keeps wrapped lines, fixes moved companions' links, and changes nothing on an unreadable file"
+  },
+  "83f81c81207b42d1ac2a23ba1b324b4254af76f3": {
+   "date": "2026-07-27",
+   "status": "not-applicable",
+   "subject": "feat(quick-dev): nail down implementation handoff to keep dispatch thin (#2629)"
+  },
+  "8410e409bb7d03cd818f443779746eda5a21b831": {
+   "date": "2026-09-07",
+   "status": "conflict",
+   "subject": "fix(walkthrough): make code references clickable in any host (#2847)"
+  },
+  "84d5b4bb62e823fcc763dd392b2b760fbc3f2697": {
+   "date": "2026-08-14",
+   "status": "not-applicable",
+   "subject": "fix(project-context): preserve intent when rewriting rules (#2733)"
+  },
+  "84def5a7d38401c7f4aadeff4d3e213d5208d88f": {
+   "date": "2026-08-19",
+   "status": "structural",
+   "subject": "refactor(skills): flatten sources into a root skills/ tree"
+  },
+  "85d968fc8fda323d026ada9117b0af4f9f7e6c77": {
+   "date": "2026-09-01",
+   "status": "not-applicable",
+   "subject": "fix(build-auto): a follow-up pass recommends another only for a patched high (#2811)"
+  },
+  "8612d316ea789db568c9f2be0575d71ffa44708e": {
+   "date": "2026-09-05",
+   "status": "not-applicable",
+   "subject": "fix(release): promote dev to main with fast-forward pushes"
+  },
+  "867c546e625c4d1f0cfdd290a79dcc035a994586": {
+   "date": "2026-10-27",
+   "status": "conflict",
+   "subject": "fix(skills): escape apostrophe in bmad-retrospective description (#3108)"
+  },
+  "86beb06547dd28059a7ddba0b027fb449d88eedb": {
+   "date": "2026-08-17",
+   "status": "not-applicable",
+   "subject": "docs: restore the ladder shape of the closing poem (#2757)"
+  },
+  "87d3407873153155e0064be5c4288f90823f7da1": {
+   "date": "2026-09-09",
+   "status": "not-applicable",
+   "subject": "feat(docs-site): align the docs with the bmadcode design system, and move diagrams to themed SVG (#2850)"
+  },
+  "88a514738f9c54ec977939ba354fac23f9b2609a": {
+   "date": "2026-10-02",
+   "status": "structural",
+   "subject": "feat(ticket): settle risk in the build plan, cut customize.toml to settings, and drop estimation"
+  },
+  "88bbc964d0dfb4bd479ae904547688c6c3b5b00c": {
+   "date": "2026-09-24",
+   "status": "conflict",
+   "subject": "fix(code-review): restore merge-base branch diff and PR-failure ask in gather-context"
+  },
+  "890fcda760bade4d6080f5fa09aa8f658bc4a4a5": {
+   "date": "2026-08-10",
+   "status": "not-applicable",
+   "subject": "docs(project-context): update stale \"pitfall line\" wording to \"pitfall\" (#2710)"
+  },
+  "891c0abbc1128f318e098a566f925155022aef12": {
+   "date": "2026-09-02",
+   "status": "not-applicable",
+   "subject": "fix(skills): narrow bmad-build maintenance trigger (#2820)"
+  },
+  "8995854689919a31dd3e39c08ec10784d71f2efd": {
+   "date": "2026-08-15",
+   "status": "conflict",
+   "subject": "feat(help): make second setup repair and fill keys"
+  },
+  "8ab1648f056361ef37c7c09613c0c40964a6c451": {
+   "date": "2026-08-13",
+   "status": "not-applicable",
+   "subject": "fix(build,code-review): forbid detached review subagent dispatch (#2730)"
+  },
+  "8b4da79161f14f31cdab96ab4ec1d3f4cb42583d": {
+   "date": "2026-07-19",
+   "status": "conflict",
+   "subject": "refactor(core): group v6 shims and merge editorial review into bmad-review as lenses (#2608)"
+  },
+  "8c0e91eac875883197c920854aee8988de08d832": {
+   "date": "2026-09-16",
+   "status": "not-applicable",
+   "subject": "fix(docs-site): restore missing lockfile entries (#2882)"
+  },
+  "8cfa5d789bee2b6c11622ef77bab6d2a7e99986d": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "feat(plugins): add Claude and Codex lids over the flat skills tree"
+  },
+  "8d0e519a7c2376c3c7dfe93c0705ef7ef0f9e9aa": {
+   "date": "2026-08-19",
+   "status": "not-applicable",
+   "subject": "docs(bmm): rewrite module manifest as a flow and sizing guide"
+  },
+  "8d8c577596c06b37e5d18b452167a5d65a3b8a28": {
+   "date": "2026-08-20",
+   "status": "already-present",
+   "subject": "chore(skills): delete the deprecated bmad-generate-project-context shim"
+  },
+  "8ea1b7673bbd56c8234aa87344ee6a6626966193": {
+   "date": "2026-07-12",
+   "status": "not-applicable",
+   "subject": "fix(dev-auto): score follow-up review recommendation; route patches to implementer (#2580)"
+  },
+  "8f09e6a610fe5795bb600461fdc30074df8a4f8a": {
+   "date": "2026-08-22",
+   "status": "conflict",
+   "subject": "refactor(skills): stop writing module config.yaml files nobody reads"
+  },
+  "8f0d50e1817fdd8fcf05a20c524218222d13cd8d": {
+   "date": "2026-10-13",
+   "status": "conflict",
+   "subject": "feat(code-review): add a no-code review that hands patch findings to a coding agent (#3078)"
+  },
+  "8f2c13dd0e0073cad84168a679e5c553b2fb30b6": {
+   "date": "2026-10-04",
+   "status": "not-applicable",
+   "subject": "feat(tools): add dogfood.py, move the docs output to docs-site/dist, prune .gitignore (#3035)"
+  },
+  "917694c426b3246c7ae03a2fcea2746044fa1d3d": {
+   "date": "2026-08-21",
+   "status": "not-applicable",
+   "subject": "chore(plugins): drop the obsolete Codex marketplace lid \u2014 Codex ships from bmad-plugins"
+  },
+  "91a7852a2e47407103ed363b3f4d6c9bfa0a7005": {
+   "date": "2026-08-20",
+   "status": "conflict",
+   "subject": "fix(skills): add the version pair to every module manifest"
+  },
+  "922c86d2c521c881049af94bdf62247b5e019ce9": {
+   "date": "2026-08-27",
+   "status": "not-applicable",
+   "subject": "docs: add Build a Change page in plain English (#2780)"
+  },
+  "9347a524e67e39a0aafe1a838a8ef2bb19b6a826": {
+   "date": "2026-08-18",
+   "status": "conflict",
+   "subject": "feat(skills): move npx setup payload to bmad"
+  },
+  "9376e1f9e5b1214c024bb20b81adff5eb447820a": {
+   "date": "2026-08-25",
+   "status": "not-applicable",
+   "subject": "docs: rewrite installation guide (#2775)"
+  },
+  "94b6727b00c8316557828c8a8ff2a48ff60d60cc": {
+   "date": "2026-09-11",
+   "status": "structural",
+   "subject": "refactor(renderer): render skill sources as Jinja2 templates (#2857)"
+  },
+  "94ef73af223c0c91716fd679ed55c012461766c3": {
+   "date": "2026-08-21",
+   "status": "conflict",
+   "subject": "fix(setup): refuse to replace a symlinked _bmad with a clear message"
+  },
+  "9535e0968c0e8e269c2c533a736b7771b12ce329": {
+   "date": "2026-08-21",
+   "status": "not-applicable",
+   "subject": "docs(release): tag each release so force-pushed main keeps history"
+  },
+  "96ebd0320e0986b6317a1e305b426efd73fae6cc": {
+   "date": "2026-11-07",
+   "status": "structural",
+   "subject": "feat(shard-pro): editable shards, safer rebuilds, and split-by-default for long documents (#3177)"
+  },
+  "9794cade902174e1ea47af77e73adf81a6d5b69d": {
+   "date": "2026-08-15",
+   "status": "conflict",
+   "subject": "refactor(help): name shipped config files as templates"
+  },
+  "984b990367ff103fc42feaf4f760cff79c39bfd7": {
+   "date": "2026-08-28",
+   "status": "not-applicable",
+   "subject": "docs: compare generate skills on Test Completed Work (#2788)"
+  },
+  "990e28791adb40c80642172d11b39ce1e76531b6": {
+   "date": "2026-08-19",
+   "status": "not-applicable",
+   "subject": "feat(publish): add prototype script that replaces the artifact repo tree"
+  },
+  "9973c3ffa4daf763683d46e77854177b26806287": {
+   "date": "2026-08-19",
+   "status": "conflict",
+   "subject": "feat(manifests): point update_source at the bmad-skills artifact repo"
+  },
+  "9af8885c91a170ec209572bf2cd7b3de08c05961": {
+   "date": "2026-08-19",
+   "status": "not-applicable",
+   "subject": "docs(bmm): polish manifest wording and wrapping"
+  },
+  "9b4df4872fa1192c36842984500c8bc8d0899cdd": {
+   "date": "2026-08-14",
+   "status": "not-applicable",
+   "subject": "fix(build): expose real spec checkpoint choices (#2737)"
+  },
+  "9b672e1e6b9c2c69e1fbb1f4700089b8a6258003": {
+   "date": "2026-07-29",
+   "status": "structural",
+   "subject": "Allow configuring the Build spec editor handoff (#2652)"
+  },
+  "9b80b04666f2e6aa6bd44f4f01670b25eaec09db": {
+   "date": "2026-08-24",
+   "status": "conflict",
+   "subject": "fix(brainstorming): pin brain.py console streams to UTF-8 (#2578)"
+  },
+  "9cace7171915bf437ce686fdc993cdddc85a8534": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "chore: port the web-bundles release packager to Python"
+  },
+  "9ce3c397c9b238de96f7365da8019f6f66b059da": {
+   "date": "2026-08-10",
+   "status": "not-applicable",
+   "subject": "chore(release): v6.11.0 [skip ci]"
+  },
+  "9d77b2966acc6818127a714b5db05baede950854": {
+   "date": "2026-08-01",
+   "status": "not-applicable",
+   "subject": "feat(bmm): retro spec-folder epics alongside sprint epics (#2665)"
+  },
+  "9ed5f40385c4a70da871b9f54d4bfcc6418f2c36": {
+   "date": "2026-08-17",
+   "status": "not-applicable",
+   "subject": "fix(project-context): normalize invocation trigger (#2754)"
+  },
+  "9f1987169a2e5626e5ccb31bb9cee051fdb3df20": {
+   "date": "2026-10-11",
+   "status": "not-applicable",
+   "subject": "docs: put the stable v6.12 install first and mark the skills route as a preview (#3076)"
+  },
+  "9f8fdd0c1a9100b284655419ff1355bfc7daf272": {
+   "date": "2026-08-10",
+   "status": "not-applicable",
+   "subject": "docs(changelog): add v6.11.0 entry and sync marketplace.json (#2705)"
+  },
+  "a0d04f7e34771b5c4f8103dcb90abbd6baacd326": {
+   "date": "2026-08-30",
+   "status": "not-applicable",
+   "subject": "docs: consolidate Reference and retire the Di\u00e1taxis groups (#2798)"
+  },
+  "a27894e46a2663abfb7bf44d8fcd37d3b6127883": {
+   "date": "2026-10-18",
+   "status": "conflict",
+   "subject": "refactor(code-review): triage by harm of a single occurrence, not frequency (#3105)"
+  },
+  "a2d84a39acae2f0df8e0f4edb3c3e2cf575603ed": {
+   "date": "2026-08-30",
+   "status": "not-applicable",
+   "subject": "docs: give bmad-correct-course a home on Break Work into Stories (#2799)"
+  },
+  "a35e4c30d59a8edd808c834610428714785d5847": {
+   "date": "2026-08-01",
+   "status": "not-applicable",
+   "subject": "refactor(review): sequence verification-gap Step 1 per part (#2663)"
+  },
+  "a3eb85201d2aa040367e20ea2cd4a6fcb9a45a31": {
+   "date": "2026-10-06",
+   "status": "structural",
+   "subject": "feat(skills): rewrite bmad-qa-generate-e2e-tests as a rendered workflow (#3065)"
+  },
+  "a43d47b0c5d4a29cee37506601ab2c57c2dd4a7c": {
+   "date": "2026-10-05",
+   "status": "not-applicable",
+   "subject": "fix(tools): stop dogfood --reset from deleting the repo's skills/ (#3036)"
+  },
+  "a7382aef7649f3afe2c86569117875a92d073334": {
+   "date": "2026-09-05",
+   "status": "not-applicable",
+   "subject": "docs(plan): correct course syncs sprint-status after approval (#2833)"
+  },
+  "a76af7f44efc9feabd6e05793e0e87b848a1c6a0": {
+   "date": "2026-09-22",
+   "status": "structural",
+   "subject": "feat(ticketing): stable ids, build-owned status, plan section in the ticket (#2934)"
+  },
+  "a867e1604b365d48ea03cbd109da1066ba0c84bc": {
+   "date": "2026-11-07",
+   "status": "structural",
+   "subject": "feat(facilitate)!: Mary and John on bmad-facilitate, paced templates, a generic engine and template customization (#3176"
+  },
+  "abab35528de34757e5f855dc2763d9c39adcd881": {
+   "date": "2026-10-06",
+   "status": "not-applicable",
+   "subject": "fix(deps): bump lockfiles to clear Dependabot alerts (#3055)"
+  },
+  "abe4eb1bce919c9d22cd18b3519353d5824c4b75": {
+   "date": "2026-09-05",
+   "status": "not-applicable",
+   "subject": "chore(review): point CodeRabbit at dev and the moved ESLint config (#2838)"
+  },
+  "ac25b2cb5dffc89609343631cff73e77801b3da7": {
+   "date": "2026-07-06",
+   "status": "not-applicable",
+   "subject": "feat(dev-auto): preserve the attempted change on intent-gap halts (#2564)"
+  },
+  "ac4436f429881d303996490a3db00b526529cb77": {
+   "date": "2026-10-17",
+   "status": "structural",
+   "subject": "docs(changelog): Sofia replaces bmad-spec, bmad-ticket and bmad-correct-course"
+  },
+  "ad4e12c8674c2e4855574c2eb087778f02b2ac64": {
+   "date": "2026-10-14",
+   "status": "structural",
+   "subject": "fix(skills): Sofia lists sources and companions in the ticket frontmatter"
+  },
+  "ad86519c6b2d08a22aa79d2db012fc272d33fbb7": {
+   "date": "2026-09-05",
+   "status": "conflict",
+   "subject": "build: replace the npm lint stack with pre-commit (#2832)"
+  },
+  "ade7a966e96e1e197db802db4afdc187de04baaf": {
+   "date": "2026-08-09",
+   "status": "not-applicable",
+   "subject": "fix(installer,skills): make uv a real requirement and stop assuming a system Python (#2704)"
+  },
+  "adfb619e18076038797e03f40af23b1a095fe168": {
+   "date": "2026-08-20",
+   "status": "conflict",
+   "subject": "style(prfaq): spell intra-skill references from the skill root"
+  },
+  "ae4b44c8a250d4f92627dba79fc9b6f9e762daff": {
+   "date": "2026-10-31",
+   "status": "structural",
+   "subject": "feat(skills): build and retrospective read run folders, migration rewrites moved module paths (#3155)"
+  },
+  "ae7afacec4a179d0086dde4ed662031fce964ef9": {
+   "date": "2026-08-09",
+   "status": "not-applicable",
+   "subject": "chore: move document project to v6 shims (#2700)"
+  },
+  "aed23a3a0b3ea36c1f0edc0ea806b1f5ce68af1b": {
+   "date": "2026-08-20",
+   "status": "conflict",
+   "subject": "refactor(skills): extract hub help.md and ship TOML manifests"
+  },
+  "aed29c678ce1fcdb3cbc5b726b25abb0100212b2": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "docs: document the bmad-skills test mirror push"
+  },
+  "afc33a24cc749d104741a60d75229f24aea1ea80": {
+   "date": "2026-08-15",
+   "status": "conflict",
+   "subject": "fix(help): stop file-ref validator treating dest user toml as source"
+  },
+  "b023b5c9fcdedd561aaa41382cfa0a2a3737563a": {
+   "date": "2026-08-28",
+   "status": "not-applicable",
+   "subject": "docs: add Review a Change page (#2786)"
+  },
+  "b0d27c3c4aa840e156e174a45712bcb67681944f": {
+   "date": "2026-09-01",
+   "status": "not-applicable",
+   "subject": "fix(skills): defer all-maybe-false entries only at medium-or-worse (#2809)"
+  },
+  "b0d29434d06b7c99df7bcc6b47de6216f2472449": {
+   "date": "2026-09-07",
+   "status": "not-applicable",
+   "subject": "ci(coderabbit): turn off the docstring coverage check (#2848)"
+  },
+  "b232741c7788d2a52c5f4fba4e63e54b202d7f01": {
+   "date": "2026-08-18",
+   "status": "conflict",
+   "subject": "feat(bmad): add manifest-driven module setup"
+  },
+  "b284c6866505b32de2f72ef4fce22cfcd58bbea2": {
+   "date": "2026-08-19",
+   "status": "conflict",
+   "subject": "fix(core): stop treating the module as a catalog to complete"
+  },
+  "b321bc3b3d2d36e6abd79e67bb24ba21b5fb30d5": {
+   "date": "2026-10-02",
+   "status": "structural",
+   "subject": "fix(ticket): keep unmatched on a failed mirror, and mirror the state a write sent"
+  },
+  "b33544ae556c6883fdc0867fbb3e1ef8af772e88": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "feat(tools): check backticked skill-relative refs, flag stray files, prune dead grammar"
+  },
+  "b3d79436f8d18b9e8216b6342d218128bde89d11": {
+   "date": "2026-07-12",
+   "status": "not-applicable",
+   "subject": "docs(zh-cn): add missing translations for forge-idea, web-bundles, and dev-auto (#2579)"
+  },
+  "b5420009c4ac006f86817d95241fc5448f6b0d7a": {
+   "date": "2026-09-28",
+   "status": "structural",
+   "subject": "refactor: rename bmad-preview-ticketing to bmad-ticket (#2979)"
+  },
+  "b5834a59777cde8412592bbf19a30e8a4fff8e8a": {
+   "date": "2026-09-15",
+   "status": "conflict",
+   "subject": "feat(walkthrough): replace five-step walkthrough with guided block review (#2866)"
+  },
+  "b5a4250305643a40234267bf64933e72015e1be5": {
+   "date": "2026-09-05",
+   "status": "not-applicable",
+   "subject": "ci: rerun quality checks when a PR changes base branch"
+  },
+  "b678aa0c95e2d4c1eaf2f70df03f8f73c396742e": {
+   "date": "2026-10-17",
+   "status": "structural",
+   "subject": "fix(setup): v6 migration moves retired skills' agent keys and folds specs without breaking paths"
+  },
+  "b70486b9bdcb0a404d329e2a763b57964e7f1360": {
+   "date": "2026-08-12",
+   "status": "conflict",
+   "subject": "fix(review): gate routing on explicit review requests (#2716)"
+  },
+  "b762e7e29b01061b00735bfc52fcf96d336c296b": {
+   "date": "2026-09-05",
+   "status": "conflict",
+   "subject": "fix(update): pin GitHub manifest checks to main"
+  },
+  "b99a73f511db3a2ce92db0cc57c7569cb64cc6ff": {
+   "date": "2026-09-29",
+   "status": "structural",
+   "subject": "feat(bmad): ship the bmod stamper and validator with the bmad skill and a GitHub Action (#2996)"
+  },
+  "ba252f1b337c4b17c55c4fb6c0bca046791121f5": {
+   "date": "2026-09-22",
+   "status": "structural",
+   "subject": "feat(ticketing): tickets.toml, cross-epic blockers, optional refinement, dependency check before approval (#2932)"
+  },
+  "baf0fe9aeaf0299acdba096f22c366886c5f7b71": {
+   "date": "2026-08-21",
+   "status": "conflict",
+   "subject": "feat(dist): add a knowledge key pointing every manifest at the bmad help doc"
+  },
+  "bb45db4aa4496c69239f9c0629c290fd1b072fc9": {
+   "date": "2026-07-22",
+   "status": "conflict",
+   "subject": "feat(core): consolidate research trio into bmad-deep-recon (#2611)"
+  },
+  "bc91f9d465ae88af13421e3065053220ab6e0708": {
+   "date": "2026-09-01",
+   "status": "not-applicable",
+   "subject": "feat(build): fixed re-patch letter, scoped tests, refreshed diff (#2813)"
+  },
+  "bd70c643a7ec85d1ec2e88076b3fbdd8e4517f41": {
+   "date": "2026-10-31",
+   "status": "conflict",
+   "subject": "fix(eval): keep git init from rewriting a hook's repository config (#3160)"
+  },
+  "bd7ee167eb2130508c0d9240675b416e94d4bb60": {
+   "date": "2026-08-30",
+   "status": "not-applicable",
+   "subject": "docs(security): add email channel and define the framework security model (#2803)"
+  },
+  "bda3c5929f672019b90f39a3ea27259d35d00974": {
+   "date": "2026-10-06",
+   "status": "structural",
+   "subject": "docs(skills): state the render command's outcomes plainly in SKILL.md (#3049)"
+  },
+  "bdc1b0398ea5ce951be02c2304c5433ea7b3d7f4": {
+   "date": "2026-08-19",
+   "status": "conflict",
+   "subject": "feat(bmad): add bmad update and bmad doctor"
+  },
+  "bdec5aafe00fad84a33728f5d1f18a87cbf3c2b9": {
+   "date": "2026-09-05",
+   "status": "not-applicable",
+   "subject": "feat(release): stamp dev releases and package metadata"
+  },
+  "beb368e5fc9b95bcec5e1de5bc7870dc15bece72": {
+   "date": "2026-09-05",
+   "status": "conflict",
+   "subject": "chore: bump placeholder version to 6.13.0-next"
+  },
+  "bf74de621b2553e8f1a26337c777d4e04196f7bb": {
+   "date": "2026-07-29",
+   "status": "conflict",
+   "subject": "fix(review): focus verification gaps on behavior (#2646)"
+  },
+  "c05ab45cbcd214ba08982e3471ea2fb732132bed": {
+   "date": "2026-09-08",
+   "status": "structural",
+   "subject": "refactor(code-review): run through the skill renderer (#2846)"
+  },
+  "c16dc729a974101121de572cdbfcd28e3db12476": {
+   "date": "2026-08-29",
+   "status": "not-applicable",
+   "subject": "docs: add Existing Codebases chapter (#2793)"
+  },
+  "c23f23400ddf45825e5586cc1e1c0841484d1745": {
+   "date": "2026-07-18",
+   "status": "structural",
+   "subject": "feat: streamline core to an 8-skill set with merged review and editorial skills (#2603)"
+  },
+  "c2530ea53f9f288d5d04e01e939065e0c31a98ff": {
+   "date": "2026-07-28",
+   "status": "structural",
+   "subject": "feat: add inspectable workflow snapshots (#2601)"
+  },
+  "c3b795fb9e1cb9aa9d2515df6f390389a2adf424": {
+   "date": "2026-10-15",
+   "status": "structural",
+   "subject": "feat(toolsmith): add a cut mode and apply leanness findings at ship (#3091)"
+  },
+  "c3dcdda4491c1b5d2ef44b16c68640930fd73b54": {
+   "date": "2026-08-15",
+   "status": "conflict",
+   "subject": "feat(help): trigger setup from install intent or missing resolver"
+  },
+  "c4a4cf58f239a4f201d04c04fcda90daa0e58cf8": {
+   "date": "2026-10-11",
+   "status": "structural",
+   "subject": "refactor(skills): trim the tickets.py docstring to what the script decides"
+  },
+  "c4ec1837b8b7ffbf09a7aebb4891c38f93899f58": {
+   "date": "2026-08-13",
+   "status": "not-applicable",
+   "subject": "feat(project-context): adopt handwritten instructions via a ledger (#2715)"
+  },
+  "c61a3d25547ea364678030b3112bbb93a8ac3074": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "refactor(release): stamp only the skill manifests"
+  },
+  "c7717b7d657a48a340d42a29910dbd5571823040": {
+   "date": "2026-09-28",
+   "status": "structural",
+   "subject": "docs(help): stop recommending a second review after a quick or skipped one (#2985)"
+  },
+  "c94146e51a9410ecdcba11f83edc6f9e70e5723c": {
+   "date": "2026-09-25",
+   "status": "not-applicable",
+   "subject": "ci: upgrade GitHub Actions to Node 24 runtimes"
+  },
+  "c96b7d1db222d33ffb8af6969c5e910e72e28edb": {
+   "date": "2026-08-13",
+   "status": "not-applicable",
+   "subject": "feat(installer): add Grok as a tool target (#2732)"
+  },
+  "ca0f3b11fb2421ae180d146419cd8c93be04e5fc": {
+   "date": "2026-07-28",
+   "status": "structural",
+   "subject": "fix(review): restore direct phase-four reviewer prompts (#2638)"
+  },
+  "ca77852fb054a2e12ad1560d27f984d022d1563e": {
+   "date": "2026-10-17",
+   "status": "not-applicable",
+   "subject": "docs: install all skills with --skill '*' and explain the security scan ratings (#3102)"
+  },
+  "cbb69e64e744ef545f174386ca793144ecbd1cfc": {
+   "date": "2026-08-06",
+   "status": "already-present",
+   "subject": "fix(forge-idea): decode persona resolver JSON as UTF-8 (#2688)"
+  },
+  "cc237d64cb45570539585f7744efaac1630a3438": {
+   "date": "2026-10-12",
+   "status": "conflict",
+   "subject": "fix(review): tell every review lens to inspect only, never build, test, or modify (#3079)"
+  },
+  "cdf016313a22f73cbfc0d0a12a8e12df6f983f74": {
+   "date": "2026-09-05",
+   "status": "not-applicable",
+   "subject": "ci: retarget development pull requests to dev"
+  },
+  "ce5518947d8c939616f42bfd556377fd9ff06507": {
+   "date": "2026-10-02",
+   "status": "structural",
+   "subject": "fix(ticket): refuse true and false as ids, and match a lettered id before titles"
+  },
+  "cea3dc3c1ee458a75e68afb0f29f9e975084752b": {
+   "date": "2026-08-17",
+   "status": "not-applicable",
+   "subject": "fix(skills): state the paperwork boundary in prose, not template notation (#2755)"
+  },
+  "cf0d98f03042c9640c3facd15efd93d8c8ce66c6": {
+   "date": "2026-08-27",
+   "status": "not-applicable",
+   "subject": "docs: integrate the Build chapter (#2784)"
+  },
+  "cf5415551b3f882973e123b2cd638b6bf646856e": {
+   "date": "2026-07-06",
+   "status": "not-applicable",
+   "subject": "fix(dev-auto): commit must match the reviewed diff; declare scope expansion (#2563)"
+  },
+  "cf54f4d76ded11503d53cd1273741a50add6de59": {
+   "date": "2026-08-01",
+   "status": "not-applicable",
+   "subject": "refactor(bmm): consolidate sprint skills \u2014 one owner for the sprint-status artifact (#2659)"
+  },
+  "cf947f893702f71fe79825254171c286aa3f3a22": {
+   "date": "2026-09-07",
+   "status": "structural",
+   "subject": "refactor(retrospective): run through the skill renderer (#2845)"
+  },
+  "cfee292715a09e7a24318e0edac8460595509cbf": {
+   "date": "2026-07-28",
+   "status": "not-applicable",
+   "subject": "fix(dev-auto): move deferred findings into the spec (#2640)"
+  },
+  "cff69a6d548d3da981f91c2133c653e5e8c00dcf": {
+   "date": "2026-08-02",
+   "status": "structural",
+   "subject": "refactor(review): slim adversarial hunter prompt (#2675)"
+  },
+  "d25a307e71989c29438f8d2a95c644ea801b4e48": {
+   "date": "2026-08-02",
+   "status": "not-applicable",
+   "subject": "docs: remove non-interactive installation pages (#2670)"
+  },
+  "d25f190efa922b7b7a467777bb61090789899397": {
+   "date": "2026-08-14",
+   "status": "not-applicable",
+   "subject": "refactor: let packager errors keep their traceback"
+  },
+  "d2b87b849bc1642502b861579e03cd56af5776f8": {
+   "date": "2026-08-27",
+   "status": "not-applicable",
+   "subject": "Rename bmad-checkpoint-preview to bmad-walkthrough (#2783)"
+  },
+  "d397bae905c43f4de99fdecae858e536f0a2eae6": {
+   "date": "2026-08-19",
+   "status": "not-applicable",
+   "subject": "fix(hooks): abort the commit when npm test fails"
+  },
+  "d4694db86ee4495e98d046e329ff5c64b032244c": {
+   "date": "2026-09-01",
+   "status": "not-applicable",
+   "subject": "feat(review): scale the blind hunter's finding floor with diff size (#2818)"
+  },
+  "d4fa654c9d13e28149cacd65220738f513cdf070": {
+   "date": "2026-08-11",
+   "status": "conflict",
+   "subject": "fix(bmad-help): avoid inferring completion from output presence (#2712)"
+  },
+  "d58ae51c6121c989d16cdacbeea60a757b461c5d": {
+   "date": "2026-10-15",
+   "status": "structural",
+   "subject": "feat(deep-recon): research the codebase from code and git history (#3085)"
+  },
+  "d68545414a4aa1290110ab587f07d43814692a1f": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "feat(plugins): split the Claude marketplace into bmad-bmm and bmad-tools"
+  },
+  "d74453f5e6295fffec8161c9df96f256fe51aa5a": {
+   "date": "2026-11-06",
+   "status": "structural",
+   "subject": "refactor(build): write plan enum values bare, quoting only what YAML needs (#3174)"
+  },
+  "d7d4cfffbb4ac5098f3476135e1f3f24bbc27559": {
+   "date": "2026-09-07",
+   "status": "structural",
+   "subject": "feat(renderer): add invocation overrides and conditional sections (#2844)"
+  },
+  "d887fbca9010737028bd46f866d460b4748b2a83": {
+   "date": "2026-09-26",
+   "status": "structural",
+   "subject": "fix(ticketing): make GitHub publishing safe to rerun (#2957)"
+  },
+  "da9034dbc20b8b377115c4c162884df5803dfa14": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "fix(tools): repoint the file-refs checker at the flat skills tree"
+  },
+  "dac7d2b5b1c9a61b432dcae6287e957353449624": {
+   "date": "2026-08-18",
+   "status": "clean",
+   "subject": "feat(skills): add core and bmm module manifests"
+  },
+  "db7a038652dca2eb78dfa27f6ea621a174c3fa89": {
+   "date": "2026-10-18",
+   "status": "conflict",
+   "subject": "feat(walkthrough): add Demo and Draw moves for pictures of the target (#3116)"
+  },
+  "db7f96dd933295a3f9fe9d7e166883f3de2cefe6": {
+   "date": "2026-08-12",
+   "status": "conflict",
+   "subject": "feat(installer): make compatibility shims optional (#2728)"
+  },
+  "dbeeb319ebde07ccf11cdde8933ab28154be20cf": {
+   "date": "2026-09-24",
+   "status": "conflict",
+   "subject": "refactor(code-review): shorten gather-context step"
+  },
+  "dc9fbb14f38676c3acaaf3f433c900d1ef162839": {
+   "date": "2026-10-31",
+   "status": "structural",
+   "subject": "feat(core-tools): add bmad-shard-pro and bmad-ingest (#3161)"
+  },
+  "dcff051dd6ed761e63a529408285e7da3114e56e": {
+   "date": "2026-09-29",
+   "status": "structural",
+   "subject": "fix(migration): review fixes left out of #2989 (#2995)"
+  },
+  "e0effe7fe26914d227ea1632348c08a1f716bad7": {
+   "date": "2026-10-17",
+   "status": "conflict",
+   "subject": "fix(skills): review intent carries Acceptance Criteria and covered epic Requirements; builds read covers"
+  },
+  "e13bbde315d859354f410b3c37874516e3085536": {
+   "date": "2026-09-01",
+   "status": "not-applicable",
+   "subject": "docs(skill-validator): align rule catalog with current repo state (#2815)"
+  },
+  "e39cbbbaf5aa304066b0d1fc123d6236c78ae2eb": {
+   "date": "2026-08-01",
+   "status": "not-applicable",
+   "subject": "docs: refocus README on first-use conversion (#2655)"
+  },
+  "e450ebc70ddbee207e8e09648fb27d3ae61c961a": {
+   "date": "2026-08-19",
+   "status": "not-applicable",
+   "subject": "chore: rewrite the file reference checker in Python"
+  },
+  "e510393b357ea71cbe8f7a273a1e10e14846acff": {
+   "date": "2026-08-01",
+   "status": "not-applicable",
+   "subject": "docs: define plain English writing rules (#2667)"
+  },
+  "e5d115646e2899e785bedbbc9a9137eff7cb6101": {
+   "date": "2026-08-19",
+   "status": "not-applicable",
+   "subject": "feat(installer): refuse to run in npx-managed projects"
+  },
+  "e72b3abbb3ebc57ee36f0131d52aa32cc204f88f": {
+   "date": "2026-10-17",
+   "status": "structural",
+   "subject": "fix(toolsmith): cut_check lists files in the same order on Windows"
+  },
+  "e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6": {
+   "date": "2026-11-06",
+   "status": "structural",
+   "subject": "fix(tickets): read frontmatter with PyYAML instead of a hand-rolled parser (#3169)"
+  },
+  "e7af627e2e5f1ca174b0dea1b9ac4509817e3946": {
+   "date": "2026-07-28",
+   "status": "not-applicable",
+   "subject": "feat(skills): deprecate create-story and dev-story (#2641)"
+  },
+  "e9f636c1f77bbd731dbc25f1de281fa831a2c451": {
+   "date": "2026-07-31",
+   "status": "not-applicable",
+   "subject": "feat(bmm): rework bmad-retrospective as an evidence-based epic review (#2612)"
+  },
+  "ea668933c805026002d9828245575e4e2af60247": {
+   "date": "2026-08-16",
+   "status": "structural",
+   "subject": "feat(skills): pass review content by path in build, build-auto, review (#2751)"
+  },
+  "ea6a5d900ce42d5ddcf9990b241dd1b7454e65ef": {
+   "date": "2026-08-06",
+   "status": "already-present",
+   "subject": "fix(party-mode): decode subprocess JSON as UTF-8 on Windows (#2687)"
+  },
+  "eab4883caadf46ee03bf679623f72b0ed13fb485": {
+   "date": "2026-08-25",
+   "status": "not-applicable",
+   "subject": "docs: remove roadmap page and links, tidy README footers (#2774)"
+  },
+  "eaeebebd76a52df08e9fbd2b626bf3e8674d56e7": {
+   "date": "2026-08-21",
+   "status": "conflict",
+   "subject": "feat(setup): report plugin-shipped copies as plugin-managed in the update check"
+  },
+  "ec9a46ee2aef5631ea102faa969a6db5ee296ce1": {
+   "date": "2026-09-28",
+   "status": "structural",
+   "subject": "feat(bmad): speak as BMad and route setup, migrate and initiative requests (#2974)"
+  },
+  "ecfde2a980df96ff9d8181636d5a2f443a97fab7": {
+   "date": "2026-10-31",
+   "status": "not-applicable",
+   "subject": "docs: name current TEA skills and its v7 install (#3152)"
+  },
+  "edb144f31fe6d8b6366a93cbd0433649d816e890": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "feat(release): stamp every Claude marketplace plugin entry"
+  },
+  "ee4510bdad81b5b9beafd5b90542685df1f47d05": {
+   "date": "2026-09-20",
+   "status": "structural",
+   "subject": "ci: run the Python quality job on Windows beside Ubuntu (#2917)"
+  },
+  "eeaaa585eea07131d7644477f3b8fbe6af3916fa": {
+   "date": "2026-09-01",
+   "status": "not-applicable",
+   "subject": "chore(review): swap Augment for Greptile and repair CodeRabbit config (#2808)"
+  },
+  "eeb6ad9cf440d0395b5b300ea1a4b91cefb1786b": {
+   "date": "2026-08-11",
+   "status": "not-applicable",
+   "subject": "feat: add ZCode as supported installer platform (#2613)"
+  },
+  "ef52999cdb0e124156050c2eba791ba3923ef0c2": {
+   "date": "2026-09-29",
+   "status": "conflict",
+   "subject": "fix(scripts): handle unexpected custom values in party, review, brainstorming and recon scripts (#2991)"
+  },
+  "f033e70a2c0a3751aaab17dfdd29839ac621f541": {
+   "date": "2026-09-18",
+   "status": "structural",
+   "subject": "feat(method): add bmad-preview-ticketing skill and tickets.py runtime (#2884)"
+  },
+  "f194a049392451abcaeebb64f1e7ac96e14e6951": {
+   "date": "2026-08-29",
+   "status": "not-applicable",
+   "subject": "docs(ko-kr): add Korean localization (#2386)"
+  },
+  "f1d8bd8bca6395d063adb502533c8fcfc64c4cdd": {
+   "date": "2026-08-27",
+   "status": "not-applicable",
+   "subject": "docs: add Checkpoint a Change page (#2781)"
+  },
+  "f276393783733288b91bb22d6113bc0a77d52c92": {
+   "date": "2026-10-01",
+   "status": "not-applicable",
+   "subject": "test(validate-skills): remove the fixture skill named bmad"
+  },
+  "f34b8c609f8bb4f71081d57873db374945f2ceb3": {
+   "date": "2026-10-16",
+   "status": "structural",
+   "subject": "fix(skills): Sofia keeps each rule in one place and slices in one message"
+  },
+  "f5412e3077a597f43e1e705fca95f17d45882618": {
+   "date": "2026-10-02",
+   "status": "structural",
+   "subject": "feat(ticket): let a ticket or epic id be letters and digits"
+  },
+  "f60a3f0d1aee262fcc40629123af664337d9d1b7": {
+   "date": "2026-10-17",
+   "status": "structural",
+   "subject": "fix(skills): tickets.py move rewrites the parent reference and leaves another initiative's refs alone"
+  },
+  "f6251a36dcdab1c99704435dd9cbfb43ef6266af": {
+   "date": "2026-08-14",
+   "status": "not-applicable",
+   "subject": "docs(build): add four review lenses to the Build diagram (#2731)"
+  },
+  "f6c2c0a15bcc8ed52bf1f069e480fa0e9d7c427c": {
+   "date": "2026-07-06",
+   "status": "not-applicable",
+   "subject": "feat(review): make review layers configurable via customize.toml (#2550)"
+  },
+  "f6ffa3533b8667dcd38d88d9c828c6128d9f6d53": {
+   "date": "2026-10-02",
+   "status": "structural",
+   "subject": "feat(ticket): layer the store config, add tracker mirror, and cut bmad-ticket's prompt"
+  },
+  "f76223892a7c30cbadaeb57a96f27880456eca24": {
+   "date": "2026-08-14",
+   "status": "conflict",
+   "subject": "fix(skills): replace remaining menu letter codes (#2739)"
+  },
+  "f7ec2f77a007327138fbe6c4f4520ef81b7c827e": {
+   "date": "2026-08-20",
+   "status": "conflict",
+   "subject": "feat(dist): ship plugins from bmad-plugins; split skills into method and toolbox modules"
+  },
+  "f814c12cff456cb4742290225c94dec76f79652f": {
+   "date": "2026-07-29",
+   "status": "not-applicable",
+   "subject": "fix(code-review): make no-spec mode an explicit supported path (#2645)"
+  },
+  "f8926dc962e01554087ed3b7bb6f31c000261451": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "chore(test): collapse npm scripts onto colocated suites"
+  },
+  "f8b09dd671c049e5f2c2784cd4d94f243a6cccc7": {
+   "date": "2026-08-28",
+   "status": "conflict",
+   "subject": "refactor(skills): carry the bmad-walkthrough rename into the flat tree"
+  },
+  "fa1637ee4095e407e606679e668f61416d2f118a": {
+   "date": "2026-09-05",
+   "status": "not-applicable",
+   "subject": "build: move the Node toolchain into docs-site (#2834)"
+  },
+  "fb28c032fbd1276cebca8b79b47fecc5331ed2fb": {
+   "date": "2026-10-11",
+   "status": "structural",
+   "subject": "feat(skills): readers, agents, migration, help and docs name Sofia and the ticket file"
+  },
+  "fb4f88d83b965bbc9ac914a9602bfe1536f0ad00": {
+   "date": "2026-09-29",
+   "status": "structural",
+   "subject": "feat(bmad): number migration files and run them in number order (#2997)"
+  },
+  "fbd31bd82107cea012c2ddb86419d5effbed9b0f": {
+   "date": "2026-10-18",
+   "status": "conflict",
+   "subject": "fix(skills): rewrite bmad-build description around delegated work (#3118)"
+  },
+  "fc6a41c67332c1c1490e78c108bec42cbfae4e1e": {
+   "date": "2026-10-31",
+   "status": "structural",
+   "subject": "feat(toolsmith): default to a single-skill module and start prose from one sentence (#3158)"
+  },
+  "fc8c01141e7dca4571d277c78aa4f8547e254164": {
+   "date": "2026-08-14",
+   "status": "not-applicable",
+   "subject": "refactor: parse help catalogs with csv and tighten packager layout"
+  },
+  "fcaac4631ec26b33d09f38a069c682dee85b6393": {
+   "date": "2026-08-27",
+   "status": "not-applicable",
+   "subject": "docs: add Test Completed Work page (#2782)"
+  },
+  "fcafb7bb3aa6764e1e303061c7f13296e477336d": {
+   "date": "2026-08-20",
+   "status": "not-applicable",
+   "subject": "chore(test): delete the stale adversarial-review-tests directory"
+  },
+  "fcd18fef9708df75ca0f7ad9071f8a80b8a8af46": {
+   "date": "2026-10-06",
+   "status": "structural",
+   "subject": "feat(render): serve initiative_folder instead of a resolve_config.py call (#3060)"
+  },
+  "fd565950fd393d64e84a6b9db63a1d680b37323e": {
+   "date": "2026-09-29",
+   "status": "conflict",
+   "subject": "fix(brainstorming): refuse technique detail paths outside the catalog folder (#2990)"
+  },
+  "fdde307a4371d9fec744e3b4c4db29b38c41fa4b": {
+   "date": "2026-08-20",
+   "status": "conflict",
+   "subject": "chore(test): remove sprint-status template sync check"
+  },
+  "fe71ce0edbb9106862041a4fc72f596c1f8ac158": {
+   "date": "2026-08-19",
+   "status": "conflict",
+   "subject": "fix(setup): create module scripts dirs so first doctor reports current"
+  },
+  "ffd695c28cfb5c57e77043a49a5eeb22ef8fe370": {
+   "date": "2026-08-22",
+   "status": "structural",
+   "subject": "fix(config): drop _bmad/config.user.toml from the central merge"
+  }
+ }
+}
