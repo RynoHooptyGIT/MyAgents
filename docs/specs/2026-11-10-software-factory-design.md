@@ -119,7 +119,7 @@ Working in production means: the ledger shows merged changes per day, cost per m
 
 ## Open items
 
-- Worker sandbox, blocking for phase 4. Independent review of phase 2 found that a worker allowed to write files and run the test suite can execute arbitrary code as the operator: it can read credentials, edit the ledger and decide its own gate verdict. Phase 2 adds interim hardening (scrubbed environment, gate scripts taken from the base ref, ledger outside the repo). Unattended merges stay off until workers and gates run in a sandbox with no write access outside the worktree and no operator credentials. Candidates: ephemeral GitHub Actions runners, a container per run, or the Claude Code sandbox mode. Choosing one is the first task of phase 3.
+- Worker sandbox, blocking for phase 4. Independent review of phase 2 found that a worker allowed to write files and run the test suite can execute arbitrary code as the operator: it can read credentials, edit the ledger and decide its own gate verdict. Phase 2 adds interim hardening (scrubbed environment, gate scripts taken from the base ref, ledger outside the repo). Unattended merges stay off until workers and gates run in a sandbox with no write access outside the worktree and no operator credentials. Decided 2026-11-10: workers and gates run on ephemeral GitHub Actions runners with a scoped token and none of the operator's local credentials. Building that is the first task of phase 3.
 - Gate inputs are protected paths. Everything `scripts/test.sh` runs, test configuration such as `conftest.py`, and test deletions are T2. T0 requires verifier agreement.
 
 - Branch protection and required checks on `main` must be turned on by the repo owner before phase 4.
