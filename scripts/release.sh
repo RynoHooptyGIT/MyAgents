@@ -79,6 +79,10 @@ echo ""
 # --- Bump VERSION file ---
 echo "$VERSION" > VERSION
 
+# Keep team/manifest.yaml installation.version in step with VERSION
+sed "s/^  version: .*/  version: ${VERSION}/" team/manifest.yaml > team/manifest.yaml.tmp \
+  && mv team/manifest.yaml.tmp team/manifest.yaml
+
 # --- Build commit message from git log since last tag ---
 LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
 if [[ -n "$LAST_TAG" ]]; then
@@ -98,7 +102,7 @@ else
 fi
 
 # --- Commit ---
-git add VERSION
+git add VERSION team/manifest.yaml
 git commit -m "$COMMIT_MSG"
 
 # --- Tag ---
