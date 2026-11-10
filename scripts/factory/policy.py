@@ -1,6 +1,7 @@
 """Load and validate .factory/policy.yaml. Missing or malformed is an error."""
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Tuple
@@ -9,8 +10,8 @@ from . import miniyaml
 
 ROLES = ("orchestration", "triage", "mechanical", "spec", "build",
          "sealed_test_author", "verifier", "retry_round_2", "t2_design")
-REQUIRED_PROTECTED = ("scripts/factory/**", ".factory/policy.yaml")
-TOP_KEYS = {"version", "tiers", "protected_paths", "t0_paths", "dependency_files", "size",
+REQUIRED_PROTECTED = ("scripts/factory/**", ".factory/**", "scripts/test.sh")
+TOP_KEYS = {"version", "tiers", "protected_paths", "t0_paths", "test_paths", "env_allowlist", "state_dir", "dependency_files", "size",
             "autonomy", "budget", "queue", "retries", "allowlisted_authors", "routing"}
 TIERS = ("T0", "T1", "T2")
 
@@ -24,6 +25,9 @@ class Policy:
     protected_paths: Tuple[str, ...]
     t0_paths: Tuple[str, ...]
     dependency_files: Tuple[str, ...]
+    test_paths: Tuple[str, ...]
+    env_allowlist: Tuple[str, ...]
+    state_dir: str
     max_diff_lines: int
     max_deleted_files: int
     promotion_count: int
@@ -95,6 +99,15 @@ def from_dict(d) -> Policy:
             raise PolicyError(f"policy: protected_paths must include {needed!r}")
     t0 = _str_list(d, "t0_paths")
     deps = _str_list(d, "dependency_files")
+    test_paths = _str_list(d, "test_paths")
+    env_allow = _str_list(d, "env_allowlist")
+    for n in env_allow:
+        if not re.match(r"^[A-Z][A-Z0-9_]*$", n):
+            raise PolicyError(f"policy: env_allowlist entry {n!r} must be an exact UPPER_CASE name")
+        if any(w in n for w in ("TOKEN", "SECRET", "KEY", "PASSWORD")):
+            raise PolicyError(f"policy: env_allowlist entry {n!r} looks like a credential")
+    if not isinstance(d["state_dir"], str) or not d["state_dir"].strip():
+        raise PolicyError("policy: state_dir must be a non-empty string")
     authors = _str_list(d, "allowlisted_authors")
 
     size = _section(d, "size", ("max_diff_lines", "max_deleted_files"))
@@ -119,7 +132,8 @@ def from_dict(d) -> Policy:
         raise PolicyError("policy: budget.per_issue_usd cannot exceed per_day_usd")
 
     return Policy(
-        protected_paths=protected, t0_paths=t0, dependency_files=deps,
+        protected_paths=protected, t0_paths=t0, test_paths=test_paths,
+        env_allowlist=env_allow, state_dir=d["state_dir"], dependency_files=deps,
         max_diff_lines=_pos_int(size["max_diff_lines"], "size.max_diff_lines"),
         max_deleted_files=_pos_int(size["max_deleted_files"], "size.max_deleted_files", 0),
         promotion_count=_pos_int(auto["promotion_count"], "autonomy.promotion_count"),

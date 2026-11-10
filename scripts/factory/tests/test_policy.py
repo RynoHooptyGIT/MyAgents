@@ -78,7 +78,7 @@ def test_bad_values_rejected(path, value):
 
 @pytest.mark.parametrize("key", ["routing", "budget", "size", "autonomy", "queue", "retries",
                                  "protected_paths", "allowlisted_authors", "t0_paths",
-                                 "dependency_files", "tiers", "version"])
+                                 "dependency_files", "tiers", "version", "test_paths", "env_allowlist", "state_dir"])
 def test_missing_section_rejected(key):
     with pytest.raises(policy.PolicyError, match=key):
         policy.from_dict(_dump_variant(lambda d: d.pop(key)))
@@ -100,7 +100,7 @@ def test_retry_round_2_must_differ_from_builder():
 
 
 def test_cannot_unprotect_factory_or_policy():
-    for needed in ("scripts/factory/**", ".factory/policy.yaml"):
+    for needed in ("scripts/factory/**", ".factory/**", "scripts/test.sh"):
         with pytest.raises(policy.PolicyError, match="protected"):
             policy.from_dict(_dump_variant(
                 lambda d: d.update(protected_paths=[x for x in d["protected_paths"] if x != needed])))
@@ -109,3 +109,21 @@ def test_cannot_unprotect_factory_or_policy():
 def test_per_issue_cannot_exceed_per_day():
     with pytest.raises(policy.PolicyError, match="per_issue"):
         policy.from_dict(_dump_variant(lambda d: d["budget"].update(per_issue_usd=100.0, per_day_usd=10.0)))
+
+
+def test_new_policy_fields_loaded():
+    p = policy.load(REPO)
+    assert "PATH" in p.env_allowlist and "HOME" in p.env_allowlist
+    assert not any(any(w in n for w in ("TOKEN", "SECRET", "KEY")) for n in p.env_allowlist)
+    assert p.state_dir.startswith("~") and p.test_paths
+
+
+@pytest.mark.parametrize("bad", ["GH_TOKEN", "ANTHROPIC_API_KEY", "MY_SECRET", "A*", "", "lower case"])
+def test_env_allowlist_rejects_secret_like_and_globs(bad):
+    with pytest.raises(policy.PolicyError):
+        policy.from_dict(_dump_variant(lambda d: d.update(env_allowlist=["PATH", bad])))
+
+
+def test_state_dir_must_be_string():
+    with pytest.raises(policy.PolicyError):
+        policy.from_dict(_dump_variant(lambda d: d.update(state_dir=5)))

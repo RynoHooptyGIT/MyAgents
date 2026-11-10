@@ -33,7 +33,7 @@ def test_prepare_uses_arg_list_and_branch_name(tmp_path):
     ws = W.GitWorkspace(tmp_path, runner=r)
     path = ws.prepare(7, "$(evil) title")
     assert path == tmp_path / ".worktrees" / "factory-7"
-    argv = r.calls[0]["argv"]
+    argv = [c["argv"] for c in r.calls if "add" in c["argv"]][0]
     assert argv[:2] == ["git", "worktree"] and "factory/7-evil-title" in argv and "origin/main" in argv
     assert not any("$(" in a for a in argv)
 
@@ -48,9 +48,9 @@ def test_diff_stats_parses_numstat_and_deleted(tmp_path):
     numstat = "10\t2\tskills/a.py\0-\t-\timg.png\0"
     deleted = "old.py\0gone.py\0"
     r = Rec([ProcResult(0, numstat, ""), ProcResult(0, deleted, "")])
-    st = W.GitWorkspace(tmp_path, runner=r, binary_lines=300).diff(tmp_path / "wt")
+    st = W.GitWorkspace(tmp_path, runner=r).diff(tmp_path / "wt")
     assert st.paths == ["skills/a.py", "img.png"]
-    assert st.added == 310 and st.deleted == 2     # binary counted at the cap
+    assert st.added == 10 and st.deleted == 2 and st.binary_files == 1
     assert st.deleted_files == 2
     assert "--no-renames" in r.calls[0]["argv"] and "-z" in r.calls[0]["argv"]
     assert r.calls[0]["cwd"] == tmp_path / "wt"

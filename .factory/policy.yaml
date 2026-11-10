@@ -15,14 +15,30 @@ tiers:
     merge: human
 
 # Always T2, never promoted. Matching is case-insensitive, anchored at repo root.
+# Includes everything scripts/test.sh executes or auto-discovers (pytest config and
+# conftest, scripts/test-*.sh and .agents/hooks/test-*.sh harnesses, the contract and
+# settings-drift checks and their inputs): a new file matching a discovery glob is T2.
 protected_paths:
   - "scripts/factory/**"
-  - ".factory/policy.yaml"
+  - ".factory/**"
+  - "scripts/test.sh"
+  - "scripts/test-*.sh"
+  - "scripts/apply-contract.sh"
+  - "scripts/check-settings-drift.sh"
+  - "scripts/lib/**"
+  - "templates/settings.local.json.template"
+  - "**/conftest.py"
+  - "**/pytest.ini"
   - ".github/**"
-  - ".claude/settings*"
-  - ".agents/hooks/**"
+  - ".claude/**"
+  - ".mcp.json"
+  - ".gitmodules"
+  - ".agents/**"
+  - "hooks/**"
   - "team/engine/**"
   - "**/CLAUDE.md"
+  - "**/CLAUDE.local.md"
+  - "**/AGENTS.md"
   - "**/*secret*"
   - "**/*credential*"
   - "**/secrets/**"
@@ -41,6 +57,13 @@ t0_paths:
   - "**/test_*.py"
   - "**/test-*.sh"
 
+# Test files. Deleting any of them is T2.
+test_paths:
+  - "**/tests/**"
+  - "**/test_*.py"
+  - "**/*_test.py"
+  - "**/test-*.sh"
+
 # Touching any of these counts as a new dependency.
 dependency_files:
   - "**/requirements*.txt"
@@ -50,6 +73,16 @@ dependency_files:
   - "**/Pipfile"
   - "**/Pipfile.lock"
   - "**/poetry.lock"
+  - "**/setup.py"
+  - "**/setup.cfg"
+  - "**/uv.lock"
+  - "**/yarn.lock"
+  - "**/pnpm-lock.yaml"
+  - "**/go.mod"
+  - "**/go.sum"
+  - "**/Cargo.toml"
+  - "**/Cargo.lock"
+  - "**/Gemfile*"
 
 size:
   max_diff_lines: 300       # added + deleted; over this is T2
@@ -83,3 +116,17 @@ routing:
   verifier: opus
   retry_round_2: fable
   t2_design: fable
+
+# Interim hardening: workers and gates run with only these variables.
+# Never list tokens or keys here unless a worker strictly needs them.
+env_allowlist:
+  - "PATH"
+  - "HOME"
+  - "LANG"
+  - "LC_ALL"
+  - "TERM"
+  - "TMPDIR"
+  - "USER"
+
+# Ledger and runtime logs live outside the repository (a worker's cwd must not contain them).
+state_dir: "~/.local/state/myagents-factory"

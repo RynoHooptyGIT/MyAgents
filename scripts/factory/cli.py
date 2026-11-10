@@ -36,7 +36,7 @@ def build_real_context(root, repo: Optional[str]) -> runner.Context:
         root=root, policy=policy,
         tracker=GhTracker(allowed_authors=policy.allowlisted_authors, repo=repo),
         launcher=ClaudeLauncher(policy), gates=ScriptGateRunner(),
-        workspace=GitWorkspace(root, binary_lines=policy.max_diff_lines),
+        workspace=GitWorkspace(root),
         ledger=Ledger(root / ".factory" / "ledger.jsonl"))
 
 

@@ -84,13 +84,15 @@ def _nonneg_int(v, name):
 def classify(policy: Policy, paths: Sequence[str], added: int, deleted: int,
              deleted_files: int, new_dependency: bool, verifier_verdict: Optional[str],
              sealed_failures: int, retries_exhausted: bool, budget_exceeded: bool,
-             category_level: str) -> Classification:
+             category_level: str, deleted_paths: Sequence[str] = (),
+             binary_files: int = 0) -> Classification:
     if not paths:
         raise ValueError("nothing to classify: no changed paths")
     _nonneg_int(added, "added")
     _nonneg_int(deleted, "deleted")
     _nonneg_int(deleted_files, "deleted_files")
     _nonneg_int(sealed_failures, "sealed_failures")
+    _nonneg_int(binary_files, "binary_files")
     if verifier_verdict not in VERDICTS:
         raise ValueError(f"unknown verifier verdict {verifier_verdict!r}")
     if category_level not in ("T1", "T2"):
@@ -115,6 +117,12 @@ def classify(policy: Policy, paths: Sequence[str], added: int, deleted: int,
         reasons.append(f"diff over size cap ({added + deleted} > {policy.max_diff_lines} lines)")
     if deleted_files > policy.max_deleted_files:
         reasons.append(f"deleted files over cap ({deleted_files} > {policy.max_deleted_files})")
+    for raw in deleted_paths:
+        n = normalize_path(raw) or raw
+        if any(glob_match(p, n) for p in policy.test_paths):
+            reasons.append(f"deleted test file: {n}")
+    if binary_files:
+        reasons.append(f"binary file in diff ({binary_files})")
     if verifier_verdict == "disagree":
         reasons.append("verifier disagreement")
     if sealed_failures > 0:
@@ -130,8 +138,6 @@ def classify(policy: Policy, paths: Sequence[str], added: int, deleted: int,
         return Classification("T2", reasons)
     all_t0 = len(norm) == len(paths) and all(
         any(glob_match(p, n) for p in policy.t0_paths) for n in norm)
-    if all_t0:
-        return Classification("T0", [])
     if verifier_verdict != "agree":
         return Classification("T2", ["verifier has not agreed"])
-    return Classification("T1", [])
+    return Classification("T0" if all_t0 else "T1", [])
