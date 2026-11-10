@@ -11,7 +11,7 @@ class Rec:
         self.calls = []
         self.responses = list(responses)
 
-    def __call__(self, argv, cwd=None, input_text=None, timeout=None):
+    def __call__(self, argv, cwd=None, input_text=None, timeout=None, env=None):
         self.calls.append(dict(argv=list(argv), cwd=cwd))
         return self.responses.pop(0) if self.responses else ProcResult(0, "", "")
 

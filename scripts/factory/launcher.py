@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, List, Optional
 
+from . import envscrub
 from .policy import Policy
 from .proc import ProcResult, run as default_run
 
@@ -38,7 +39,8 @@ class WorkerResult:
 
 
 class Launcher:
-    def run(self, role: str, prompt: str, cwd: Path, model: Optional[str] = None) -> WorkerResult:
+    def run(self, role: str, prompt: str, cwd: Path, model: Optional[str] = None,
+            max_budget_usd: Optional[float] = None) -> WorkerResult:
         raise NotImplementedError
 
 
@@ -50,8 +52,8 @@ class FakeLauncher(Launcher):
         self.default = default or WorkerResult(0, "ok", 0, 0, 0.0, True, "fake")
         self.calls = []
 
-    def run(self, role, prompt, cwd, model=None):
-        self.calls.append(dict(role=role, prompt=prompt, cwd=cwd, model=model))
+    def run(self, role, prompt, cwd, model=None, max_budget_usd=None):
+        self.calls.append(dict(role=role, prompt=prompt, cwd=cwd, model=model, max_budget_usd=max_budget_usd))
         res = self.results.pop(0) if self.results else self.default
         if res.model == "fake":   # echo the model the runner asked for, like the real launcher
             res = WorkerResult(res.returncode, res.text, res.input_tokens, res.output_tokens,
@@ -77,8 +79,9 @@ def build_prompt(role: str, issue_number: int, title: str, body: str, extra: str
 
 
 class ClaudeLauncher(Launcher):
-    def __init__(self, policy: Policy, runner: Callable[..., ProcResult] = default_run):
+    def __init__(self, policy: Policy, runner: Callable[..., ProcResult] = default_run, environ=None):
         self._policy = policy
+        self._environ = environ
         self._run = runner
 
     def _model_for(self, role: str, override: Optional[str]) -> str:
@@ -89,15 +92,21 @@ class ClaudeLauncher(Launcher):
             raise LauncherError(f"role {role!r} has no model (deterministic step)")
         return model
 
-    def build_argv(self, model: str) -> List[str]:
-        return ["claude", "-p", "--model", model, "--output-format", "json",
+    def build_argv(self, model: str, max_budget_usd: Optional[float] = None) -> List[str]:
+        argv = ["claude", "-p", "--model", model, "--output-format", "json",
                 "--permission-mode", "acceptEdits",
                 "--allowedTools", ",".join(ALLOWED_TOOLS),
                 "--disallowedTools", ",".join(DENIED_TOOLS)]
+        if max_budget_usd is not None:
+            # `claude --help` shows --max-budget-usd; no per-run turn-limit flag exists.
+            argv += ["--max-budget-usd", f"{max(max_budget_usd, 0.0):.2f}"]
+        return argv
 
-    def run(self, role, prompt, cwd, model=None):
+    def run(self, role, prompt, cwd, model=None, max_budget_usd=None):
         m = self._model_for(role, model)
-        r = self._run(self.build_argv(m), cwd=cwd, input_text=prompt, timeout=WORKER_TIMEOUT_S)
+        env = envscrub.scrub_env(self._environ, self._policy.env_allowlist)
+        r = self._run(self.build_argv(m, max_budget_usd), cwd=cwd, input_text=prompt,
+                      timeout=WORKER_TIMEOUT_S, env=env)
         text, tin, tout, cost, known = r.stdout, 0, 0, 0.0, False
         try:
             data = json.loads(r.stdout)
@@ -110,6 +119,8 @@ class ClaudeLauncher(Launcher):
                     cost, known = float(data["total_cost_usd"]), True
         except (ValueError, TypeError):
             pass
+        if r.returncode == 124:   # timed out: whatever it spent is unknown
+            known = False
         if r.returncode != 0:
             text = (text + "\n" + r.stderr).strip()
         return WorkerResult(r.returncode, text, tin, tout, cost, known, m)

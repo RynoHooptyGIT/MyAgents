@@ -15,8 +15,8 @@ class Rec:
         self.calls = []
         self.result = result
 
-    def __call__(self, argv, cwd=None, input_text=None, timeout=None):
-        self.calls.append(dict(argv=list(argv), cwd=cwd, input=input_text, timeout=timeout))
+    def __call__(self, argv, cwd=None, input_text=None, timeout=None, env=None):
+        self.calls.append(dict(argv=list(argv), cwd=cwd, input=input_text, timeout=timeout, env=env))
         return self.result or ProcResult(0, json.dumps({
             "result": "done", "total_cost_usd": 0.42,
             "usage": {"input_tokens": 100, "output_tokens": 50}}), "")
@@ -107,3 +107,47 @@ def test_fake_launcher_records_and_scripts_results():
     f = L.FakeLauncher([L.WorkerResult(0, "a", 1, 2, 0.1, True, "sonnet")])
     out = f.run("build", "p", Path("/w"), model="sonnet")
     assert out.text == "a" and f.calls[0]["role"] == "build"
+
+
+def test_timeout_means_cost_unknown():
+    out = L.ClaudeLauncher(POLICY, runner=Rec(ProcResult(124, "", "timed out after 3600s"))).run("build", "x", Path("/w"))
+    assert out.cost_known is False and not out.ok
+
+
+def test_budget_flag_passed_when_given():
+    r = Rec()
+    L.ClaudeLauncher(POLICY, runner=r).run("build", "x", Path("/w"), max_budget_usd=1.234)
+    argv = r.calls[0]["argv"]
+    assert argv[argv.index("--max-budget-usd") + 1] == "1.23"
+
+
+def test_no_budget_flag_without_budget():
+    r = Rec()
+    L.ClaudeLauncher(POLICY, runner=r).run("build", "x", Path("/w"))
+    assert "--max-budget-usd" not in r.calls[0]["argv"]
+
+
+def test_worker_env_is_scrubbed(monkeypatch):
+    monkeypatch.setenv("GH_TOKEN", "t")
+    monkeypatch.setenv("GITHUB_TOKEN", "t")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "k")
+    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "s")
+    monkeypatch.setenv("PATH", "/usr/bin")
+    r = Rec()
+    L.ClaudeLauncher(POLICY, runner=r).run("build", "x", Path("/w"))
+    env = r.calls[0]["env"]
+    assert env["PATH"] == "/usr/bin" and "HOME" in env
+    for bad in ("GH_TOKEN", "GITHUB_TOKEN", "ANTHROPIC_API_KEY", "AWS_SECRET_ACCESS_KEY"):
+        assert bad not in env
+
+
+def test_scrub_env_exact_names_only():
+    from .. import envscrub
+    env = envscrub.scrub_env({"PATH": "p", "MY_TOKEN": "x", "HOME": "h", "OTHER": "o"}, ["PATH", "HOME"])
+    assert env == {"PATH": "p", "HOME": "h"}
+
+
+def test_fake_launcher_records_budget():
+    f = L.FakeLauncher()
+    f.run("build", "p", Path("/w"), max_budget_usd=2.0)
+    assert f.calls[0]["max_budget_usd"] == 2.0

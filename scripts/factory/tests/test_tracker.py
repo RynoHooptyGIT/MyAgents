@@ -14,7 +14,7 @@ class FakeRunner:
         self.calls = []
         self.responses = list(responses or [])
 
-    def __call__(self, argv, cwd=None, input_text=None, timeout=None):
+    def __call__(self, argv, cwd=None, input_text=None, timeout=None, env=None):
         self.calls.append(list(argv))
         if self.responses:
             r = self.responses.pop(0)
@@ -187,3 +187,20 @@ def test_gh_repo_flag_added():
     g = t.GhTracker(r, allowed_authors=["owner"], repo="o/r")
     g.halt_label_present()
     assert "--repo" in r.calls[0] and "o/r" in r.calls[0]
+
+
+def test_fake_skips_issue_with_two_state_labels_and_reports_it():
+    f = t.FakeTracker(allowed_authors=["owner"])
+    f.add_issue(1, "a", "", "owner", ["factory:queued", "factory:building"], "2026-01-01")
+    f.add_issue(2, "b", "", "owner", ["factory:queued"], "2026-01-02")
+    assert [i.number for i in f.list_queued()] == [2]
+    assert f.ambiguous == [1]
+    pick, _ = t.select_claimable(f)
+    assert pick.number == 2
+
+
+def test_gh_skips_issue_with_two_state_labels_and_reports_it():
+    out = json.dumps([gh_issue(1, labels=("factory:queued", "factory:done")), gh_issue(2)])
+    g = t.GhTracker(FakeRunner([out]), allowed_authors=["owner"])
+    assert [i.number for i in g.list_queued()] == [2]
+    assert g.ambiguous == [1]

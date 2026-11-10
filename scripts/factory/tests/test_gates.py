@@ -100,7 +100,7 @@ def test_parse_verdict_none_input():
 def test_script_runner_uses_arg_list_and_parses(tmp_path):
     seen = {}
 
-    def fake(argv, cwd=None, input_text=None, timeout=None):
+    def fake(argv, cwd=None, input_text=None, timeout=None, env=None):
         seen["argv"] = argv
         from ..proc import ProcResult
         return ProcResult(1, "oops\nFACTORY-GATES: FAIL\n", "")
@@ -120,3 +120,93 @@ def test_fake_gate_runner_scripts_results(tmp_path):
     f = G.FakeGateRunner([("FAIL", "x"), ("PASS", "")])
     assert f.run(tmp_path).verdict == "FAIL"
     assert f.run(tmp_path).verdict == "PASS"
+
+
+def test_script_runner_passes_scrubbed_env_and_base(tmp_path, monkeypatch):
+    monkeypatch.setenv("GH_TOKEN", "secret")
+    seen = {}
+
+    def fake(argv, cwd=None, input_text=None, timeout=None, env=None):
+        from ..proc import ProcResult
+        seen.update(argv=argv, env=env)
+        return ProcResult(0, "FACTORY-GATES: PASS\n", "")
+
+    G.ScriptGateRunner(fake, env_allowlist=["PATH", "HOME"], base="origin/main").run(tmp_path)
+    assert "GH_TOKEN" not in seen["env"] and "PATH" in seen["env"]
+    assert seen["argv"][-2:] == [str(tmp_path), "origin/main"]
+
+
+# ---- trusted-base isolation (real git) ----
+def git_repo(tmp_path):
+    import subprocess as sp
+    env = dict(os.environ, GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@t", GIT_COMMITTER_NAME="t",
+               GIT_COMMITTER_EMAIL="t@t")
+
+    def git(*a):
+        sp.run(["git", *a], cwd=tmp_path, check=True, capture_output=True, env=env)
+    git("init", "-q", "-b", "main")
+    (tmp_path / "scripts").mkdir()
+    (tmp_path / "scripts" / "test.sh").write_text('test -f ok.txt || { echo "ok.txt missing"; exit 1; }\nexit 0\n')
+    (tmp_path / "ok.txt").write_text("x")
+    git("add", "-A")
+    git("commit", "-qm", "base")
+    return git
+
+
+def run_base(repo, base="main"):
+    return subprocess.run([BASH, str(GATES_SH), str(repo), base], capture_output=True, text=True)
+
+
+def test_base_clean_tree_passes(tmp_path):
+    git_repo(tmp_path)
+    r = run_base(tmp_path)
+    assert verdict_lines(r.stdout) == ["FACTORY-GATES: PASS"], r.stdout
+
+
+def test_base_runs_unchanged_gate_against_worker_changes(tmp_path):
+    git_repo(tmp_path)
+    (tmp_path / "ok.txt").unlink()
+    assert verdict_lines(run_base(tmp_path).stdout) == ["FACTORY-GATES: FAIL"]
+
+
+@pytest.mark.parametrize("rel,content", [
+    ("scripts/test.sh", "exit 0\n"),
+    ("scripts/test-evil.sh", "echo '0 failed'\n"),
+    (".agents/hooks/test-evil.sh", "echo '0 failed'\n"),
+    ("scripts/apply-contract.sh", "exit 0\n"),
+    ("scripts/check-settings-drift.sh", "exit 0\n"),
+    ("conftest.py", "import os\n"),
+    ("sub/conftest.py", "import os\n"),
+    ("pytest.ini", "[pytest]\n"),
+    ("scripts/lib/config.py", "x=1\n"),
+])
+def test_worker_touching_gate_files_is_misconfigured(tmp_path, rel, content):
+    git_repo(tmp_path)
+    p = tmp_path / rel
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(content)                       # untracked or modified, uncommitted
+    r = run_base(tmp_path)
+    assert r.returncode == 2 and verdict_lines(r.stdout) == ["FACTORY-GATES: MISCONFIGURED"]
+    assert rel in r.stdout
+
+
+def test_committed_gate_change_is_misconfigured(tmp_path):
+    git = git_repo(tmp_path)
+    (tmp_path / "scripts" / "test.sh").write_text("exit 0\n")
+    git("commit", "-qam", "weaken gates")
+    git("branch", "work")
+    # base is the earlier commit
+    r = subprocess.run([BASH, str(GATES_SH), str(tmp_path), "HEAD~1"], capture_output=True, text=True)
+    assert verdict_lines(r.stdout) == ["FACTORY-GATES: MISCONFIGURED"]
+
+
+def test_unknown_base_ref_is_misconfigured(tmp_path):
+    git_repo(tmp_path)
+    assert verdict_lines(run_base(tmp_path, "nope").stdout) == ["FACTORY-GATES: MISCONFIGURED"]
+
+
+def test_ordinary_file_changes_are_allowed(tmp_path):
+    git_repo(tmp_path)
+    (tmp_path / "skills").mkdir()
+    (tmp_path / "skills" / "a.py").write_text("x=1\n")
+    assert verdict_lines(run_base(tmp_path).stdout) == ["FACTORY-GATES: PASS"]

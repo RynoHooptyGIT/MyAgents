@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 import os
 from collections import Counter
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict, List
 
@@ -65,6 +65,10 @@ def validate(r) -> None:
         raise LedgerError("cost_usd must be a non-negative number")
     if not _int(r["retries"]) or r["retries"] < 0:
         raise LedgerError("retries must be a non-negative int")
+    if "cost_known" in r and not isinstance(r["cost_known"], bool):
+        raise LedgerError("cost_known must be a bool")
+    if "notes" in r and (not isinstance(r["notes"], list) or not all(isinstance(x, str) for x in r["notes"])):
+        raise LedgerError("notes must be a list of strings")
     for k in ("ts", "started_at", "finished_at"):
         _ts(r[k], k)
 
@@ -111,16 +115,32 @@ def summarize(rows: List[dict]) -> dict:
             "cost_usd": round(sum(r["cost_usd"] for r in rows), 6)}
 
 
-def earned_level(rows: List[dict], category: str, policy: Policy) -> str:
+def earned_level(rows: List[dict], category: str, policy: Policy, now: datetime) -> str:
     """T2 until `promotion_count` consecutive clean merges in the category, then T1.
-    A revert demotes one tier (T1 -> T2) and resets the count. Protected rows never count."""
-    level, streak = "T2", 0
-    for r in sorted((r for r in rows if r["category"] == category),
-                    key=lambda r: _ts(r["ts"], "ts")):
-        if r["outcome"] == "merged" and not r["protected"]:
-            streak += 1
-            if streak >= policy.promotion_count:
-                level = "T1"
+    A merge counts only once it is older than `revert_window_days` with no revert.
+    T0 (docs/test-only) and protected merges never count toward promoting a category.
+    A revert demotes one tier (T1 -> T2), drops pending merges and resets the count."""
+    window = timedelta(days=policy.revert_window_days)
+    level, streak, pending = "T2", 0, []
+
+    def settle(upto):
+        nonlocal level, streak, pending
+        keep = []
+        for ts in pending:
+            if ts + window <= upto:
+                streak += 1
+                if streak >= policy.promotion_count:
+                    level = "T1"
+            else:
+                keep.append(ts)
+        pending = keep
+
+    for r in sorted((r for r in rows if r["category"] == category), key=lambda r: _ts(r["ts"], "ts")):
+        ts = _ts(r["ts"], "ts")
+        settle(ts)
+        if r["outcome"] == "merged" and not r["protected"] and r["tier"] != "T0":
+            pending.append(ts)
         elif r["outcome"] == "reverted":
-            level, streak = "T2", 0
+            level, streak, pending = "T2", 0, []
+    settle(now if now.tzinfo else now.replace(tzinfo=timezone.utc))
     return level

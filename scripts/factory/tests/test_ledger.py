@@ -9,6 +9,7 @@ from .. import policy as pol
 
 POLICY = pol.load(Path(__file__).resolve().parents[3])
 T0 = datetime(2026, 11, 1, 12, 0, tzinfo=timezone.utc)
+LATE = T0 + timedelta(days=200)
 
 
 def row(issue=1, outcome="merged", category="skills", ts=T0, tier="T1", protected=False, cost=0.5, **kw):
@@ -84,58 +85,101 @@ def merged_series(n, category="skills", start=T0, protected=False):
 
 
 def test_starts_at_t2():
-    assert L.earned_level([], "skills", POLICY) == "T2"
+    assert L.earned_level([], "skills", POLICY, now=LATE) == "T2"
 
 
 def test_four_merges_still_t2_five_promotes():
-    assert L.earned_level(merged_series(4), "skills", POLICY) == "T2"
-    assert L.earned_level(merged_series(5), "skills", POLICY) == "T1"
+    assert L.earned_level(merged_series(4), "skills", POLICY, now=LATE) == "T2"
+    assert L.earned_level(merged_series(5), "skills", POLICY, now=LATE) == "T1"
 
 
 def test_other_categories_do_not_count():
-    assert L.earned_level(merged_series(9, "docs"), "skills", POLICY) == "T2"
+    assert L.earned_level(merged_series(9, "docs"), "skills", POLICY, now=LATE) == "T2"
 
 
 def test_non_merged_rows_do_not_count():
     rows = merged_series(4) + [row(50, "awaiting-human", ts=T0 + timedelta(days=1))]
-    assert L.earned_level(rows, "skills", POLICY) == "T2"
+    assert L.earned_level(rows, "skills", POLICY, now=LATE) == "T2"
 
 
 def test_revert_demotes_and_resets_count():
     rows = merged_series(5)
     rows.append(row(2, "reverted", ts=T0 + timedelta(days=1)))
-    assert L.earned_level(rows, "skills", POLICY) == "T2"
+    assert L.earned_level(rows, "skills", POLICY, now=LATE) == "T2"
     # after a revert, five more clean merges are required
     more = merged_series(4, start=T0 + timedelta(days=2))
     for i, m in enumerate(more):
         m["issue"] = 100 + i
-    assert L.earned_level(rows + more, "skills", POLICY) == "T2"
+    assert L.earned_level(rows + more, "skills", POLICY, now=LATE) == "T2"
     last = row(200, "merged", ts=T0 + timedelta(days=3))
-    assert L.earned_level(rows + more + [last], "skills", POLICY) == "T1"
+    assert L.earned_level(rows + more + [last], "skills", POLICY, now=LATE) == "T1"
 
 
 def test_revert_of_t2_category_stays_t2_and_resets_count():
     rows = merged_series(3) + [row(1, "reverted", ts=T0 + timedelta(days=1))]
     rows += [row(10 + i, "merged", ts=T0 + timedelta(days=2, hours=i)) for i in range(4)]
-    assert L.earned_level(rows, "skills", POLICY) == "T2"
+    assert L.earned_level(rows, "skills", POLICY, now=LATE) == "T2"
 
 
 def test_protected_rows_never_promote():
-    assert L.earned_level(merged_series(9, protected=True), "skills", POLICY) == "T2"
+    assert L.earned_level(merged_series(9, protected=True), "skills", POLICY, now=LATE) == "T2"
 
 
 def test_rows_processed_in_timestamp_order_not_file_order():
     rows = merged_series(5)
     rev = row(2, "reverted", ts=T0 + timedelta(days=1))
     # revert listed first in the file but happened last
-    assert L.earned_level([rev] + rows, "skills", POLICY) == "T2"
+    assert L.earned_level([rev] + rows, "skills", POLICY, now=LATE) == "T2"
 
 
 def test_revert_of_other_category_ignored():
     rows = merged_series(5) + [row(2, "reverted", "docs", ts=T0 + timedelta(days=1))]
-    assert L.earned_level(rows, "skills", POLICY) == "T1"
+    assert L.earned_level(rows, "skills", POLICY, now=LATE) == "T1"
 
 
 def test_promotion_count_comes_from_policy():
     p3 = POLICY.__class__(**{**POLICY.__dict__, "promotion_count": 3})
-    assert L.earned_level(merged_series(3), "skills", p3) == "T1"
+    assert L.earned_level(merged_series(3), "skills", p3, now=LATE) == "T1"
+
+
+# ---- revert window and T0 exclusion ----
+NOW = T0 + timedelta(days=100)
+
+
+def test_merge_counts_only_after_revert_window():
+    p = POLICY
+    recent = [row(i, "merged", ts=NOW - timedelta(days=1, hours=-i)) for i in range(1, 6)]
+    assert L.earned_level(recent, "skills", p, now=NOW) == "T2"
+    old = [row(i, "merged", ts=NOW - timedelta(days=p.revert_window_days + 1, hours=-i)) for i in range(1, 6)]
+    assert L.earned_level(old, "skills", p, now=NOW) == "T1"
+
+
+def test_window_boundary_exact():
+    p = POLICY
+    rows = [row(i, "merged", ts=NOW - timedelta(days=p.revert_window_days, seconds=-i)) for i in range(1, 6)]
+    assert L.earned_level(rows, "skills", p, now=NOW) == "T2"       # one second short
+    rows = [row(i, "merged", ts=NOW - timedelta(days=p.revert_window_days, seconds=i)) for i in range(1, 6)]
+    assert L.earned_level(rows, "skills", p, now=NOW) == "T1"
+
+
+def test_revert_inside_window_cancels_the_pending_merge():
+    p = POLICY
+    base = NOW - timedelta(days=40)
+    rows = [row(i, "merged", ts=base + timedelta(hours=i)) for i in range(1, 6)]
+    rows.append(row(3, "reverted", ts=base + timedelta(days=2)))
+    assert L.earned_level(rows, "skills", p, now=NOW) == "T2"
+
+
+def test_t0_merges_do_not_promote_a_code_category():
+    rows = [row(i, "merged", ts=T0 + timedelta(hours=i), tier="T0") for i in range(1, 10)]
+    assert L.earned_level(rows, "skills", POLICY, now=NOW) == "T2"
+
+
+def test_cost_known_and_notes_optional_fields(tmp_path):
+    led = L.Ledger(tmp_path / "l.jsonl")
+    led.append(row(1, cost_known=False, notes=["forced removal"]))
+    assert led.rows()[0]["cost_known"] is False
+    with pytest.raises(L.LedgerError):
+        led.append(row(2, cost_known="no"))
+    with pytest.raises(L.LedgerError):
+        led.append(row(3, notes="x"))

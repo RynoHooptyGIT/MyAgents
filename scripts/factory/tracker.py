@@ -40,6 +40,7 @@ class Tracker:
 
     def __init__(self, allowed_authors: Iterable[str]):
         self._allowed = {a.strip().lower() for a in allowed_authors if a and a.strip()}
+        self.ambiguous: List[int] = []   # issues skipped for carrying != 1 factory state label
 
     def is_allowed(self, author: str) -> bool:
         return bool(author) and author.strip().lower() in self._allowed
@@ -62,6 +63,14 @@ class Tracker:
 
     def comment(self, number: int, body: str) -> None:
         raise NotImplementedError
+
+
+def _one_state(labels) -> bool:
+    try:
+        states.state_of(labels)
+        return True
+    except states.IllegalTransition:
+        return False
 
 
 def select_claimable(tracker: Tracker) -> Tuple[Optional[Issue], List[Issue]]:
@@ -94,6 +103,8 @@ class FakeTracker(Tracker):
 
     def list_queued(self):
         out = [self._issue(n) for n, d in self._issues.items() if states.label("queued") in d["labels"]]
+        self.ambiguous = sorted(i.number for i in out if not _one_state(i.labels))
+        out = [i for i in out if _one_state(i.labels)]
         return sorted(out, key=lambda i: (i.created_at, i.number))
 
     def halt_label_present(self):
@@ -153,7 +164,10 @@ class GhTracker(Tracker):
     def list_queued(self):
         data = self._json(["issue", "list", "--state", "open", "--label", states.label("queued"),
                            "--limit", "1000", "--json", "number,title,body,author,labels,createdAt"])
-        return sorted((self._issue(d) for d in data), key=lambda i: (i.created_at, i.number))
+        issues = [self._issue(d) for d in data]
+        self.ambiguous = sorted(i.number for i in issues if not _one_state(i.labels))
+        issues = [i for i in issues if _one_state(i.labels)]
+        return sorted(issues, key=lambda i: (i.created_at, i.number))
 
     def _count(self, label: str) -> int:
         data = self._json(["issue", "list", "--state", "open", "--label", label,

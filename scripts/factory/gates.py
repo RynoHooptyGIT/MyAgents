@@ -4,8 +4,9 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, Iterable, List, Optional, Tuple
 
+from . import envscrub
 from .proc import ProcResult, run as default_run
 
 GATES_SH = Path(__file__).resolve().parent / "gates.sh"
@@ -40,12 +41,16 @@ class GateRunner:
 class ScriptGateRunner(GateRunner):
     """Runs the factory's own gates.sh (from the trusted checkout) against a worktree."""
 
-    def __init__(self, runner: Callable[..., ProcResult] = default_run, script: Path = GATES_SH):
+    def __init__(self, runner: Callable[..., ProcResult] = default_run, script: Path = GATES_SH,
+                 env_allowlist: Iterable[str] = ("PATH", "HOME", "LANG", "TERM"), base: str = "origin/main"):
         self._run = runner
         self._script = script
+        self._allow = list(env_allowlist)
+        self._base = base
 
     def run(self, worktree):
-        r = self._run(["bash", str(self._script), str(worktree)], timeout=3600)
+        r = self._run(["bash", str(self._script), str(worktree), self._base], timeout=3600,
+                      env=envscrub.scrub_env(None, self._allow))
         out = r.stdout + (("\n" + r.stderr) if r.stderr else "")
         return GateResult(parse_verdict(r.stdout), out)
 
