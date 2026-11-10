@@ -25,6 +25,8 @@ protected_paths:
   - "**/CLAUDE.md"
   - "**/*secret*"
   - "**/*credential*"
+  - "**/secrets/**"
+  - "**/credentials/**"
   - "**/.env"
   - "**/.env.*"
   - "**/*.pem"
