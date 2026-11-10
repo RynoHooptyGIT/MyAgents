@@ -1,0 +1,2 @@
+# Runtime state, local to the machine running the factory (the ledger lives in policy state_dir).
+STOP
