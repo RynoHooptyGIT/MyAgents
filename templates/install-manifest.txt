@@ -46,3 +46,6 @@ exec	scripts/team-check.sh	scripts/	core
 # Project-owned after the first install (never clobbered by an update)
 init	.agents/config.yaml	.agents/	core
 init	templates/settings.local.json.template	.claude/settings.local.json	claude
+
+# Product gates template for target projects (project-owned after first install)
+init	templates/product-gates/GATES.md	docs/GATES.md	core
