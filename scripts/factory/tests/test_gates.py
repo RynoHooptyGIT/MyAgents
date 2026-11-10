@@ -107,7 +107,7 @@ def test_script_runner_uses_arg_list_and_parses(tmp_path):
 
     res = G.ScriptGateRunner(fake).run(tmp_path)
     assert res.verdict == "FAIL" and "oops" in res.output
-    assert seen["argv"][0] == "bash" and seen["argv"][-1] == str(tmp_path)
+    assert seen["argv"][0] == "bash" and seen["argv"][-2] == str(tmp_path)
 
 
 def test_script_runner_no_verdict_is_misconfigured(tmp_path):
