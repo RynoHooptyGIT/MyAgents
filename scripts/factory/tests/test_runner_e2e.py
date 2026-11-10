@@ -28,7 +28,8 @@ class Env:
         self.launcher = Lc.FakeLauncher(launcher_results, routing=self.policy.routing)
         self.gates = G.FakeGateRunner(list(gate_results))
         self.ws = W.FakeWorkspace(tmp_path, diff or W.DiffStats(["skills/a/x.py"], 20, 2, 0))
-        self.ledger = Ld.Ledger(tmp_path / ".factory" / "ledger.jsonl")
+        self.state = tmp_path / "state"
+        self.ledger = Ld.Ledger(self.state / "ledger.jsonl")
         self.out = []
 
     def add(self, n=1, author="RynoHooptyGIT", labels=("factory:queued",), created="2026-11-01", title="Add thing"):
@@ -36,7 +37,7 @@ class Env:
 
     def ctx(self):
         return R.Context(root=self.root, policy=self.policy, tracker=self.tracker, launcher=self.launcher,
-                         gates=self.gates, workspace=self.ws, ledger=self.ledger, now=lambda: NOW,
+                         gates=self.gates, workspace=self.ws, ledger=self.ledger, state_dir=self.state, now=lambda: NOW,
                          out=self.out.append)
 
 
@@ -282,3 +283,150 @@ def test_ledger_row_has_timestamps_cost_tokens(env):
     r = env.ledger.rows()[0]
     assert r["cost_usd"] == 0.5 and r["tokens"] == {"input": 200, "output": 100}
     assert r["started_at"] and r["finished_at"] and r["ts"]
+
+
+# ---------------- fix round ----------------
+def test_crash_after_spend_records_spend_and_parks_failed(tmp_path):
+    class Spends(Lc.FakeLauncher):
+        def run(self, role, *a, **k):
+            if role == "build":
+                raise RuntimeError("kaput")
+            return super().run(role, *a, **k)
+    e = Env(tmp_path)
+    e.add()
+    e.launcher = Spends([Lc.WorkerResult(0, "ok", 10, 5, 1.0, True, "sonnet")], routing=e.policy.routing)
+    with pytest.raises(RuntimeError):
+        R.run_once(e.ctx())
+    row = e.ledger.rows()[0]
+    assert row["outcome"] == "failed" and row["cost_usd"] == 1.0 and row["tokens"]["input"] == 10
+    assert e.tracker.labels(1) == {"factory:failed"}
+
+
+def test_state_mismatch_after_claim_still_writes_ledger_row_even_if_park_fails(tmp_path):
+    class Flaky(T.FakeTracker):
+        def transition(self, number, current, new):
+            if (current, new) == ("claimed", "building"):
+                raise T.StateMismatch("label changed under us")
+            if new == "failed":
+                raise T.TrackerError("gh down")
+            super().transition(number, current, new)
+    e = Env(tmp_path)
+    e.tracker = Flaky(e.policy.allowlisted_authors)
+    e.add()
+    with pytest.raises(T.StateMismatch):
+        R.run_once(e.ctx())
+    rows = e.ledger.rows()
+    assert len(rows) == 1 and rows[0]["outcome"] == "failed"
+    assert rows[0]["cost_usd"] == 0.5 or rows[0]["cost_usd"] == 0.0
+
+
+def test_ledger_failure_does_not_stop_the_park_attempt(tmp_path):
+    class BadLedger(Ld.Ledger):
+        def append(self, row):
+            raise OSError("disk full")
+    e = Env(tmp_path)
+    e.add()
+    e.ledger = BadLedger(e.state / "ledger.jsonl")
+
+    class Boom(Lc.Launcher):
+        def run(self, *a, **k):
+            raise RuntimeError("kaput")
+    e.launcher = Boom()
+    with pytest.raises(RuntimeError, match="kaput"):
+        R.run_once(e.ctx())
+    assert e.tracker.labels(1) == {"factory:failed"}
+
+
+def test_ledger_written_before_the_state_move(tmp_path):
+    order = []
+
+    class Spy(Ld.Ledger):
+        def append(self, row):
+            order.append("ledger")
+            super().append(row)
+
+    class SpyT(T.FakeTracker):
+        def transition(self, number, current, new):
+            if new == "awaiting-human":
+                order.append("move")
+            super().transition(number, current, new)
+    e = Env(tmp_path)
+    e.tracker = SpyT(e.policy.allowlisted_authors)
+    e.ledger = Spy(e.state / "ledger.jsonl")
+    e.add()
+    R.run_once(e.ctx())
+    assert order == ["ledger", "move"]
+
+
+def test_unknown_cost_charges_remaining_budget(tmp_path):
+    unknown = Lc.WorkerResult(0, "ok", 0, 0, 0.0, False, "sonnet")
+    e = Env(tmp_path, launcher_results=[unknown])
+    e.add()
+    res = R.run_once(e.ctx())
+    row = e.ledger.rows()[0]
+    assert row["cost_known"] is False and row["cost_usd"] == e.policy.per_issue_usd
+    assert [c["role"] for c in e.launcher.calls] == ["spec"]
+    assert "budget exceeded" in row["reasons"]
+
+
+def test_workers_get_remaining_budget_flag(env):
+    R.run_once(env.ctx())
+    first, second = env.launcher.calls[0], env.launcher.calls[1]
+    assert first["max_budget_usd"] == env.policy.per_issue_usd
+    assert second["max_budget_usd"] == env.policy.per_issue_usd
+
+
+def test_comments_are_fixed_messages_with_codes_only(tmp_path):
+    secret = "SECRET-WORKER-OUTPUT /Users/x/.ssh/id_rsa"
+    e = Env(tmp_path, launcher_results=[Lc.WorkerResult(1, secret, 0, 0, 0.1, True, "sonnet")])
+    e.add()
+    R.run_once(e.ctx())
+    for _, body in e.tracker.comments:
+        assert secret not in body and "SECRET" not in body
+        assert "T2" in body and "spec-failed" in body
+    log = (e.state / "logs" / "issue-1.log").read_text()
+    assert secret in log
+
+
+def test_comment_codes_for_normal_run_contain_no_paths(env):
+    R.run_once(env.ctx())
+    body = env.tracker.comments[0][1]
+    assert "skills/a/x.py" not in body and "phase-2-forced" in body and "verifier-stub" in body
+
+
+def test_gate_output_goes_to_log_not_comment(tmp_path):
+    e = Env(tmp_path, gate_results=[("FAIL", "TOKEN=abc123 leaked")] * 3)
+    e.add()
+    R.run_once(e.ctx())
+    assert all("abc123" not in b for _, b in e.tracker.comments)
+    assert "abc123" in (e.state / "logs" / "issue-1.log").read_text()
+
+
+def test_requeued_issue_uses_next_attempt_and_records_workspace_notes(tmp_path):
+    e = Env(tmp_path)
+    e.add()
+    e.ws.notes = ["forced removal of dirty worktree factory-1 from a previous attempt"]
+    R.run_once(e.ctx())
+    e.tracker.transition(1, "awaiting-human", "queued")
+    R.run_once(e.ctx())
+    assert [a for (_, _, a) in e.ws.prepared] == [1, 2]
+    rows = e.ledger.rows()
+    assert rows[0]["notes"] and not rows[1].get("notes")
+
+
+def test_deleted_test_files_and_binary_reach_classifier(tmp_path):
+    e = Env(tmp_path, diff=W.DiffStats(["skills/tests/test_a.py", "x.png"], 1, 5, 1,
+                                       deleted_paths=["skills/tests/test_a.py"], binary_files=1))
+    e.add()
+    res = R.run_once(e.ctx())
+    text = " ".join(res.reasons)
+    assert "deleted test file" in text and "binary file" in text
+
+
+def test_ambiguous_labels_skipped_and_reported(tmp_path):
+    e = Env(tmp_path)
+    e.add(1, labels=("factory:queued", "factory:building"), created="2026-11-01")
+    e.add(2, created="2026-11-02")
+    res = R.run_once(e.ctx())
+    assert res.issue == 2
+    assert any("#1" in line and "state labels" in line for line in e.out)

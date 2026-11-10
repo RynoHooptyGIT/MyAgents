@@ -32,12 +32,17 @@ def resolve_root(arg: Optional[str]) -> Path:
 def build_real_context(root, repo: Optional[str]) -> runner.Context:
     root = Path(root)
     policy = load_policy(root)
+    state_dir = Path(policy.state_dir).expanduser()
+    state_dir = (state_dir if state_dir.is_absolute() else root / state_dir).resolve()
+    if state_dir == root.resolve() or root.resolve() in state_dir.parents:
+        raise PolicyError(f"state_dir {state_dir} must be outside the repository {root}")
     return runner.Context(
         root=root, policy=policy,
         tracker=GhTracker(allowed_authors=policy.allowlisted_authors, repo=repo),
-        launcher=ClaudeLauncher(policy), gates=ScriptGateRunner(),
+        launcher=ClaudeLauncher(policy),
+        gates=ScriptGateRunner(env_allowlist=policy.env_allowlist),
         workspace=GitWorkspace(root),
-        ledger=Ledger(root / ".factory" / "ledger.jsonl"))
+        ledger=Ledger(state_dir / "ledger.jsonl"), state_dir=state_dir)
 
 
 def _status(ctx: runner.Context) -> int:
@@ -45,6 +50,7 @@ def _status(ctx: runner.Context) -> int:
     now = ctx.now().astimezone(timezone.utc)
     s = ledger_mod.summarize(rows)
     ctx.out(f"queued: {len(ctx.tracker.list_queued())}")
+    ctx.out(f"ambiguous (more than one state label, skipped): {ctx.tracker.ambiguous}")
     ctx.out(f"awaiting-human: {ctx.tracker.count_state('awaiting-human')} (max {ctx.policy.max_awaiting_human})")
     ctx.out(f"halt label: {'yes' if ctx.tracker.halt_label_present() else 'no'}")
     ctx.out(f"STOP file: {'present' if stops.stop_file(ctx.root).exists() else 'absent'}")

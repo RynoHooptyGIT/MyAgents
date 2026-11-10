@@ -46,11 +46,16 @@ class FakeWorkspace(Workspace):
     def __init__(self, base: Path, stats: DiffStats):
         self._base, self._stats = Path(base), stats
         self.prepared = []
+        self.notes: List[str] = []
+
+    def take_notes(self):
+        n, self.notes = self.notes, []
+        return n
 
     def prepare(self, number, title_slug, attempt=1):
         p = self._base / f"wt-{number}"
         p.mkdir(parents=True, exist_ok=True)
-        self.prepared.append((number, title_slug))
+        self.prepared.append((number, title_slug, attempt))
         return p
 
     def snapshot(self, path):

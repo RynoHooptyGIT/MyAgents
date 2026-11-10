@@ -45,8 +45,11 @@ untrusted: it reaches workers on stdin and is never placed in a command line.
 budgets, queue caps, allowed authors and the role-to-model table. A missing or
 malformed policy stops the run; there are no silent defaults.
 
-`.factory/ledger.jsonl` is append-only, one row per issue run, and is gitignored
-(`.factory/.gitignore`) because it is local runtime state and holds cost data.
+The ledger (`ledger.jsonl`) is append-only, one row per issue run. It and the per-issue
+logs (`logs/issue-N.log`, which hold worker and gate output) live in `state_dir`
+(policy; default `~/.local/state/myagents-factory`), outside the repository, so a
+worker's working directory does not contain them. A `state_dir` inside the repo is refused.
+Issue comments carry only the tier and fixed reason codes, never worker output.
 
 ## What phase 2 does not do yet
 
@@ -57,3 +60,23 @@ malformed policy stops the run; there are no silent defaults.
   Claiming is a label change, not a branch push; the worktree and branch stay local.
 - No self-filed issues, no daily digest, no earned autonomy in effect (the ledger reader
   computes levels, but the runner ignores them until phase 4).
+
+## Interim hardening
+
+- Workers and `gates.sh` run with a scrubbed environment: only the names in the policy's
+  `env_allowlist` pass (no `GH_TOKEN`, `GITHUB_TOKEN`, `ANTHROPIC_API_KEY` or anything credential-like).
+- `gates.sh <worktree> <base_ref>` reports MISCONFIGURED if the worker changed, added or deleted
+  the gate entry script, the harnesses it auto-discovers, pytest config or conftest, or the files
+  they read, and requires `scripts/test.sh` to equal the base commit's copy.
+- Workers are launched with `--max-budget-usd` set to the remaining budget. `claude --help`
+  shows no per-run turn-limit flag, so none is passed. A timed-out worker or unknown cost is
+  charged the rest of the per-issue budget and the row records `cost_known: false`.
+- A requeued issue gets a fresh worktree and branch (`factory/N-slug-a2`); branches are never deleted.
+
+## Known limits
+
+Workers are not sandboxed. Until they run in a sandbox with no write access outside their
+worktree, a worker can execute arbitrary code as the operator: read the home directory,
+reach the network, and edit anything the operator can. The env scrub and trusted-base gates
+reduce accident and casual abuse, not a determined worker. This blocks enabling unattended
+merges (phase 4). Pytest also runs any test file a worker adds.
