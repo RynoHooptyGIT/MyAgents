@@ -76,7 +76,7 @@ ls "$REPO_ROOT/.agents/registry"/agent-*.yaml 2>/dev/null
 
 For each registration file found:
 1. Read `last_heartbeat` and `pid` from the YAML
-2. Check if heartbeat is older than 10 minutes
+2. Check if heartbeat is older than `coordination.stale_threshold_minutes` from `.agents/config.yaml` (default 10)
 3. If stale, check if the process is alive: `kill -0 {pid} 2>/dev/null`
 4. If process is dead:
    - Check the agent's worktree for uncommitted work: `git -C "$REPO_ROOT/.worktrees/agent-{id}" status --porcelain 2>/dev/null`

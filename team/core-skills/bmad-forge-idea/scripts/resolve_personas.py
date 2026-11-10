@@ -121,20 +121,26 @@ def load_party_workflow(project_root: Path, party_skill: Path):
 def load_party_overrides(project_root: Path):
     """Custom personas/parties when party-mode itself isn't installed.
 
-    Reads only the user's override TOMLs (team then personal, personal wins on
-    scalars). No base roster exists in this path, so a shallow merge is enough.
+    Reads the user's override TOMLs from both `_bmad/custom` and
+    `team/custom`, folded in the same order as
+    `config_utils.load_customization` (`_bmad/custom` then `team/custom`,
+    team file then personal file within each), so `team/custom` wins on
+    scalars when both are present. No base roster exists in this path, so a
+    shallow merge is enough.
     """
-    custom = project_root / "_bmad" / "custom"
-    team = _load_toml(custom / f"{PARTY_SKILL}.toml").get("workflow", {})
-    user = _load_toml(custom / f"{PARTY_SKILL}.user.toml").get("workflow", {})
-    team = team if isinstance(team, dict) else {}
-    user = user if isinstance(user, dict) else {}
-    merged = dict(team)
-    for key, val in user.items():
-        if isinstance(val, list) and isinstance(merged.get(key), list):
-            merged[key] = merged[key] + val
-        else:
-            merged[key] = val
+    merged: dict = {}
+    for custom_dir in (
+        project_root / "_bmad" / "custom",
+        project_root / "team" / "custom",
+    ):
+        for suffix in ("toml", "user.toml"):
+            layer = _load_toml(custom_dir / f"{PARTY_SKILL}.{suffix}").get("workflow", {})
+            layer = layer if isinstance(layer, dict) else {}
+            for key, val in layer.items():
+                if isinstance(val, list) and isinstance(merged.get(key), list):
+                    merged[key] = merged[key] + val
+                else:
+                    merged[key] = val
     return merged
 
 

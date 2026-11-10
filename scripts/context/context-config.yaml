@@ -4,7 +4,7 @@
 #
 # All paths are relative to the project root.
 
-output_dir: "_bmad-output/context"
+output_dir: "output/context"
 
 generators:
   # Sprint Digest — Always works (reads sprint-status.yaml)

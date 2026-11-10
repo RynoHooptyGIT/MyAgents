@@ -133,6 +133,56 @@ class TestOverrideMergeFallback(unittest.TestCase):
             self.assertEqual(wf["default_party"], "b")  # personal wins
             self.assertEqual([m["code"] for m in wf["party_members"]], ["x", "y"])  # appended
 
+    def test_team_custom_wins_over_bmad_custom_when_both_present(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            bmad_custom = root / "_bmad" / "custom"
+            team_custom = root / "team" / "custom"
+            bmad_custom.mkdir(parents=True)
+            team_custom.mkdir(parents=True)
+            (bmad_custom / "bmad-party-mode.toml").write_text(
+                '[workflow]\ndefault_party = "bmad-custom"\n')
+            (team_custom / "bmad-party-mode.toml").write_text(
+                '[workflow]\ndefault_party = "team-custom"\n')
+
+            wf = rp.load_party_overrides(root)
+
+            self.assertEqual(wf["default_party"], "team-custom")
+
+    def test_team_custom_applied_alone(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            team_custom = root / "team" / "custom"
+            team_custom.mkdir(parents=True)
+            (team_custom / "bmad-party-mode.toml").write_text(
+                '[workflow]\ndefault_party = "team-custom"\n')
+
+            wf = rp.load_party_overrides(root)
+
+            self.assertEqual(wf["default_party"], "team-custom")
+
+    def test_bmad_custom_applied_alone(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            bmad_custom = root / "_bmad" / "custom"
+            bmad_custom.mkdir(parents=True)
+            (bmad_custom / "bmad-party-mode.toml").write_text(
+                '[workflow]\ndefault_party = "bmad-custom"\n')
+
+            wf = rp.load_party_overrides(root)
+
+            self.assertEqual(wf["default_party"], "bmad-custom")
+
+    def test_neither_present_returns_empty_dict(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            wf = rp.load_party_overrides(Path(d))
+
+            self.assertEqual(wf, {})
+
 
 if __name__ == "__main__":
     unittest.main()

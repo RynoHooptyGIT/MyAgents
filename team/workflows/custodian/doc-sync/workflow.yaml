@@ -11,20 +11,19 @@ variables:
   # Paige (tech-writer) runs the patrol — she is the writer persona allowed to
   # author/prune docs. Sentinel (custodian) is report-only and never writes.
   agent: "tech-writer"
-  # Sources of truth for INTENT. NOTE: real planning artifacts live under
-  # _bmad-output/ in this repo, NOT output/ (config path is historically wrong).
-  prd_glob: "_bmad-output/planning-artifacts/prds/**/*.md"
-  epics_glob: "_bmad-output/planning-artifacts/*epics*.md"
+  # Sources of truth for INTENT. Artifact paths follow team/config.yaml output structure.
+  prd_glob: "output/planning-artifacts/prds/**/*.md"
+  epics_glob: "output/planning-artifacts/*epics*.md"
   docs_glob: "docs/**/*.md"
-  sprint_status: "_bmad-output/implementation-artifacts/sprint-status.yaml"
+  sprint_status: "output/implementation-artifacts/sprint-status.yaml"
 input_file_patterns:
   prd:
     description: "Product requirements — source of truth for intent"
-    whole: "_bmad-output/planning-artifacts/prds/**/*.md"
+    whole: "output/planning-artifacts/prds/**/*.md"
     load_strategy: "FULL_LOAD"
   epics:
     description: "Epics & stories — what is actually being built"
-    whole: "_bmad-output/planning-artifacts/*epics*.md"
+    whole: "output/planning-artifacts/*epics*.md"
     load_strategy: "FULL_LOAD"
   docs:
     description: "Technical docs to keep in sync"

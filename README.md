@@ -60,6 +60,10 @@ bash scripts/setup.sh
 #    In Copilot: Ask the AI to load team/agents/oracle.md
 ```
 
+## Development
+
+Run all tests (pytest + harness tests) with `bash scripts/test.sh` to ensure the system is ready for release.
+
 ## Supported AI Tools
 
 | Tool | Support Level | Key Integration |

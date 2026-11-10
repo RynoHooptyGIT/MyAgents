@@ -8,11 +8,10 @@ Reconcile `docs/` against the PRD, epics, and live code; **update** stale docs,
 > proposes and applies documentation changes only. The worst outcome is a
 > drift report — never a failed gate. It never edits production code.
 
-> **PATH NOTE.** In this repo the real planning artifacts live under
-> `_bmad-output/` (NOT `output/` — the config path is historically wrong).
-> Read PRDs from `_bmad-output/planning-artifacts/prds/`, epics from
-> `_bmad-output/planning-artifacts/`, sprint state from
-> `_bmad-output/implementation-artifacts/sprint-status.yaml`.
+> **PATH NOTE.** Planning artifacts are read from `output/` as defined in `team/config.yaml`.
+> Read PRDs from `output/planning-artifacts/prds/`, epics from
+> `output/planning-artifacts/`, sprint state from
+> `output/implementation-artifacts/sprint-status.yaml`.
 
 ---
 
@@ -20,9 +19,9 @@ Reconcile `docs/` against the PRD, epics, and live code; **update** stale docs,
 
 Load what the project is *supposed* to be:
 
-1. Read every PRD under `_bmad-output/planning-artifacts/prds/**/*.md`
-2. Read epics/stories: `_bmad-output/planning-artifacts/*epics*.md`
-3. Read sprint state: `_bmad-output/implementation-artifacts/sprint-status.yaml`
+1. Read every PRD under `output/planning-artifacts/prds/**/*.md`
+2. Read epics/stories: `output/planning-artifacts/*epics*.md`
+3. Read sprint state: `output/implementation-artifacts/sprint-status.yaml`
    — which epics/stories are `done` vs `in-progress` vs `backlog`
 
 Build a short mental index: features that are **shipped**, **in flight**, and

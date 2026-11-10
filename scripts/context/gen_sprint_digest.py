@@ -66,7 +66,8 @@ def determine_phase(epic_num: int, phases: list[dict]) -> tuple[int, str]:
 def generate_with_config(project_root: Path, output_dir: Path, config: dict):
     """Generate sprint-digest.md using config settings."""
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    sprint_file = project_root / "_bmad-output" / "implementation-artifacts" / "sprint-status.yaml"
+    # Matches team/config.yaml implementation_artifacts and Oracle's sprint-status path.
+    sprint_file = project_root / "output" / "implementation-artifacts" / "sprint-status.yaml"
     phases = config.get("phases", [
         {"range": [1, 4], "name": "Foundation"},
         {"range": [5, 99], "name": "Features"},
@@ -192,7 +193,8 @@ def generate_with_config(project_root: Path, output_dir: Path, config: dict):
 def main():
     """Legacy entry point."""
     project_root = Path(__file__).resolve().parents[2]
-    output_dir = project_root / "_bmad-output" / "context"
+    # Standalone default; generate_all.py passes the configured output_dir (scripts/context/context-config.yaml).
+    output_dir = project_root / "output" / "context"
     output_dir.mkdir(parents=True, exist_ok=True)
     generate_with_config(project_root, output_dir, {})
 

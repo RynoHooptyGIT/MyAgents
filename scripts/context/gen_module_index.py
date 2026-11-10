@@ -302,7 +302,8 @@ def generate_with_config(project_root: Path, output_dir: Path, config: dict):
 def main():
     """Legacy entry point (uses hardcoded paths)."""
     project_root = Path(__file__).resolve().parents[2]
-    output_dir = project_root / "_bmad-output" / "context"
+    # Standalone default; generate_all.py passes the configured output_dir (scripts/context/context-config.yaml).
+    output_dir = project_root / "output" / "context"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     config = {

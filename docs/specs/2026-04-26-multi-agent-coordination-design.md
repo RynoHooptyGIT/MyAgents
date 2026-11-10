@@ -770,3 +770,37 @@ These are explicitly out of scope but noted for future iterations:
 - **Agent-to-agent real-time messaging**: File-watch or IPC for faster communication
 - **Automatic merge orchestration**: Agents coordinate branch merges in dependency order
 - **Dashboard**: Visual status board showing all active agents, claims, and progress
+
+---
+
+## Config keys (2026-09-22)
+
+Tier B (`docs/specs/2026-09-22-consolidation-tier-b-design.md`, B2) audited every key under
+`coordination:` and `orchestrator_integration:` in `.agents/config.yaml` for an actual reader
+(a hook, script, or prompt that references the key by name — this design doc's own reproduction
+of the schema above does not count as a reader). Keys with zero readers were deleted from
+`.agents/config.yaml`; the rest were left as-is or wired up:
+
+- `heartbeat_interval_calls` — **kept**, now actually read by `.agents/hooks/heartbeat.sh` via
+  `scripts/lib/config.py` (previously hardcoded to `20` in the hook and ignored).
+- `stale_threshold_minutes` — **kept**; `claude-commands/team/agent-coordinator.md` now names it
+  explicitly instead of a hardcoded "10 minutes" (previously prose only, no reader).
+- `claim_conflict_action`, `claim_path_matching` — **removed**; no hook or prompt implements
+  configurable claim-conflict behavior, `claim-check.sh` always blocks on prefix match.
+- `auto_worktree`, `cleanup_orphaned_worktrees` — **removed**; no hook or prompt reads these;
+  worktree creation/cleanup in `agent-coordinator.md` is unconditional, not config-gated.
+- `worktree_base_dir`, `branch_prefix` — **removed**; `agent-coordinator.md` hardcodes
+  `.worktrees/agent-{AGENT_ID}` and `agent/{AGENT_ID}/{task-slug}` literally rather than naming
+  these config keys.
+- `decision_sync_on_startup`, `decision_sync_interval_calls` — **removed**; decision sync in the
+  coordinator prompt is unconditional and not tied to either key.
+- `request_check_interval_calls` — **removed**; no hook or prompt reads it.
+- `orchestrator_integration:` (`enabled`, `cross_post_decisions`, `cross_post_handoffs`,
+  `cross_post_findings`, `respect_mission_assignments`) — **removed entirely**; this block was a
+  stale holdover from the former Maestro-integration design (Section 6 above, which itself names
+  the block `maestro_integration`, not `orchestrator_integration`) and had no reader anywhere in
+  `team/`, `claude-commands/`, `.agents/hooks/`, or `scripts/`.
+
+A key can be re-added once something actually reads it by name; until then it stays documented
+here rather than in the live config, so `.agents/config.yaml` does not claim behavior that does
+not exist.

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Hook: Heartbeat
-# Updates agent's last_heartbeat timestamp every ~20 tool calls.
+# Updates agent's last_heartbeat timestamp every coordination.heartbeat_interval_calls
+# tool calls (default 20; falls back to 20 with no python3 or no config).
 # Exit 0 always (never blocks).
 
 HOOK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -25,7 +26,10 @@ COUNT=0
 case "$COUNT" in ''|*[!0-9]*) COUNT=0 ;; esac
 COUNT=$((COUNT + 1))
 
-if [ "$COUNT" -lt 20 ]; then
+INTERVAL="$(python3 "$COORD_ROOT/scripts/lib/config.py" --root "$COORD_ROOT" --section coordination --default-json '{"heartbeat_interval_calls":20}' heartbeat_interval_calls 2>/dev/null || echo 20)"
+case "$INTERVAL" in ''|*[!0-9]*) INTERVAL=20 ;; esac
+
+if [ "$COUNT" -lt "$INTERVAL" ]; then
   echo "$COUNT" > "$COUNTER_FILE"
   exit 0
 fi

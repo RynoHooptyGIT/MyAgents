@@ -1,0 +1,48 @@
+# Shared install manifest — the single list of tooling files that scripts/setup.sh
+# (fresh install) and scripts/team-update.sh (update from upstream) both install.
+# Applied by apply_manifest in scripts/lib/install-manifest.sh.
+#
+# Format: mode<TAB>src<TAB>dst[<TAB>group]   (# comments and blank lines are ignored)
+#   copy  copy, overwriting dst
+#   init  copy only if dst is absent (project-owned after the first install)
+#   exec  copy, overwriting dst, then chmod +x
+# src is relative to the source root; a glob is allowed in the basename only.
+# dst is relative to the destination root; a trailing / means "into this directory",
+# otherwise it is the destination file path (single-file src only).
+# group is `core` (tool-agnostic; the default when the column is absent) or
+# `claude` (Claude Code hooks and settings). apply_manifest --group NAME installs
+# only that group; with no --group every entry is applied.
+# Repo-only dev tools (scripts/test.sh, scripts/check-settings-drift.sh) are
+# deliberately not listed: they depend on files a target project does not have.
+
+# Claude Code hooks
+exec	.claude/hooks/check-for-updates.sh	.claude/hooks/	claude
+exec	.claude/hooks/slim-prompt.sh	.claude/hooks/	claude
+exec	hooks/post-commit-context.sh	.claude/hooks/	claude
+
+# Coordination hooks (Claude Code PreToolUse/PostToolUse)
+exec	.agents/hooks/worktree-guard.sh	.agents/hooks/	claude
+exec	.agents/hooks/claim-check.sh	.agents/hooks/	claude
+exec	.agents/hooks/heartbeat.sh	.agents/hooks/	claude
+copy	.agents/hooks/lib-identity.sh	.agents/hooks/	claude
+
+# Instinct capture loop hooks (Claude Code UserPromptSubmit/PostToolUse/Stop/SessionStart)
+exec	.agents/hooks/observe.sh	.agents/hooks/	claude
+exec	.agents/hooks/instinct-mine.sh	.agents/hooks/	claude
+exec	.agents/hooks/instinct-inject.sh	.agents/hooks/	claude
+
+# Python tooling (instinct CLI, shared config loader, context generators)
+copy	scripts/instincts/*.py	scripts/instincts/	core
+copy	scripts/lib/*.py	scripts/lib/	core
+copy	scripts/lib/install-manifest.sh	scripts/lib/	core
+copy	scripts/context/*.py	scripts/context/	core
+copy	scripts/context/context-config.example.yaml	scripts/context/	core
+init	scripts/context/context-config.yaml	scripts/context/	core
+
+# Update and check scripts
+exec	scripts/team-update.sh	scripts/	core
+exec	scripts/team-check.sh	scripts/	core
+
+# Project-owned after the first install (never clobbered by an update)
+init	.agents/config.yaml	.agents/	core
+init	templates/settings.local.json.template	.claude/settings.local.json	claude

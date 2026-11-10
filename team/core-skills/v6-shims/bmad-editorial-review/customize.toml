@@ -11,8 +11,8 @@
 # nothing of its own — an unset key falls through to bmad-review's default.
 #
 # Override files (not edited here):
-#   {project-root}/_bmad/custom/bmad-editorial-review.toml         (team)
-#   {project-root}/_bmad/custom/bmad-editorial-review.user.toml    (personal)
+#   {project-root}/team/custom/bmad-editorial-review.toml         (team)
+#   {project-root}/team/custom/bmad-editorial-review.user.toml    (personal)
 #
 # Overrides merge per BMad structural rules: scalars win, arrays append.
 

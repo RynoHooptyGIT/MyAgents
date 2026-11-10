@@ -3,8 +3,8 @@
 # Workflow customization surface for bmad-review.
 #
 # Override files (not edited here):
-#   {project-root}/_bmad/custom/bmad-review.toml         (team)
-#   {project-root}/_bmad/custom/bmad-review.user.toml    (personal)
+#   {project-root}/team/custom/bmad-review.toml         (team)
+#   {project-root}/team/custom/bmad-review.user.toml    (personal)
 
 [workflow]
 

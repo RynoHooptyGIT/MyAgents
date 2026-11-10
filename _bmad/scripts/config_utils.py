@@ -97,23 +97,30 @@ def merge_layers(layers: Iterable[dict[str, Any]]) -> dict[str, Any]:
 
 def load_central_config(project_root: Path) -> dict[str, Any]:
     bmad_dir = project_root / "_bmad"
+    team_dir = project_root / "team"
     return merge_layers(
         (
-            load_toml(bmad_dir / "config.toml", required=True),
+            load_toml(bmad_dir / "config.toml"),
             load_toml(bmad_dir / "config.user.toml"),
             load_toml(bmad_dir / "custom" / "config.toml"),
             load_toml(bmad_dir / "custom" / "config.user.toml"),
+            load_toml(team_dir / "config.toml"),
+            load_toml(team_dir / "custom" / "config.toml"),
         )
     )
 
 
 def load_customization(project_root: Path | None, skill_dir: Path) -> dict[str, Any]:
     skill_name = skill_dir.name
-    custom_dir = project_root / "_bmad" / "custom" if project_root else None
-    return merge_layers(
-        (
-            load_toml(skill_dir / "customize.toml", required=True),
-            load_toml(custom_dir / f"{skill_name}.toml") if custom_dir else {},
-            load_toml(custom_dir / f"{skill_name}.user.toml") if custom_dir else {},
-        )
-    )
+    layers: list[dict[str, Any]] = [load_toml(skill_dir / "customize.toml", required=True)]
+    if project_root is not None:
+        # _bmad/custom applied first (kept for existing projects with no
+        # team/custom overrides), then team/custom, so team/custom wins
+        # when both are present.
+        for custom_dir in (
+            project_root / "_bmad" / "custom",
+            project_root / "team" / "custom",
+        ):
+            layers.append(load_toml(custom_dir / f"{skill_name}.toml"))
+            layers.append(load_toml(custom_dir / f"{skill_name}.user.toml"))
+    return merge_layers(layers)

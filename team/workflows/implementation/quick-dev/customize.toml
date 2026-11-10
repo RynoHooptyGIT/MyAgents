@@ -1,8 +1,8 @@
 # DO NOT EDIT -- overwritten on every update.
 #
 # Default customization values for bmad-quick-dev.
-# Override in _bmad/custom/bmad-quick-dev.toml or
-# _bmad/custom/bmad-quick-dev.user.toml.
+# Override in team/custom/quick-dev.toml or
+# team/custom/quick-dev.user.toml.
 #
 # Merge rules:
 # - Strings replace the default.

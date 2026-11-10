@@ -20,8 +20,35 @@
           },
           {
             "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/slim-prompt.sh\"",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.agents/hooks/observe.sh\" prompt",
             "timeout": 3000
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.agents/hooks/worktree-guard.sh\"",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.agents/hooks/claim-check.sh\"",
+            "timeout": 5000
           }
         ]
       }
@@ -39,6 +66,11 @@
       {
         "matcher": "",
         "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.agents/hooks/heartbeat.sh\"",
+            "timeout": 3000
+          },
           {
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.agents/hooks/observe.sh\" tool",

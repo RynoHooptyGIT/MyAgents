@@ -12,5 +12,6 @@ using bmad's merge rules:
 
 `*.example.toml` files are copy-and-edit templates — the loader ignores them.
 
-> TODO: loader — team/custom/ merge is convention-only until scripts/team-check.sh
-> or the skill loader picks it up. Track separately.
+The loader (`_bmad/scripts/config_utils.py`) reads overrides from this
+directory directly; a file here takes effect immediately, and wins over an
+equivalent override left in `_bmad/custom/` for backward compatibility.

@@ -3,8 +3,8 @@
 # Workflow customization surface for bmad-prd.
 #
 # Override files (not edited here):
-#   {project-root}/_bmad/custom/bmad-prd.toml         (team)
-#   {project-root}/_bmad/custom/bmad-prd.user.toml    (personal)
+#   {project-root}/team/custom/bmad-prd.toml         (team)
+#   {project-root}/team/custom/bmad-prd.user.toml    (personal)
 
 [workflow]
 

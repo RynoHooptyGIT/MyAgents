@@ -25,6 +25,9 @@ Thumbs.db
 .agents/registry/.coord-root-*
 .agents/registry/*.counter
 
+# Context generator output (generated on demand)
+output/context/
+
 # Instinct capture loop — raw observations and miner state are local only
 team/_memory/_learnings/observations.jsonl*
 team/_memory/_learnings/miner.log
