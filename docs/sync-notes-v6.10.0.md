@@ -63,7 +63,7 @@ re-baselined before execution.
 ## Resolved — `quick-dev` name collision
 
 Resolved 2026-08-23 by the consolidation in
-`docs/plans/2026-08-23-bmad-skill-consolidation.md`. `quick-flow/quick-dev` was
+`docs/archive/2026-08-23-bmad-skill-consolidation.md`. `quick-flow/quick-dev` was
 retired; `implementation/quick-dev` is canonical and `/team:quick-dev` points at
 it. `/team:dev-story` was removed; `dev-story` survives as a fuzzy-match alias in
 the `dev` and `oracle` menus.
