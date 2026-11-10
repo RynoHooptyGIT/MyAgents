@@ -43,14 +43,20 @@ class Launcher:
 
 
 class FakeLauncher(Launcher):
-    def __init__(self, results: Optional[List[WorkerResult]] = None, default: Optional[WorkerResult] = None):
+    def __init__(self, results: Optional[List[WorkerResult]] = None, default: Optional[WorkerResult] = None,
+                 routing: Optional[dict] = None):
+        self.routing = routing or {}
         self.results = list(results or [])
         self.default = default or WorkerResult(0, "ok", 0, 0, 0.0, True, "fake")
         self.calls = []
 
     def run(self, role, prompt, cwd, model=None):
         self.calls.append(dict(role=role, prompt=prompt, cwd=cwd, model=model))
-        return self.results.pop(0) if self.results else self.default
+        res = self.results.pop(0) if self.results else self.default
+        if res.model == "fake":   # echo the model the runner asked for, like the real launcher
+            res = WorkerResult(res.returncode, res.text, res.input_tokens, res.output_tokens,
+                               res.cost_usd, res.cost_known, model or self.routing.get(role, "fake"))
+        return res
 
 
 def build_prompt(role: str, issue_number: int, title: str, body: str, extra: str = "") -> str:
