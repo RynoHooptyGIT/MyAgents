@@ -1,7 +1,9 @@
 # Upstream Sync — bmad v6.9.0 → v6.10.0
 
 Synced 2026-08-23. Full subsystem port executed from the eight plans in
-`docs/plans/2026-07-29-bmad-v6.10-*.md`. Unlike the v6.9.0 targeted port, this sync adopts
+`docs/archive/2026-07-29-bmad-v6.10-*.md` (archived 2026-09-22 once all eight
+plans landed — see `docs/archive/2026-07-29-bmad-v6.10-sync-index.md`). Unlike
+the v6.9.0 targeted port, this sync adopts
 upstream's `SKILL.md` + `customize.toml` skill format, landing it alongside the fork's existing
 `workflow.yaml` / `instructions.xml` agents rather than replacing them.
 

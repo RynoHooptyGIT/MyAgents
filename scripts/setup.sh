@@ -157,7 +157,7 @@ team/_memory/_learnings/.instinct-watermark
 team/_memory/_learnings/.candidates.json
 EOF
 
-    echo -e "  ${GREEN}✓${NC} Claude Code: CLAUDE.md, 83 slash commands"
+    echo -e "  ${GREEN}✓${NC} Claude Code: CLAUDE.md, $(ls "$TEAM_ROOT/claude-commands/team/" | wc -l | tr -d ' ') slash commands"
     echo -e "  ${GREEN}✓${NC} Hooks and settings: ${MANIFEST_INSTALLED} files installed, ${MANIFEST_KEPT} kept (install-manifest group: claude)"
 fi
 

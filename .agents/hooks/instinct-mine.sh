@@ -25,7 +25,7 @@ LOCK="$LEARN/.miner.lock"
 CAND="$LEARN/.candidates.json"
 WATERMARK="$LEARN/.instinct-watermark"
 BACKLOG_MAX=2097152   # 2 MB: advance the watermark without mining past this much unmined data
-PROMPT_FILE="$ROOT/team/agents/instinct-observer.md"
+PROMPT_FILE="$ROOT/team/prompts/instinct-observer.md"
 STAMP() { date -u +%Y-%m-%dT%H:%M:%SZ; }
 
 read -r ENABLED MODEL MIN_C <<< "$(python3 "$ROOT/scripts/instincts/config.py" --root "$ROOT" enabled model min_candidates 2>/dev/null | tr '\n' ' ')"

@@ -76,7 +76,7 @@ Registered twice in `.claude/settings.local.json` (and the template):
 5. Otherwise spawn, detached (`nohup … &`, stdout/stderr → `miner.log`):
    ```
    claude -p --model <instincts.model> --max-turns 1 --tools "" --strict-mcp-config \
-     --append-system-prompt "$(cat team/agents/instinct-observer.md)" \
+     --append-system-prompt "$(cat team/prompts/instinct-observer.md)" \
      < candidates.json | scripts/instincts/instinct.py ingest
    ```
    `--tools ""` disables every built-in tool so no Pre/PostToolUse hooks (including `observe.sh`) fire inside the miner; `--strict-mcp-config` ignores the user's MCP servers; `--max-turns 1` because the miner only has to answer once. The observer prompt instructs the model to output **only** a JSON array of instinct objects (schema below). A wrapper (`scripts/instincts/instinct.py ingest`) validates each object and writes/merges YAML files. The model never writes files directly.
@@ -176,7 +176,7 @@ Hooks and CLI read this block via a shared `scripts/instincts/config.py` (stdlib
 
 - `team/engine/learnings.xml`: protocols `learnings-search|capture|prune` marked `deprecated` with a pointer to the instinct CLI; file removed in a later release once nothing references it (nothing does today).
 - `team/data/discipline/knowledge/learnings.md`: rewritten — "search before building" → `instinct.py status`; "capture after shipping" → automatic via hooks, plus `/team:instincts review`.
-- `docs/plans/2026-04-26-learnings-specialists-autodecision.md`: add a header note pointing here.
+- `docs/archive/2026-04-26-learnings-specialists-autodecision.md`: add a header note pointing here.
 - `.agents/decisions/2026-09-19-instincts-supersede-learnings.yaml` recorded per the coordination format.
 
 ### Multi-agent / worktree behavior
@@ -220,7 +220,7 @@ Each worktree has its own `team/_memory/_learnings/` — observations and pendin
 **New**
 - `.agents/hooks/observe.sh`, `instinct-mine.sh`, `instinct-inject.sh` + three `test-*.sh`
 - `scripts/instincts/{prefilter.py, instinct.py, config.py}` + `tests/`
-- `team/agents/instinct-observer.md`
+- `team/prompts/instinct-observer.md`
 - `team/agents/oracle-reference/instinct-review.md`
 - `claude-commands/team/instincts.md`
 - `.agents/decisions/2026-09-19-instincts-supersede-learnings.yaml`
@@ -231,7 +231,7 @@ Each worktree has its own `team/_memory/_learnings/` — observations and pendin
 - `.gitignore` — `team/_memory/_learnings/observations.jsonl*`, `miner.log`, `.miner.lock`, `.instinct-watermark`
 - `.agents/config.yaml` — `instincts:` block
 - `team/agents/oracle.md`, `team/agents/oracle-dispatch-map.md`, `CLAUDE.md`
-- `team/engine/learnings.xml`, `team/data/discipline/knowledge/learnings.md`, `docs/plans/2026-04-26-learnings-specialists-autodecision.md`
+- `team/engine/learnings.xml`, `team/data/discipline/knowledge/learnings.md`, `docs/archive/2026-04-26-learnings-specialists-autodecision.md`
 - `scripts/setup.sh` — copy the new command; `docs/ARCHITECTURE.md` — hook table
 
 ### Rollback
