@@ -1,0 +1,83 @@
+# Software factory policy. Read by scripts/factory/policy.py.
+# This file is a protected path: the factory can propose changes, never merge them.
+# Syntax is a strict YAML subset (maps, lists of scalars, quoted globs).
+version: 1
+
+tiers:
+  T0:
+    spec_approval: none
+    merge: automatic
+  T1:
+    spec_approval: none
+    merge: automatic-digest
+  T2:
+    spec_approval: human
+    merge: human
+
+# Always T2, never promoted. Matching is case-insensitive, anchored at repo root.
+protected_paths:
+  - "scripts/factory/**"
+  - ".factory/policy.yaml"
+  - ".github/**"
+  - ".claude/settings*"
+  - ".agents/hooks/**"
+  - "team/engine/**"
+  - "**/CLAUDE.md"
+  - "**/*secret*"
+  - "**/*credential*"
+  - "**/.env"
+  - "**/.env.*"
+  - "**/*.pem"
+  - "**/*.key"
+  - "**/id_rsa*"
+
+# Paths eligible for T0 (docs and tests only).
+t0_paths:
+  - "docs/**"
+  - "README.md"
+  - "**/tests/**"
+  - "**/test_*.py"
+  - "**/test-*.sh"
+
+# Touching any of these counts as a new dependency.
+dependency_files:
+  - "**/requirements*.txt"
+  - "**/pyproject.toml"
+  - "**/package.json"
+  - "**/package-lock.json"
+  - "**/Pipfile"
+  - "**/Pipfile.lock"
+  - "**/poetry.lock"
+
+size:
+  max_diff_lines: 300       # added + deleted; over this is T2
+  max_deleted_files: 3      # more than this is T2
+
+autonomy:
+  promotion_count: 5        # consecutive clean merges to promote a category
+  revert_window_days: 14
+
+budget:
+  per_issue_usd: 5.0
+  per_day_usd: 25.0
+
+queue:
+  max_awaiting_human: 5
+  max_open_proposals: 10
+
+retries:
+  max_rounds: 2
+
+allowlisted_authors:
+  - "RynoHooptyGIT"
+
+routing:
+  orchestration: none
+  triage: haiku
+  mechanical: haiku
+  spec: sonnet
+  build: sonnet
+  sealed_test_author: opus
+  verifier: opus
+  retry_round_2: fable
+  t2_design: fable
