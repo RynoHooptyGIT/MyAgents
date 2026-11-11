@@ -49,3 +49,9 @@ init	templates/settings.local.json.template	.claude/settings.local.json	claude
 
 # Product gates template for target projects (project-owned after first install)
 init	templates/product-gates/GATES.md	docs/GATES.md	core
+
+# Model router: Fable orchestrates, delegates to the cheapest adequate model after a cost gate
+copy	.claude/rules/model-router.md	.claude/rules/	claude
+copy	scripts/routing/estimate.py	scripts/routing/	core
+copy	scripts/routing/apply_model.py	scripts/routing/	core
+init	templates/model-routing.json	.agents/model-routing.json	core

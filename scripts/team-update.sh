@@ -338,6 +338,9 @@ if [ -f "$MANIFEST_LIB" ] && [ -f "$UPSTREAM_DIR/templates/install-manifest.txt"
     source "$MANIFEST_LIB"
     MANIFEST_OUT="$(apply_manifest "$UPSTREAM_DIR" "$PROJECT_ROOT")"
     echo -e "  ${DIM}Tooling: $(printf '%s\n' "$MANIFEST_OUT" | grep -c '^installed ' || true) files installed, $(printf '%s\n' "$MANIFEST_OUT" | grep -c '^kept ' || true) kept (templates/install-manifest.txt)${NC}"
+    if [ -d "$PROJECT_ROOT/.claude" ] && [ -f "$UPSTREAM_DIR/scripts/routing/apply_model.py" ]; then
+        python3 "$UPSTREAM_DIR/scripts/routing/apply_model.py" "$PROJECT_ROOT" | sed 's/^/  /'
+    fi
 else
     echo -e "  ${YELLOW}WARNING: upstream has no install manifest — tooling (hooks, scripts) not updated${NC}"
 fi
