@@ -95,11 +95,11 @@ jobs:
           git config --global user.name "factory-sandbox"
           git config --global user.email "factory-sandbox@example.invalid"
 
-      # The only step that sees the API key. CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1 strips it from
+      # The only step that sees the subscription token (from `claude setup-token`). CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1 strips it from
       # the environment of everything claude spawns (Bash tool, tests, hooks).
       - name: Run worker
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.FACTORY_ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.FACTORY_CLAUDE_OAUTH_TOKEN }}
           CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: "1"
           FACTORY_BRANCH: ${{ inputs.branch }}
           FACTORY_ROLE: ${{ inputs.role }}

@@ -120,7 +120,7 @@ def check_worker_config(work: Path, trusted: Path) -> None:
 
 
 def _git_env(policy: Policy) -> Dict[str, str]:
-    """No API key, no tokens: git (and anything a planted config makes it run) never sees them."""
+    """No OAuth token, no API key, no tokens: git (and anything a planted config makes it run) never sees them."""
     env = envscrub.scrub_env(os.environ, list(policy.env_allowlist))
     env.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL="/dev/null", GIT_TERMINAL_PROMPT="0")
     return env
@@ -129,9 +129,9 @@ def _git_env(policy: Policy) -> Dict[str, str]:
 def run(environ: Mapping[str, str], policy: Policy,
         runner: Callable[..., ProcResult] = default_run, trusted_root: Optional[Path] = None) -> int:
     v = validate_inputs(environ, policy)
-    api_key = environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        raise SandboxInputError("ANTHROPIC_API_KEY is not set")
+    token = environ.get("CLAUDE_CODE_OAUTH_TOKEN")   # subscription token from `claude setup-token`
+    if not token:
+        raise SandboxInputError("CLAUDE_CODE_OAUTH_TOKEN is not set")
     work = Path(environ.get("FACTORY_WORK_DIR", "work")).resolve()
     out = Path(environ.get("FACTORY_OUT_DIR", "out")).resolve()
     check_worker_config(work, Path(trusted_root) if trusted_root else Path(__file__).resolve().parents[2])
@@ -155,7 +155,7 @@ def run(environ: Mapping[str, str], policy: Policy,
     # from the worker-controlled branch. Both flags are in the Claude Code CLI reference.
     argv += ["--setting-sources", "user", "--strict-mcp-config"]
     cenv = envscrub.scrub_env(os.environ, list(policy.env_allowlist))
-    cenv["ANTHROPIC_API_KEY"] = api_key
+    cenv["CLAUDE_CODE_OAUTH_TOKEN"] = token   # never ANTHROPIC_API_KEY: it would outrank the token
     cenv["CLAUDE_CODE_SUBPROCESS_ENV_SCRUB"] = "1"
     r = runner(argv, cwd=work, input_text=str(v["prompt"]), timeout=CLAUDE_TIMEOUT_S, env=cenv)
     res = result_from_proc(r, str(v["model"]))
