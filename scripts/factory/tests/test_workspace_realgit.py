@@ -86,3 +86,30 @@ def test_attempt_one_uses_plain_branch_name(repo):
     ws = W.GitWorkspace(repo, base="main")
     ws.prepare(7, "x", attempt=1)
     assert "factory/7-x" in branches(repo)
+
+
+def test_head_sha_and_diff_text_include_diff_and_commit_messages(repo):
+    ws = W.GitWorkspace(repo, base="main")
+    wt = ws.prepare(9, "txt", attempt=1)
+    (wt / "n.py").write_text("SECRET_TOKEN_VALUE = 1\n")
+    ws.snapshot(wt)
+    sha = ws.head_sha(wt)
+    assert len(sha) == 40 and sha == git(wt, "rev-parse", "HEAD").strip()
+    text = ws.diff_text(wt)
+    assert "SECRET_TOKEN_VALUE" in text and "n.py" in text and "factory: snapshot of worker output" in text
+
+
+def test_diff_text_includes_binary_content_as_text_and_is_capped(repo):
+    ws = W.GitWorkspace(repo, base="main")
+    wt = ws.prepare(10, "bin", attempt=1)
+    (wt / "b.bin").write_bytes(b"\x00\x01CANARYTOKEN\x00")
+    ws.snapshot(wt)
+    assert "CANARYTOKEN" in ws.diff_text(wt)
+    assert len(ws.diff_text(wt, cap=50)) <= 50
+
+
+def test_fake_workspace_head_sha_and_diff_text(tmp_path):
+    fw = W.FakeWorkspace(tmp_path, W.DiffStats(["a"], 1, 0, 0))
+    assert len(fw.head_sha(tmp_path)) == 40 and fw.diff_text(tmp_path) == ""
+    fw.diff_text_value = "abc"
+    assert fw.diff_text(tmp_path) == "abc"

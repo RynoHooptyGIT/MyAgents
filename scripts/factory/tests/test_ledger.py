@@ -200,3 +200,50 @@ def test_old_row_on_disk_without_sandbox_loads(tmp_path):
     p = tmp_path / "l.jsonl"
     p.write_text(json.dumps(row(1)) + "\n")
     assert L.Ledger(p).rows()[0]["issue"] == 1
+
+
+VERIFY = {"model_verdict": "agree", "revert_check": "fails_without_change", "sealed_available": True,
+          "sealed_total": 3, "sealed_failed": 0}
+
+
+def _row(**over):  # noqa
+    r = {"ts": "2026-11-10T09:00:00+00:00", "issue": 1, "tier": "T2", "reasons": [], "category": "x",
+         "protected": False, "models": {}, "tokens": {"input": 0, "output": 0}, "cost_usd": 0.0,
+         "retries": 0, "outcome": "awaiting-human", "started_at": "2026-11-10T09:00:00+00:00",
+         "finished_at": "2026-11-10T09:01:00+00:00"}
+    r.update(over)
+    return r
+
+
+def test_verify_object_is_optional_and_round_trips(tmp_path):
+    led = L.Ledger(tmp_path / "l.jsonl")
+    led.append(_row())
+    led.append(_row(verify=VERIFY))
+    rows = led.rows()
+    assert "verify" not in rows[0] and rows[1]["verify"] == VERIFY
+
+
+@pytest.mark.parametrize("mutate", [
+    lambda v: v.update(model_verdict="great"), lambda v: v.update(model_verdict=None),
+    lambda v: v.update(revert_check=3), lambda v: v.update(sealed_available="yes"),
+    lambda v: v.update(sealed_total=-1), lambda v: v.update(sealed_failed=True),
+    lambda v: v.pop("sealed_total"), lambda v: v.update(extra=1),
+])
+def test_bad_verify_object_rejected(tmp_path, mutate):
+    v = dict(VERIFY)
+    mutate(v)
+    led = L.Ledger(tmp_path / "l.jsonl")
+    with pytest.raises(L.LedgerError):
+        led.append(_row(verify=v))
+    assert not (tmp_path / "l.jsonl").exists()
+
+
+def test_verify_must_be_an_object(tmp_path):
+    with pytest.raises(L.LedgerError):
+        L.Ledger(tmp_path / "l.jsonl").append(_row(verify="agree"))
+
+
+def test_old_row_without_verify_loads(tmp_path):
+    p = tmp_path / "l.jsonl"
+    p.write_text(json.dumps(_row()) + "\n")
+    assert L.Ledger(p).rows()[0]["outcome"] == "awaiting-human"

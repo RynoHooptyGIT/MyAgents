@@ -8,7 +8,8 @@ yaml = pytest.importorskip("yaml")
 
 REPO = Path(__file__).resolve().parents[3]
 WF = REPO / ".github" / "workflows"
-FILES = ["factory-worker.yml", "factory-gates.yml"]
+FILES = ["factory-worker.yml", "factory-gates.yml", "factory-verify.yml"]
+NO_SECRET_FILES = ["factory-gates.yml", "factory-verify.yml"]
 
 
 def load(name):
@@ -71,8 +72,9 @@ def test_every_checkout_does_not_persist_credentials_and_has_full_history(name):
     assert by_path["work"]["ref"] == "${{ inputs.branch }}"
 
 
-def test_gates_workflow_has_no_secrets_at_all():
-    assert "secrets" not in (WF / "factory-gates.yml").read_text().replace("secrets-free", "")
+@pytest.mark.parametrize("name", NO_SECRET_FILES)
+def test_secret_free_workflows_have_no_secrets_at_all(name):
+    assert "secrets" not in (WF / name).read_text().replace("secrets-free", "")
 
 
 def test_worker_workflow_references_exactly_one_secret_in_one_step_env():
@@ -125,6 +127,7 @@ def test_policy_workflow_names_match_files():
     from .. import policy
     p = policy.load(REPO)
     assert (WF / p.sandbox.worker_workflow).is_file() and (WF / p.sandbox.gates_workflow).is_file()
+    assert (WF / p.sandbox.verify_workflow).is_file()
 
 
 def _dump(name):
@@ -135,7 +138,7 @@ def _dump(name):
 def test_secrets_word_only_in_the_one_allowed_env_value(name):
     text = _dump(name)
     hits = re.findall(r"\bsecrets\b", text)
-    if name == "factory-gates.yml":
+    if name in NO_SECRET_FILES:
         assert hits == []
     else:
         assert len(hits) == 1
@@ -167,8 +170,9 @@ def test_key_step_runs_from_trusted_and_no_key_step_runs_from_work():
             assert "ANTHROPIC_API_KEY" not in (s.get("env") or {})
 
 
-def test_input_validation_precedes_checkout_of_the_branch():
-    ss = steps(load("factory-worker.yml"))
+@pytest.mark.parametrize("name", ["factory-worker.yml", "factory-verify.yml"])
+def test_input_validation_precedes_checkout_of_the_branch(name):
+    ss = steps(load(name))
     v = next(i for i, s in enumerate(ss) if "--validate-only" in s.get("run", ""))
     w = next(i for i, s in enumerate(ss) if str(s.get("uses", "")).startswith("actions/checkout@")
              and s["with"]["path"] == "work")
@@ -193,3 +197,52 @@ def test_every_uses_is_pinned_by_40_hex_sha(name):
     assert uses
     for u in uses:
         assert not u.startswith("./") and re.fullmatch(r"[\w.-]+/[\w./-]+@[0-9a-f]{40}", u), u
+
+
+def test_verify_workflow_shape():
+    d = load("factory-verify.yml")
+    job = next(iter(d["jobs"].values()))
+    assert "concurrency" not in d and "concurrency" not in job
+    assert job["timeout-minutes"] <= 60
+    inputs = trigger(d)["workflow_dispatch"]["inputs"]
+    assert set(inputs) == {"branch", "request_id", "expected_sha", "issue", "sealed_b64"}
+    assert inputs["sealed_b64"].get("required") is False and inputs["sealed_b64"].get("default") == ""
+    for k in ("branch", "request_id", "expected_sha", "issue"):
+        assert inputs[k]["required"] is True
+    ss = steps(d)
+    validate = [s for s in ss if "--validate-only" in s.get("run", "")]
+    assert len(validate) == 1 and validate[0]["working-directory"] == "trusted"
+    assert "sandbox_verify" in validate[0]["run"]
+    run = [s for s in ss if s.get("run", "").strip().endswith("scripts.factory.sandbox_verify")]
+    assert len(run) == 1 and run[0]["working-directory"] == "trusted"
+    env = run[0]["env"]
+    assert env["FACTORY_BRANCH"] == "${{ inputs.branch }}"
+    assert env["FACTORY_REQUEST_ID"] == "${{ inputs.request_id }}"
+    assert env["FACTORY_EXPECTED_SHA"] == "${{ inputs.expected_sha }}"
+    assert env["FACTORY_ISSUE"] == "${{ inputs.issue }}"
+    assert env["FACTORY_SEALED_B64"] == "${{ inputs.sealed_b64 }}"
+    assert env["FACTORY_WORK_DIR"].endswith("/work") and env["FACTORY_OUT_DIR"].endswith("/out")
+    upload = [s for s in ss if str(s.get("uses", "")).startswith("actions/upload-artifact@")]
+    assert len(upload) == 1
+    assert upload[0]["if"] == "always()" and upload[0]["with"]["name"] == "factory-verify-${{ inputs.request_id }}"
+    assert "out/verify.json" in upload[0]["with"]["path"]
+
+
+def test_verify_workflow_validate_step_has_the_same_env_as_the_run_step():
+    ss = steps(load("factory-verify.yml"))
+    v = next(s for s in ss if "--validate-only" in s.get("run", ""))
+    r = next(s for s in ss if s.get("run", "").strip().endswith("scripts.factory.sandbox_verify"))
+    for k in ("FACTORY_BRANCH", "FACTORY_REQUEST_ID", "FACTORY_EXPECTED_SHA", "FACTORY_ISSUE", "FACTORY_SEALED_B64"):
+        assert v["env"][k] == r["env"][k]
+
+
+def test_verify_workflow_uses_the_same_pinned_actions_as_gates():
+    def pins(n):
+        return {s["uses"] for s in steps(load(n)) if "uses" in s}
+    assert pins("factory-verify.yml") <= pins("factory-worker.yml") | pins("factory-gates.yml")
+    assert pins("factory-verify.yml")
+
+
+def test_verify_workflow_is_dispatched_with_no_credentials_in_any_env():
+    for s in steps(load("factory-verify.yml")):
+        assert "ANTHROPIC" not in yaml.dump(s.get("env", {}))

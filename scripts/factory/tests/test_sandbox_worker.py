@@ -312,3 +312,32 @@ def test_main_exit_code_2_on_config_mismatch(tmp_path, work, monkeypatch, capsys
     monkeypatch.setattr(S, "default_run", FakeClaude(work))
     assert S.main([], root=trusted) == 2
     assert "differs" in capsys.readouterr().err
+
+
+def test_verifier_role_gets_the_read_only_toolset_from_code(tmp_path, work):
+    claude = FakeClaude(work)
+    assert go(tmp_path, claude, FACTORY_ROLE="verifier", FACTORY_MODEL="") == 0
+    argv = claude.claude_calls()[0]["argv"]
+    base = Lc.ClaudeLauncher(POLICY).build_argv(POLICY.routing["verifier"], 2.5, role="verifier")
+    assert argv[:len(base)] == base
+    assert argv[argv.index("--tools") + 1] == "Read,Glob,Grep,Bash"
+    assert "Edit" in argv[argv.index("--disallowedTools") + 1].split(",")
+    assert "Bash(python3 -m pytest:*)" not in argv[argv.index("--allowedTools") + 1]
+
+
+def test_no_environment_variable_can_change_the_toolset(tmp_path, work):
+    claude = FakeClaude(work)
+    go(tmp_path, claude, FACTORY_ROLE="build", FACTORY_TOOLS="Read", FACTORY_ALLOWED_TOOLS="Read",
+       FACTORY_TOOLSET="verifier")
+    argv = claude.claude_calls()[0]["argv"]
+    assert "--tools" not in argv
+    assert argv[argv.index("--allowedTools") + 1] == ",".join(Lc.ALLOWED_TOOLS)
+
+
+def test_sealed_author_output_is_returned_as_a_patch_like_any_worker(tmp_path, work):
+    def edit(cwd):
+        (cwd / "tests" / "sealed" / "issue-3").mkdir(parents=True)
+        (cwd / "tests" / "sealed" / "issue-3" / "test_a.py").write_text("def test_a(): pass\n")
+    claude = FakeClaude(work, edit=edit)
+    assert go(tmp_path, claude, FACTORY_ROLE="sealed_test_author") == 0
+    assert b"tests/sealed/issue-3/test_a.py" in (tmp_path / "out" / "changes.patch").read_bytes()

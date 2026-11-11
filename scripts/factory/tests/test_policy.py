@@ -79,7 +79,7 @@ def test_bad_values_rejected(path, value):
 @pytest.mark.parametrize("key", ["routing", "budget", "size", "autonomy", "queue", "retries",
                                  "protected_paths", "allowlisted_authors", "t0_paths",
                                  "dependency_files", "tiers", "version", "test_paths", "env_allowlist", "state_dir",
-                                 "sandbox"])
+                                 "sandbox", "sealed"])
 def test_missing_section_rejected(key):
     with pytest.raises(policy.PolicyError, match=key):
         policy.from_dict(_dump_variant(lambda d: d.pop(key)))
@@ -151,6 +151,7 @@ def test_sandbox_section_required():
     ("mode", "docker"), ("mode", ""), ("mode", True),
     ("worker_workflow", "../evil.yml"), ("worker_workflow", "-x.yml"), ("worker_workflow", 5),
     ("worker_workflow", "a b.yml"), ("gates_workflow", "x"), ("gates_workflow", "a/b.yml"),
+    ("verify_workflow", "x"), ("verify_workflow", "../v.yml"), ("verify_workflow", 3), ("verify_workflow", "a b.yml"),
     ("poll_seconds", 0), ("poll_seconds", "10"), ("poll_seconds", True), ("poll_seconds", 100000),
     ("timeout_minutes", 0), ("timeout_minutes", 1.5), ("timeout_minutes", 100000),
 ])
@@ -164,3 +165,34 @@ def test_sandbox_missing_and_unknown_keys_rejected():
         policy.from_dict(_dump_variant(lambda d: d["sandbox"].pop("poll_seconds")))
     with pytest.raises(policy.PolicyError, match="sandbox"):
         policy.from_dict(_dump_variant(lambda d: d["sandbox"].update(extra=1)))
+
+
+def test_shipped_sealed_and_verify_settings():
+    p = policy.load(REPO)
+    assert p.sealed.dir == "tests/sealed" and p.sealed.max_patch_bytes == 100000
+    assert p.sandbox.verify_workflow == "factory-verify.yml"
+
+
+@pytest.mark.parametrize("key,value", [
+    ("dir", "tests/other"), ("dir", ""), ("dir", "/tests/sealed"), ("dir", "tests/sealed/"), ("dir", 5),
+    ("dir", "tests/sealed/issue-1"), ("dir", "TESTS/SEALED"),
+    ("max_patch_bytes", 0), ("max_patch_bytes", -1), ("max_patch_bytes", True), ("max_patch_bytes", "100"),
+    ("max_patch_bytes", 1.5), ("max_patch_bytes", 10**9),
+])
+def test_sealed_bad_values_rejected(key, value):
+    with pytest.raises(policy.PolicyError, match="sealed"):
+        policy.from_dict(_dump_variant(lambda d: d["sealed"].update({key: value})))
+
+
+def test_sealed_missing_and_unknown_keys_rejected():
+    with pytest.raises(policy.PolicyError, match="sealed"):
+        policy.from_dict(_dump_variant(lambda d: d["sealed"].pop("dir")))
+    with pytest.raises(policy.PolicyError, match="sealed"):
+        policy.from_dict(_dump_variant(lambda d: d["sealed"].pop("max_patch_bytes")))
+    with pytest.raises(policy.PolicyError, match="sealed"):
+        policy.from_dict(_dump_variant(lambda d: d["sealed"].update(extra=1)))
+
+
+def test_sealed_must_be_a_map():
+    with pytest.raises(policy.PolicyError, match="sealed"):
+        policy.from_dict(_dump_variant(lambda d: d.update(sealed=["tests/sealed"])))
