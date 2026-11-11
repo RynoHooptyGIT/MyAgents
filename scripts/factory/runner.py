@@ -2,7 +2,8 @@
 
 Phase 2 ("Core"): every category is forced to T2 at integration time, the verify and
 sealed-test steps are explicit stubs that force T2, and there is no merge step.
-Nothing here pushes, opens a PR, or merges.
+Nothing here opens a PR or merges. In sandbox mode "actions" the launcher and gate runner
+push the worker's `factory/` branch (never forced) so ephemeral Actions runners can see it.
 """
 from __future__ import annotations
 
@@ -13,7 +14,7 @@ from typing import Callable, Dict, List, Optional
 
 from . import classifier, ledger as ledger_mod, retry, stops
 from .gates import GateResult, GateRunner
-from .launcher import Launcher, WorkerResult, build_prompt
+from .launcher import SANDBOX_REJECTED_PREFIX, Launcher, WorkerResult, build_prompt
 from .ledger import Ledger
 from .policy import Policy
 from .tracker import Issue, NotAllowlisted, StateMismatch, Tracker, select_claimable
@@ -36,6 +37,7 @@ class Context:
     ledger: Ledger
     state_dir: Path
     now: Callable[[], datetime] = lambda: datetime.now(timezone.utc)
+    sandbox: str = "local"   # where workers and gates ran; recorded on every ledger row
     out: Callable[[str], None] = print
 
 
@@ -60,6 +62,7 @@ REASON_CODES = [
     ("verifier not implemented", "verifier-stub"), ("sealed tests not implemented", "sealed-stub"),
     ("verifier has not agreed", "verifier-not-agreed"), ("phase", "phase-2-forced"),
     ("no changes", "no-changes"), ("spec worker failed", "spec-failed"),
+    ("sandbox rejected path", "sandbox-rejected-path"),
     ("unexpected error", "crash"),
 ]
 
@@ -78,7 +81,7 @@ PLAN = [
     "gates: scripts/factory/gates.sh; on failure retry ladder (same model, then a different model)",
     "verify and sealed tests: stubs, " + NOT_IMPLEMENTED + "; force T2",
     "classify: deterministic tier from the final diff; every category is forced to T2 in phase 2",
-    "integrate: label awaiting-human with a summary (no PR, no push, no merge in phase 2)",
+    "integrate: label awaiting-human with a summary (no PR, no merge in phase 2; sandbox mode actions pushes the factory/ branch)",
     "record: one ledger row",
 ]
 
@@ -142,6 +145,7 @@ class _Run:
             # spend already written by an earlier row is not counted twice
             "cost_usd": round(self.cost - self.cost_recorded, 6), "cost_known": self.cost_known,
             "retries": self.retries, "outcome": outcome,
+            "sandbox": self.ctx.sandbox,
             "started_at": self.started.isoformat(), "finished_at": finished.isoformat()}
         notes = self.ctx.workspace.take_notes()
         if notes:
@@ -203,6 +207,8 @@ def _process(run: _Run) -> RunResult:
         return _finish(run, "awaiting-human", "not run", None, ["budget exceeded", block])
     spec = run.worker("spec", build_prompt("spec", issue.number, issue.title, issue.body))
     if not spec.ok:
+        if spec.text.startswith(SANDBOX_REJECTED_PREFIX):
+            return _fail(run, "sandbox rejected path", spec.text)
         return _fail(run, "spec worker failed", spec.text)
     ctx.out(f"ambiguity check: {NOT_IMPLEMENTED}")
     run.move("building")
@@ -223,6 +229,9 @@ def _process(run: _Run) -> RunResult:
         gate = (ctx.gates.run(run.worktree) if res.ok
                 else GateResult("FAIL", f"build worker exited {res.returncode}\n{res.text}"))
         run.log(f"build round {plan.round} gate {gate.verdict}\n{gate.output}")
+        if not res.ok and res.text.startswith(SANDBOX_REJECTED_PREFIX):
+            extra.append("sandbox rejected path")   # hostile or broken output: park it, no retry
+            break
         if gate.verdict == "PASS":
             break
         try:

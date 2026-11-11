@@ -183,3 +183,20 @@ def test_cost_known_and_notes_optional_fields(tmp_path):
         led.append(row(2, cost_known="no"))
     with pytest.raises(L.LedgerError):
         led.append(row(3, notes="x"))
+
+
+def test_sandbox_field_optional_and_validated(tmp_path):
+    led = L.Ledger(tmp_path / "l.jsonl")
+    led.append(row(1))                      # old rows have no sandbox field and still load
+    led.append(row(2, sandbox="actions"))
+    led.append(row(3, sandbox="local"))
+    assert [r.get("sandbox") for r in led.rows()] == [None, "actions", "local"]
+    for bad in ("docker", "", 5, None):
+        with pytest.raises(L.LedgerError):
+            led.append(row(4, sandbox=bad))
+
+
+def test_old_row_on_disk_without_sandbox_loads(tmp_path):
+    p = tmp_path / "l.jsonl"
+    p.write_text(json.dumps(row(1)) + "\n")
+    assert L.Ledger(p).rows()[0]["issue"] == 1

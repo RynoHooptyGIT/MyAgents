@@ -117,6 +117,17 @@ routing:
   retry_round_2: fable
   t2_design: fable
 
+# Where workers and gates run. "actions": ephemeral GitHub Actions runners with a read-only
+# token and none of the operator's credentials (the workflows must exist on main).
+# "local": on the operator's machine, unsandboxed; development only. Phase 4 refuses
+# autonomy for ledger rows whose sandbox is not "actions".
+sandbox:
+  mode: actions
+  worker_workflow: factory-worker.yml
+  gates_workflow: factory-gates.yml
+  poll_seconds: 10
+  timeout_minutes: 75
+
 # Interim hardening: workers and gates run with only these variables.
 # Never list tokens or keys here unless a worker strictly needs them.
 env_allowlist:

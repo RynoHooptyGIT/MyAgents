@@ -14,7 +14,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict, List
 
-from .policy import Policy
+from .policy import SANDBOX_MODES, Policy
 
 OUTCOMES = ("merged", "awaiting-human", "failed", "reverted", "refused")
 TIERS = ("T0", "T1", "T2")
@@ -67,6 +67,8 @@ def validate(r) -> None:
         raise LedgerError("retries must be a non-negative int")
     if "cost_known" in r and not isinstance(r["cost_known"], bool):
         raise LedgerError("cost_known must be a bool")
+    if "sandbox" in r and (not isinstance(r["sandbox"], str) or r["sandbox"] not in SANDBOX_MODES):
+        raise LedgerError(f"bad sandbox {r['sandbox']!r}")
     if "notes" in r and (not isinstance(r["notes"], list) or not all(isinstance(x, str) for x in r["notes"])):
         raise LedgerError("notes must be a list of strings")
     for k in ("ts", "started_at", "finished_at"):

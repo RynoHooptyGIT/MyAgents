@@ -430,3 +430,34 @@ def test_ambiguous_labels_skipped_and_reported(tmp_path):
     res = R.run_once(e.ctx())
     assert res.issue == 2
     assert any("#1" in line and "state labels" in line for line in e.out)
+
+
+def test_ledger_row_records_sandbox_mode(env):
+    ctx = env.ctx()
+    ctx.sandbox = "actions"
+    R.run_once(ctx)
+    assert env.ledger.rows()[-1]["sandbox"] == "actions"
+
+
+def test_ledger_row_defaults_to_local_sandbox(env):
+    R.run_once(env.ctx())
+    assert env.ledger.rows()[-1]["sandbox"] == "local"
+
+
+def test_sandbox_rejected_path_parks_at_once_with_its_own_reason_code(tmp_path):
+    rej = Lc.WorkerResult(1, Lc.SANDBOX_REJECTED_PREFIX + " denied path '.github/x.yml'", 0, 0, 0.0, False, "sonnet")
+    ok = Lc.WorkerResult(0, "spec", 0, 0, 0.1, True, "sonnet")
+    e = Env(tmp_path, launcher_results=[ok, rej])
+    e.add()
+    res = R.run_once(e.ctx())
+    assert res.outcome == "awaiting-human" and "sandbox rejected path" in res.reasons
+    assert len([c for c in e.launcher.calls if c["role"] == "build"]) == 1      # no retry
+    assert any("sandbox-rejected-path" in body for _, body in e.tracker.comments)
+
+
+def test_sandbox_rejected_path_on_spec_fails_with_reason(tmp_path):
+    rej = Lc.WorkerResult(1, Lc.SANDBOX_REJECTED_PREFIX + " x", 0, 0, 0.0, False, "sonnet")
+    e = Env(tmp_path, launcher_results=[rej])
+    e.add()
+    res = R.run_once(e.ctx())
+    assert res.outcome == "failed" and res.reasons == ["sandbox rejected path"]

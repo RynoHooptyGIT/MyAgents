@@ -11,6 +11,7 @@ from typing import Callable, Optional
 from . import ledger as ledger_mod, runner, stops
 from .gates import ScriptGateRunner
 from .launcher import ClaudeLauncher
+from .actions import ActionsClient, ActionsGateRunner, ActionsLauncher
 from .ledger import Ledger, LedgerError
 from .policy import PolicyError, load as load_policy
 from .tracker import GhTracker, TrackerError
@@ -36,13 +37,19 @@ def build_real_context(root, repo: Optional[str]) -> runner.Context:
     state_dir = (state_dir if state_dir.is_absolute() else root / state_dir).resolve()
     if state_dir == root.resolve() or root.resolve() in state_dir.parents:
         raise PolicyError(f"state_dir {state_dir} must be outside the repository {root}")
+    sb = policy.sandbox
+    if sb.mode == "actions":
+        client = ActionsClient(state_dir=state_dir, repo=repo, cwd=root, poll_seconds=sb.poll_seconds,
+                               timeout_s=sb.timeout_minutes * 60)
+        launcher, gates = ActionsLauncher(policy, client), ActionsGateRunner(client, gates_workflow=sb.gates_workflow)
+    else:   # "local": unsandboxed, development only
+        launcher = ClaudeLauncher(policy)
+        gates = ScriptGateRunner(env_allowlist=policy.env_allowlist)
     return runner.Context(
         root=root, policy=policy,
         tracker=GhTracker(allowed_authors=policy.allowlisted_authors, repo=repo),
-        launcher=ClaudeLauncher(policy),
-        gates=ScriptGateRunner(env_allowlist=policy.env_allowlist),
-        workspace=GitWorkspace(root),
-        ledger=Ledger(state_dir / "ledger.jsonl"), state_dir=state_dir)
+        launcher=launcher, gates=gates, workspace=GitWorkspace(root),
+        ledger=Ledger(state_dir / "ledger.jsonl"), state_dir=state_dir, sandbox=sb.mode)
 
 
 def _status(ctx: runner.Context) -> int:
@@ -57,6 +64,8 @@ def _status(ctx: runner.Context) -> int:
     ctx.out(f"spent today: ${ledger_mod.spent_on(rows, now.date()):.2f} of ${ctx.policy.per_day_usd:.2f}")
     ctx.out(f"ledger rows: {s['total']}  cost: ${s['cost_usd']:.2f}")
     ctx.out(f"by outcome: {s['by_outcome']}  by tier: {s['by_tier']}")
+    ctx.out(f"sandbox: {ctx.sandbox}" + (" (workers and gates run unsandboxed on this machine; development only)"
+                                         if ctx.sandbox == "local" else ""))
     ctx.out(f"phase {runner.PHASE}: every category forced to T2, nothing auto-merges")
     return EXIT_OK
 

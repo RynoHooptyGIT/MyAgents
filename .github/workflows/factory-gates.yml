@@ -1,0 +1,81 @@
+name: factory-gates
+
+# Runs the factory gates on an ephemeral runner. Dispatched with `--ref main`, so this file and
+# the gate scripts under trusted/ come from main; the worker's branch is checked out into work/
+# as data. No credentials are referenced anywhere in this workflow. Inputs reach scripts through env vars.
+run-name: factory-gates ${{ inputs.request_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "factory/<issue>-<slug> branch to test"
+        required: true
+        type: string
+      request_id:
+        description: "random hex id used to find this run and name its artifact"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # actions/checkout v7.0.1
+      - name: Checkout trusted scripts from main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          path: trusted
+          fetch-depth: 0
+          persist-credentials: false
+
+      # Full history so origin/main resolves inside work/.
+      # actions/checkout v7.0.1
+      - name: Checkout the branch under test as data
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ inputs.branch }}
+          path: work
+          fetch-depth: 0
+          persist-credentials: false
+
+      # actions/setup-python v7.1.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: python -m pip install pytest pyyaml
+
+      # Some tests create commits in temporary repos and need an identity.
+      - name: Set a git identity for tests
+        run: |
+          git config --global user.name "ci"
+          git config --global user.email "ci@example.invalid"
+
+      # The verdict is data in the file. The step succeeds whatever the verdict, so the upload
+      # always has something to report.
+      - name: Run gates
+        env:
+          FACTORY_OUT_DIR: ${{ github.workspace }}/out
+        run: |
+          mkdir -p "$FACTORY_OUT_DIR"
+          git -C work rev-parse HEAD > "$FACTORY_OUT_DIR/gates-sha.txt"
+          bash trusted/scripts/factory/gates.sh work origin/main > "$FACTORY_OUT_DIR/gates-output.txt" 2>&1 || true
+
+      # actions/upload-artifact v7.0.2
+      - name: Upload gate output
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: factory-gates-${{ inputs.request_id }}
+          path: |
+            out/gates-output.txt
+            out/gates-sha.txt
+          if-no-files-found: warn
+          retention-days: 3
