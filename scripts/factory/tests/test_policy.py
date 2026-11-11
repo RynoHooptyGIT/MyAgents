@@ -78,7 +78,8 @@ def test_bad_values_rejected(path, value):
 
 @pytest.mark.parametrize("key", ["routing", "budget", "size", "autonomy", "queue", "retries",
                                  "protected_paths", "allowlisted_authors", "t0_paths",
-                                 "dependency_files", "tiers", "version", "test_paths", "env_allowlist", "state_dir"])
+                                 "dependency_files", "tiers", "version", "test_paths", "env_allowlist", "state_dir",
+                                 "sandbox"])
 def test_missing_section_rejected(key):
     with pytest.raises(policy.PolicyError, match=key):
         policy.from_dict(_dump_variant(lambda d: d.pop(key)))
@@ -127,3 +128,39 @@ def test_env_allowlist_rejects_secret_like_and_globs(bad):
 def test_state_dir_must_be_string():
     with pytest.raises(policy.PolicyError):
         policy.from_dict(_dump_variant(lambda d: d.update(state_dir=5)))
+
+
+def test_shipped_sandbox_section():
+    s = policy.load(REPO).sandbox
+    assert s.mode == "actions"
+    assert s.worker_workflow == "factory-worker.yml" and s.gates_workflow == "factory-gates.yml"
+    assert s.poll_seconds >= 1 and s.timeout_minutes >= 1
+
+
+def test_sandbox_local_mode_accepted():
+    p = policy.from_dict(_dump_variant(lambda d: d["sandbox"].update(mode="local")))
+    assert p.sandbox.mode == "local"
+
+
+def test_sandbox_section_required():
+    with pytest.raises(policy.PolicyError, match="sandbox"):
+        policy.from_dict(_dump_variant(lambda d: d.pop("sandbox")))
+
+
+@pytest.mark.parametrize("key,value", [
+    ("mode", "docker"), ("mode", ""), ("mode", True),
+    ("worker_workflow", "../evil.yml"), ("worker_workflow", "-x.yml"), ("worker_workflow", 5),
+    ("worker_workflow", "a b.yml"), ("gates_workflow", "x"), ("gates_workflow", "a/b.yml"),
+    ("poll_seconds", 0), ("poll_seconds", "10"), ("poll_seconds", True), ("poll_seconds", 100000),
+    ("timeout_minutes", 0), ("timeout_minutes", 1.5), ("timeout_minutes", 100000),
+])
+def test_sandbox_bad_values_rejected(key, value):
+    with pytest.raises(policy.PolicyError, match="sandbox"):
+        policy.from_dict(_dump_variant(lambda d: d["sandbox"].update({key: value})))
+
+
+def test_sandbox_missing_and_unknown_keys_rejected():
+    with pytest.raises(policy.PolicyError, match="sandbox"):
+        policy.from_dict(_dump_variant(lambda d: d["sandbox"].pop("poll_seconds")))
+    with pytest.raises(policy.PolicyError, match="sandbox"):
+        policy.from_dict(_dump_variant(lambda d: d["sandbox"].update(extra=1)))

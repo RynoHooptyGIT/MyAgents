@@ -83,11 +83,38 @@ def test_module_entry_point_runs(tmp_path):
     assert r.returncode == 2 and "--once" in r.stderr
 
 
-def test_real_wiring_builds_gh_and_claude_without_executing(tmp_path):
-    (tmp_path / ".factory").mkdir()
-    shutil.copy(REPO / ".factory" / "policy.yaml", tmp_path / ".factory" / "policy.yaml")
+def _policy_with_mode(tmp_path, mode):
+    (tmp_path / ".factory").mkdir(exist_ok=True)
+    text = (REPO / ".factory" / "policy.yaml").read_text().replace("mode: actions", f"mode: {mode}")
+    (tmp_path / ".factory" / "policy.yaml").write_text(text)
+
+
+def test_real_wiring_local_mode_builds_gh_and_claude_without_executing(tmp_path):
+    _policy_with_mode(tmp_path, "local")
     ctx = cli.build_real_context(tmp_path, repo=None)
     assert isinstance(ctx.tracker, T.GhTracker) and isinstance(ctx.launcher, Lc.ClaudeLauncher)
+    assert isinstance(ctx.gates, G.ScriptGateRunner) and ctx.sandbox == "local"
+
+
+def test_real_wiring_actions_mode_builds_actions_classes(tmp_path):
+    from .. import actions as A
+    _policy_with_mode(tmp_path, "actions")
+    ctx = cli.build_real_context(tmp_path, repo="o/r")
+    assert isinstance(ctx.launcher, A.ActionsLauncher) and isinstance(ctx.gates, A.ActionsGateRunner)
+    assert not isinstance(ctx.launcher, Lc.ClaudeLauncher) and ctx.sandbox == "actions"
+
+
+def test_shipped_policy_wires_actions(tmp_path):
+    from .. import actions as A
+    (tmp_path / ".factory").mkdir()
+    shutil.copy(REPO / ".factory" / "policy.yaml", tmp_path / ".factory" / "policy.yaml")
+    assert isinstance(cli.build_real_context(tmp_path, repo=None).launcher, A.ActionsLauncher)
+
+
+def test_status_prints_sandbox_mode(tmp_path):
+    tr, build, out = setup(tmp_path)
+    cli.main(["status", "--root", str(tmp_path)], build=build)
+    assert any(l.startswith("sandbox: ") for l in out)
 
 
 def test_status_reports_ambiguous_issues(tmp_path):

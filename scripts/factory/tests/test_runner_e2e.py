@@ -430,3 +430,15 @@ def test_ambiguous_labels_skipped_and_reported(tmp_path):
     res = R.run_once(e.ctx())
     assert res.issue == 2
     assert any("#1" in line and "state labels" in line for line in e.out)
+
+
+def test_ledger_row_records_sandbox_mode(env):
+    ctx = env.ctx()
+    ctx.sandbox = "actions"
+    R.run_once(ctx)
+    assert env.ledger.rows()[-1]["sandbox"] == "actions"
+
+
+def test_ledger_row_defaults_to_local_sandbox(env):
+    R.run_once(env.ctx())
+    assert env.ledger.rows()[-1]["sandbox"] == "local"
