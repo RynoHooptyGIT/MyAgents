@@ -12,12 +12,23 @@ ROLES = ("orchestration", "triage", "mechanical", "spec", "build",
          "sealed_test_author", "verifier", "retry_round_2", "t2_design")
 REQUIRED_PROTECTED = ("scripts/factory/**", ".factory/**", "scripts/test.sh")
 TOP_KEYS = {"version", "tiers", "protected_paths", "t0_paths", "test_paths", "env_allowlist", "state_dir", "dependency_files", "size",
-            "autonomy", "budget", "queue", "retries", "allowlisted_authors", "routing"}
+            "autonomy", "budget", "queue", "retries", "allowlisted_authors", "routing", "sandbox"}
 TIERS = ("T0", "T1", "T2")
+SANDBOX_MODES = ("actions", "local")
+_WORKFLOW_FILE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]*\.ya?ml$")
 
 
 class PolicyError(ValueError):
     pass
+
+
+@dataclass(frozen=True)
+class Sandbox:
+    mode: str                # "actions" (ephemeral GitHub Actions runners) or "local" (unsandboxed, dev only)
+    worker_workflow: str
+    gates_workflow: str
+    poll_seconds: int
+    timeout_minutes: int
 
 
 @dataclass(frozen=True)
@@ -39,6 +50,7 @@ class Policy:
     max_rounds: int
     allowlisted_authors: Tuple[str, ...]
     routing: Dict[str, str]
+    sandbox: Sandbox
 
 
 def _section(d, key, keys):
@@ -76,6 +88,22 @@ def _str_list(d, key):
             or not all(isinstance(x, str) and x.strip() for x in v)):
         raise PolicyError(f"policy: {key!r} must be a non-empty list of strings")
     return tuple(v)
+
+
+def _sandbox(d) -> Sandbox:
+    s = _section(d, "sandbox", ("mode", "worker_workflow", "gates_workflow", "poll_seconds", "timeout_minutes"))
+    if not isinstance(s["mode"], str) or s["mode"] not in SANDBOX_MODES:
+        raise PolicyError(f"policy: sandbox.mode must be one of {list(SANDBOX_MODES)}")
+    for k in ("worker_workflow", "gates_workflow"):
+        if not isinstance(s[k], str) or not _WORKFLOW_FILE.match(s[k]):
+            raise PolicyError(f"policy: sandbox.{k} must be a workflow file name such as factory-worker.yml")
+    poll = _pos_int(s["poll_seconds"], "sandbox.poll_seconds")
+    wait = _pos_int(s["timeout_minutes"], "sandbox.timeout_minutes")
+    if poll > 300:
+        raise PolicyError("policy: sandbox.poll_seconds must be at most 300")
+    if wait > 360:
+        raise PolicyError("policy: sandbox.timeout_minutes must be at most 360")
+    return Sandbox(s["mode"], s["worker_workflow"], s["gates_workflow"], poll, wait)
 
 
 def from_dict(d) -> Policy:
@@ -142,6 +170,7 @@ def from_dict(d) -> Policy:
         max_awaiting_human=_pos_int(queue["max_awaiting_human"], "queue.max_awaiting_human"),
         max_open_proposals=_pos_int(queue["max_open_proposals"], "queue.max_open_proposals"),
         max_rounds=2, allowlisted_authors=authors, routing=dict(routing),
+        sandbox=_sandbox(d),
     )
 
 

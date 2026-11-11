@@ -1,0 +1,129 @@
+name: factory-worker
+
+# Runs one factory worker on an ephemeral runner. Dispatched by the operator's runner with
+# `--ref main`, so this file and the scripts under trusted/ always come from main. The worker's
+# branch is checked out into work/ and is treated as data only.
+# Inputs reach the scripts through env vars, never through ${{ }} inside a run body.
+run-name: factory-worker ${{ inputs.request_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "factory/<issue>-<slug> branch to work on"
+        required: true
+        type: string
+      role:
+        description: "routing role from .factory/policy.yaml"
+        required: true
+        type: string
+      model:
+        description: "model override (empty: the policy's model for the role)"
+        required: false
+        type: string
+        default: ""
+      max_budget_usd:
+        description: "per-run spend cap passed to claude --max-budget-usd"
+        required: true
+        type: string
+      request_id:
+        description: "random hex id used to find this run and name its artifact"
+        required: true
+        type: string
+      prompt_b64:
+        description: "gzip + base64 of the worker prompt"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: factory-worker-${{ inputs.branch }}
+  cancel-in-progress: false
+
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      # actions/checkout v7.0.1
+      - name: Checkout trusted scripts from main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          path: trusted
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Validate inputs
+        env:
+          FACTORY_BRANCH: ${{ inputs.branch }}
+          FACTORY_ROLE: ${{ inputs.role }}
+          FACTORY_MODEL: ${{ inputs.model }}
+          FACTORY_MAX_BUDGET_USD: ${{ inputs.max_budget_usd }}
+          FACTORY_REQUEST_ID: ${{ inputs.request_id }}
+          FACTORY_PROMPT_B64: ${{ inputs.prompt_b64 }}
+        working-directory: trusted
+        run: python3 -m scripts.factory.sandbox_worker --validate-only
+
+      # actions/checkout v7.0.1
+      - name: Checkout the worker branch as data
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ inputs.branch }}
+          path: work
+          fetch-depth: 0
+          persist-credentials: false
+
+      # Claude Code is pinned and installed from the npm registry. No secret is in scope here.
+      - name: Install Claude Code
+        run: |
+          npm install --prefix "$RUNNER_TEMP/claude-code" --no-audit --no-fund @anthropic-ai/claude-code@2.1.311
+          echo "$RUNNER_TEMP/claude-code/node_modules/.bin" >> "$GITHUB_PATH"
+
+      - name: Check Claude Code version
+        run: claude --version
+
+      # Test dependencies for the tests the worker runs; no secret is in scope here.
+      # actions/setup-python v7.1.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: python -m pip install pytest pyyaml
+
+      - name: Set a git identity for tests
+        run: |
+          git config --global user.name "factory-sandbox"
+          git config --global user.email "factory-sandbox@example.invalid"
+
+      # The only step that sees the API key. CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1 strips it from
+      # the environment of everything claude spawns (Bash tool, tests, hooks).
+      - name: Run worker
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.FACTORY_ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: "1"
+          FACTORY_BRANCH: ${{ inputs.branch }}
+          FACTORY_ROLE: ${{ inputs.role }}
+          FACTORY_MODEL: ${{ inputs.model }}
+          FACTORY_MAX_BUDGET_USD: ${{ inputs.max_budget_usd }}
+          FACTORY_REQUEST_ID: ${{ inputs.request_id }}
+          FACTORY_PROMPT_B64: ${{ inputs.prompt_b64 }}
+          FACTORY_WORK_DIR: ${{ github.workspace }}/work
+          FACTORY_OUT_DIR: ${{ github.workspace }}/out
+        working-directory: trusted
+        run: python3 -m scripts.factory.sandbox_worker
+
+      # actions/upload-artifact v7.0.2
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: factory-result-${{ inputs.request_id }}
+          path: |
+            out/changes.patch
+            out/result.json
+          if-no-files-found: warn
+          retention-days: 3

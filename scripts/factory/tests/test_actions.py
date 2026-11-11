@@ -352,7 +352,10 @@ def test_dirty_worktree_refused(world, tmp_path):
 @pytest.mark.parametrize("name", ["main", "feature/x", "factory/x-y", "factory/1-Bad", "factory/1-a;rm",
                                   "factory/1-"])
 def test_non_factory_branch_refused(world, tmp_path, name):
-    git(world, "checkout", "-q", "-b", name.replace(";", "_"))
+    if name == "main":
+        git(world, "checkout", "-q", "main")
+    else:
+        git(world, "checkout", "-q", "-b", name.replace(";", "_"))
     gh = FakeGh(artifacts=artifacts_for(world))
     r = launcher(gh, tmp_path)[0].run("build", "p", world)
     assert not r.ok and "branch" in r.text and gh.dispatched == []
@@ -532,7 +535,7 @@ def test_dispatch_error_is_failed_unknown_cost(world, tmp_path):
 
 
 def test_result_text_is_truncated(world, tmp_path):
-    r, gh = run_with_result(world, tmp_path, lambda r: r.update(result="x" * 500000))
+    r, gh = run_with_result(world, tmp_path, lambda r: r.update(result="x" * 100000))
     assert r.ok and len(r.text) <= A.MAX_TEXT_CHARS
 
 

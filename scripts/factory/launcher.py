@@ -92,6 +92,9 @@ class ClaudeLauncher(Launcher):
             raise LauncherError(f"role {role!r} has no model (deterministic step)")
         return model
 
+    def model_for(self, role: str, override: Optional[str] = None) -> str:
+        return self._model_for(role, override)
+
     def build_argv(self, model: str, max_budget_usd: Optional[float] = None) -> List[str]:
         argv = ["claude", "-p", "--model", model, "--output-format", "json",
                 "--permission-mode", "acceptEdits",
@@ -107,20 +110,25 @@ class ClaudeLauncher(Launcher):
         env = envscrub.scrub_env(self._environ, self._policy.env_allowlist)
         r = self._run(self.build_argv(m, max_budget_usd), cwd=cwd, input_text=prompt,
                       timeout=WORKER_TIMEOUT_S, env=env)
-        text, tin, tout, cost, known = r.stdout, 0, 0, 0.0, False
-        try:
-            data = json.loads(r.stdout)
-            if isinstance(data, dict):
-                text = str(data.get("result", ""))
-                usage = data.get("usage") or {}
-                tin = int(usage.get("input_tokens", 0))
-                tout = int(usage.get("output_tokens", 0))
-                if "total_cost_usd" in data:
-                    cost, known = float(data["total_cost_usd"]), True
-        except (ValueError, TypeError):
-            pass
-        if r.returncode == 124:   # timed out: whatever it spent is unknown
-            known = False
-        if r.returncode != 0:
-            text = (text + "\n" + r.stderr).strip()
-        return WorkerResult(r.returncode, text, tin, tout, cost, known, m)
+        return result_from_proc(r, m)
+
+
+def result_from_proc(r: ProcResult, model: str) -> WorkerResult:
+    """Turn the output of `claude -p --output-format json` into a WorkerResult."""
+    text, tin, tout, cost, known = r.stdout, 0, 0, 0.0, False
+    try:
+        data = json.loads(r.stdout)
+        if isinstance(data, dict):
+            text = str(data.get("result", ""))
+            usage = data.get("usage") or {}
+            tin = int(usage.get("input_tokens", 0))
+            tout = int(usage.get("output_tokens", 0))
+            if "total_cost_usd" in data:
+                cost, known = float(data["total_cost_usd"]), True
+    except (ValueError, TypeError):
+        pass
+    if r.returncode == 124:   # timed out: whatever it spent is unknown
+        known = False
+    if r.returncode != 0:
+        text = (text + "\n" + r.stderr).strip()
+    return WorkerResult(r.returncode, text, tin, tout, cost, known, model)
