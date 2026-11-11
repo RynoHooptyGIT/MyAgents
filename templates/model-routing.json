@@ -1,0 +1,19 @@
+{
+  "_comment": "Model routing policy read by scripts/routing/estimate.py. Project-owned after first install: edit prices and thresholds freely. The orchestrator runs on `orchestrator` and delegates each task to the cheapest model whose tier fits. USD per million tokens. Prices below are ILLUSTRATIVE: replace with your contract pricing, then set prices_verified to true (estimate.py warns until you do).",
+  "orchestrator": "fable",
+  "prices_verified": false,
+  "tiers": ["light", "standard", "high", "frontier"],
+  "models": {
+    "fable":  {"tier": "frontier", "input": 15.00, "output": 75.00},
+    "opus":   {"tier": "high",     "input": 15.00, "output": 75.00},
+    "sonnet": {"tier": "standard", "input": 3.00,  "output": 15.00},
+    "haiku":  {"tier": "light",    "input": 1.00,  "output": 5.00}
+  },
+  "budget": {"confirm_above_usd": 1.00, "block_above_usd": 10.00},
+  "task_tiers": {
+    "light": ["search", "grep", "summarize", "format", "rename", "status checks", "simple edits"],
+    "standard": ["implementation", "tests", "refactors", "code review", "docs"],
+    "high": ["architecture", "security review", "multi-file debugging", "migrations"],
+    "frontier": ["ambiguous planning", "cross-system design", "orchestration", "final gate decisions"]
+  }
+}
