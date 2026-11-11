@@ -18,6 +18,10 @@ POLICY = pol.load(REPO)
 RID = "a1b2c3d4e5f60718"
 
 
+def is_push(argv):
+    return argv[0] == "git" and "push" in argv
+
+
 def git(cwd, *args):
     env = dict(os.environ, GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@t", GIT_COMMITTER_NAME="t",
                GIT_COMMITTER_EMAIL="t@t")
@@ -41,7 +45,7 @@ class FakeGh:
     """Scripted `gh`: every other command goes to the real subprocess seam (real git)."""
 
     def __init__(self, artifacts=None, appear_after=0, conclusion="success", complete_after=0,
-                 dispatch_rc=0, download_rc=0, title_override=None):
+                 dispatch_rc=0, download_rc=0, title_override=None, queued_polls=0):
         self.calls = []
         self.dispatched = []
         self.artifacts = artifacts          # callable(fields) -> {filename: bytes} or None
@@ -51,6 +55,7 @@ class FakeGh:
         self.dispatch_rc = dispatch_rc
         self.download_rc = download_rc
         self.title_override = title_override
+        self.queued_polls = queued_polls
         self.list_polls = 0
         self.view_polls = 0
         self.last_download_dir = None
@@ -84,7 +89,9 @@ class FakeGh:
             return ProcResult(0, json.dumps([other, mine]), "")
         if args[:2] == ["run", "view"]:
             self.view_polls += 1
-            done = self.view_polls > self.complete_after
+            if self.view_polls <= self.queued_polls:
+                return ProcResult(0, json.dumps({"status": "queued", "conclusion": ""}), "")
+            done = self.view_polls - self.queued_polls > self.complete_after
             return ProcResult(0, json.dumps({"status": "completed" if done else "in_progress",
                                              "conclusion": self.conclusion if done else ""}), "")
         if args[:2] == ["run", "download"]:
@@ -107,10 +114,11 @@ class FakeGh:
         return [c for c in self.calls if c[0] == "gh"]
 
 
-def client(gh, tmp_path, repo=None, timeout_s=600, clock=None):
+def client(gh, tmp_path, repo=None, timeout_s=600, clock=None, queue_timeout_s=None):
     clock = clock or Clock()
     return A.ActionsClient(runner=gh, state_dir=tmp_path / "state", repo=repo, poll_seconds=5,
-                           timeout_s=timeout_s, sleep=clock.sleep, clock=clock.now), clock
+                           timeout_s=timeout_s, queue_timeout_s=queue_timeout_s or timeout_s,
+                           sleep=clock.sleep, clock=clock.now), clock
 
 
 # --- ActionsClient ---------------------------------------------------------------------------
@@ -287,7 +295,7 @@ def test_argv_hygiene_ref_main_no_force_prompt_encoded(world, tmp_path):
     assert gzip.decompress(base64.b64decode(f["prompt_b64"])).decode() == prompt
     run_argv = [c for c in gh.gh_calls() if c[1:3] == ["workflow", "run"]][0]
     assert run_argv[run_argv.index("--ref") + 1] == "main"
-    pushes = [c for c in gh.calls if c[:2] == ["git", "push"]]
+    pushes = [c for c in gh.calls if is_push(c)]
     assert len(pushes) == 2 and all(c[2] == "origin" for c in pushes)
 
 
@@ -328,7 +336,7 @@ def test_rejected_push_is_error_not_force_retry(world, tmp_path):
     assert not r.ok and not r.cost_known and "push" in r.text.lower()
     assert gh.dispatched == []
     assert not any("force" in " ".join(c) for c in gh.calls)
-    assert len([c for c in gh.calls if c[:2] == ["git", "push"]]) == 1
+    assert len([c for c in gh.calls if is_push(c)]) == 1
 
 
 def test_oversize_prompt_fails_without_dispatch_or_push(world, tmp_path):
@@ -339,7 +347,7 @@ def test_oversize_prompt_fails_without_dispatch_or_push(world, tmp_path):
     l, _ = launcher(gh, tmp_path)
     r = l.run("build", prompt, world)
     assert not r.ok and "too large" in r.text and gh.dispatched == []
-    assert not any(c[:2] == ["git", "push"] for c in gh.calls)
+    assert not any(is_push(c) for c in gh.calls)
 
 
 def test_dirty_worktree_refused(world, tmp_path):
@@ -359,7 +367,7 @@ def test_non_factory_branch_refused(world, tmp_path, name):
     gh = FakeGh(artifacts=artifacts_for(world))
     r = launcher(gh, tmp_path)[0].run("build", "p", world)
     assert not r.ok and "branch" in r.text and gh.dispatched == []
-    assert not any(c[:2] == ["git", "push"] for c in gh.calls)
+    assert not any(is_push(c) for c in gh.calls)
 
 
 def test_unknown_role_raises(world, tmp_path):
@@ -382,7 +390,7 @@ def assert_rejected(world, r, before, gh):
     assert not r.ok and r.returncode != 0
     assert git(world, "rev-parse", "HEAD").strip() == before
     assert git(world, "status", "--porcelain").strip() == ""
-    assert len([c for c in gh.calls if c[:2] == ["git", "push"]]) == 1     # only the pre-dispatch push
+    assert len([c for c in gh.calls if is_push(c)]) == 1     # only the pre-dispatch push
 
 
 HDR = ("diff --git a/{p} b/{p}\nnew file mode 100644\nindex 0000000..e69de29\n"
@@ -583,7 +591,7 @@ def test_gates_pushes_when_behind_and_never_forces(world, tmp_path):
     git(world, "commit", "-qm", "local only")
     gh = FakeGh(artifacts=gates_artifacts(world, "FACTORY-GATES: PASS\n"))
     assert gate_runner(gh, tmp_path).run(world).verdict == "PASS"
-    assert any(c[:2] == ["git", "push"] for c in gh.calls)
+    assert any(is_push(c) for c in gh.calls)
 
 
 def test_gates_diverged_remote_is_misconfigured(world, tmp_path):
@@ -636,3 +644,205 @@ def test_gates_dirty_or_bad_branch_is_misconfigured(world, tmp_path):
 
 def test_gate_runner_is_a_gaterunner_and_launcher_is_a_launcher():
     assert issubclass(A.ActionsGateRunner, G.GateRunner) and issubclass(A.ActionsLauncher, Lc.Launcher)
+
+
+# --- review fixes -----------------------------------------------------------------------------------
+
+def leftovers(tmp_path):
+    base = tmp_path / "state" / "actions"
+    return [] if not base.exists() else list(base.iterdir())
+
+
+def test_queue_time_does_not_count_against_run_time(tmp_path):
+    gh = FakeGh(artifacts=lambda f: {"result.json": b"{}"}, queued_polls=50, complete_after=5)
+    c, clk = client(gh, tmp_path, timeout_s=60, queue_timeout_s=10_000)
+    conclusion, d = c.run_workflow("factory-worker.yml", "factory-worker", {"request_id": RID}, "x")
+    assert conclusion == "success" and clk.now() > 60
+    assert not any(x[1:3] == ["run", "cancel"] for x in gh.gh_calls())
+
+
+def test_run_stuck_queued_times_out_without_cancelling_a_running_job(tmp_path):
+    gh = FakeGh(queued_polls=10**6)
+    c, _ = client(gh, tmp_path, timeout_s=600, queue_timeout_s=60)
+    with pytest.raises(A.ActionsTimeout, match="start"):
+        c.run_workflow("factory-worker.yml", "factory-worker", {"request_id": RID}, "x")
+
+
+def test_running_job_over_its_time_is_cancelled(tmp_path):
+    gh = FakeGh(queued_polls=3, complete_after=10**6)
+    c, _ = client(gh, tmp_path, timeout_s=60, queue_timeout_s=600)
+    with pytest.raises(A.ActionsTimeout):
+        c.run_workflow("factory-worker.yml", "factory-worker", {"request_id": RID}, "x")
+    assert any(x[1:3] == ["run", "cancel"] for x in gh.gh_calls())
+
+
+def test_operator_git_runs_with_hooks_and_fsmonitor_disabled(world, tmp_path):
+    patch = make_patch(world, tmp_path, lambda s: (s / "new.py").write_text("1\n"))
+    gh = FakeGh(artifacts=artifacts_for(world, patch))
+    launcher(gh, tmp_path)[0].run("build", "p", world)
+    gits = [c for c in gh.calls if c[0] == "git"]
+    assert gits
+    for c in gits:
+        assert c[1:5] == ["-c", "core.hooksPath=/dev/null", "-c", "core.fsmonitor=false"], c
+    gh2 = FakeGh(artifacts=gates_artifacts(world, "FACTORY-GATES: PASS\n"))
+    gate_runner(gh2, tmp_path).run(world)
+    for c in [c for c in gh2.calls if c[0] == "git"]:
+        assert c[1:5] == ["-c", "core.hooksPath=/dev/null", "-c", "core.fsmonitor=false"], c
+
+
+def test_download_dirs_are_cleaned_up_on_success_and_failure(world, tmp_path):
+    patch = make_patch(world, tmp_path, lambda s: (s / "new.py").write_text("1\n"))
+    launcher(FakeGh(artifacts=artifacts_for(world, patch)), tmp_path)[0].run("build", "p", world)
+    assert leftovers(tmp_path) == []
+    bad = HDR.format(p=".github/workflows/x.yml").encode()
+    launcher(FakeGh(artifacts=artifacts_for(world, bad)), tmp_path)[0].run("build", "p", world)
+    assert leftovers(tmp_path) == []
+    launcher(FakeGh(artifacts=artifacts_for(world, b"", request_id="f" * 16)), tmp_path)[0].run("build", "p", world)
+    assert leftovers(tmp_path) == []
+    gate_runner(FakeGh(artifacts=gates_artifacts(world, "FACTORY-GATES: PASS\n")), tmp_path).run(world)
+    assert leftovers(tmp_path) == []
+
+
+def test_oserror_reading_artifacts_is_a_failed_result_not_an_exception(world, tmp_path, monkeypatch):
+    gh = FakeGh(artifacts=artifacts_for(world))
+    l, _ = launcher(gh, tmp_path)
+
+    def boom(*a, **k):
+        raise PermissionError("denied")
+    monkeypatch.setattr(A, "read_artifact_file", boom)
+    r = l.run("build", "p", world)
+    assert not r.ok and not r.cost_known
+    gh2 = FakeGh(artifacts=gates_artifacts(world, "FACTORY-GATES: PASS\n"))
+    assert gate_runner(gh2, tmp_path).run(world).verdict == "MISCONFIGURED"
+
+
+def test_oserror_creating_download_dir_is_failed_result(world, tmp_path, monkeypatch):
+    gh = FakeGh(artifacts=artifacts_for(world))
+    l, _ = launcher(gh, tmp_path)
+    monkeypatch.setattr(A.tempfile, "mkdtemp", lambda **k: (_ for _ in ()).throw(OSError("disk full")))
+    r = l.run("build", "p", world)
+    assert not r.ok and not r.cost_known
+    assert gate_runner(FakeGh(artifacts=gates_artifacts(world, "x")), tmp_path).run(world).verdict == "MISCONFIGURED"
+
+
+# --- hard deny-list for paths that execute once pushed or opened --------------------------------------
+
+DENIED = [
+    ".github/workflows/x.yml", ".github/CODEOWNERS", ".GitHub/Workflows/x.yml", ".GITHUB/actions/a/action.yml",
+    "sub/.github/workflows/x.yml",
+    ".claude/settings.json", "pkg/.claude/hooks/h.sh", ".CLAUDE/commands/c.md", "CLAUDE.md", "docs/CLAUDE.md",
+    "claude.md", "CLAUDE.local.md", "a/b/CLAUDE.local.md", "AGENTS.md", "x/Agents.MD", ".mcp.json", "x/y/.mcp.json",
+    ".vscode/tasks.json", "a/.vscode/settings.json", ".idea/workspace.xml", "p/.idea/x", ".devcontainer/devcontainer.json",
+    "p/.devcontainer/x.json", ".envrc", "p/.envrc", ".gitattributes", "p/.gitattributes", ".gitmodules",
+    "p/.gitmodules", ".lfsconfig", "p/.lfsconfig", ".agents/hooks/x.sh", ".AGENTS/x", "hooks/pre-commit",
+    "Hooks/post-commit", ".husky/pre-commit", "p/.husky/pre-commit", "./.github/workflows/x.yml",
+]
+
+
+@pytest.mark.parametrize("path", DENIED)
+def test_denied_path_constant_matches(path):
+    assert A.denied_path(path), path
+
+
+@pytest.mark.parametrize("path", ["src/hooks/x.py", "docs/github/x.md", "a/agents.txt", "githooks/x", "claude.py",
+                                  "scripts/x.sh", ".agentsx/y", "myclaude.md", "x/.githubx/y"])
+def test_ordinary_paths_not_denied(path):
+    assert A.denied_path(path) is None, path
+
+
+@pytest.mark.parametrize("path", DENIED)
+def test_patch_adding_denied_path_is_rejected_never_applied_or_pushed(world, tmp_path, path):
+    if path.startswith("./"):
+        pytest.skip("not a valid git patch path")
+    r, gh, before = run_with_patch(world, tmp_path, HDR.format(p=path).encode())
+    assert_rejected(world, r, before, gh)
+    assert r.text.startswith(Lc.SANDBOX_REJECTED_PREFIX) and "denied path" in r.text
+    assert git(world, "ls-remote", "origin", f"refs/heads/{BRANCH}").split()[0] == before
+
+
+def test_rename_into_denied_path_rejected(world, tmp_path):
+    def mutate(s):
+        (s / ".github").mkdir()
+        git(s, "mv", "a.txt", ".github/workflow.yml")
+    patch = make_patch(world, tmp_path, mutate)
+    r, gh, before = run_with_patch(world, tmp_path, patch)
+    assert_rejected(world, r, before, gh)
+    assert "denied path" in r.text
+
+
+def test_deletion_of_denied_path_rejected(world, tmp_path):
+    (world / ".github").mkdir()
+    (world / ".github" / "ci.yml").write_text("on: push\n")
+    git(world, "add", "-A")
+    git(world, "commit", "-qm", "base has a workflow")
+    git(world, "push", "-q", "origin", f"HEAD:refs/heads/main")
+    git(world, "fetch", "-q", "origin")
+    patch = make_patch(world, tmp_path, lambda s: (s / ".github" / "ci.yml").unlink())
+    r, gh, before = run_with_patch(world, tmp_path, patch)
+    assert_rejected(world, r, before, gh)
+    assert "denied path" in r.text
+
+
+def test_mode_only_change_on_denied_path_rejected(world, tmp_path):
+    patch = b"diff --git a/.github/ci.yml b/.github/ci.yml\nold mode 100644\nnew mode 100755\n"
+    r, gh, before = run_with_patch(world, tmp_path, patch)
+    assert_rejected(world, r, before, gh)
+    assert "denied path" in r.text
+
+
+def test_denied_path_hidden_in_header_only_still_rejected(world, tmp_path):
+    patch = (b"diff --git a/ok.txt b/ok.txt\nnew file mode 100644\nindex 0000000..e69de29\n"
+             b"--- /dev/null\n+++ b/ok.txt\n@@ -0,0 +1 @@\n+x\n"
+             b"diff --git a/z b/.github/w.yml\nrename from z\nrename to .github/w.yml\n")
+    r, gh, before = run_with_patch(world, tmp_path, patch)
+    assert_rejected(world, r, before, gh)
+
+
+def test_mixed_patch_with_one_denied_path_applies_nothing(world, tmp_path):
+    def mutate(s):
+        (s / "fine.py").write_text("ok\n")
+        (s / ".github").mkdir()
+        (s / ".github" / "x.yml").write_text("on: push\n")
+    patch = make_patch(world, tmp_path, mutate)
+    r, gh, before = run_with_patch(world, tmp_path, patch)
+    assert_rejected(world, r, before, gh)
+    assert not (world / "fine.py").exists()
+
+
+def commit_denied_locally(world):
+    (world / ".github" / "workflows").mkdir(parents=True)
+    (world / ".github" / "workflows" / "evil.yml").write_text("on: push\n")
+    git(world, "add", "-A")
+    git(world, "commit", "-qm", "evil")
+
+
+def test_launcher_refuses_to_push_when_local_head_already_holds_denied_paths(world, tmp_path):
+    commit_denied_locally(world)
+    gh = FakeGh(artifacts=artifacts_for(world))
+    r = launcher(gh, tmp_path)[0].run("build", "p", world)
+    assert not r.ok and r.text.startswith(Lc.SANDBOX_REJECTED_PREFIX)
+    assert gh.dispatched == [] and not any(is_push(c) for c in gh.calls)
+    assert git(world, "ls-remote", "origin", f"refs/heads/{BRANCH}").strip() == ""
+
+
+def test_gate_runner_refuses_to_push_when_local_head_holds_denied_paths(world, tmp_path):
+    commit_denied_locally(world)
+    gh = FakeGh(artifacts=gates_artifacts(world, "FACTORY-GATES: PASS\n"))
+    res = gate_runner(gh, tmp_path).run(world)
+    assert res.verdict == "MISCONFIGURED" and gh.dispatched == [] and not any(is_push(c) for c in gh.calls)
+    assert git(world, "ls-remote", "origin", f"refs/heads/{BRANCH}").strip() == ""
+
+
+def test_push_guard_fails_closed_when_base_ref_is_missing(world, tmp_path):
+    git(world, "update-ref", "-d", "refs/remotes/origin/main")
+    gh = FakeGh(artifacts=artifacts_for(world))
+    r = launcher(gh, tmp_path)[0].run("build", "p", world)
+    assert not r.ok and gh.dispatched == [] and not any(is_push(c) for c in gh.calls)
+
+
+def test_push_guard_allows_ordinary_branch_content(world, tmp_path):
+    (world / "ok.py").write_text("x\n")
+    git(world, "add", "-A")
+    git(world, "commit", "-qm", "ok")
+    gh = FakeGh(artifacts=artifacts_for(world))
+    assert launcher(gh, tmp_path)[0].run("build", "p", world).ok

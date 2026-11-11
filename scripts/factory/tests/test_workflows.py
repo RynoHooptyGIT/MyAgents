@@ -94,8 +94,7 @@ def test_worker_workflow_shape():
     d = load("factory-worker.yml")
     job = next(iter(d["jobs"].values()))
     assert job["timeout-minutes"] == 60
-    assert d["concurrency"]["cancel-in-progress"] is False
-    assert "inputs.branch" in d["concurrency"]["group"]
+    assert "concurrency" not in d and "concurrency" not in job
     inputs = trigger(d)["workflow_dispatch"]["inputs"]
     assert set(inputs) == {"branch", "role", "model", "max_budget_usd", "request_id", "prompt_b64"}
     upload = [s for s in steps(d) if str(s.get("uses", "")).startswith("actions/upload-artifact@")][0]
@@ -105,6 +104,7 @@ def test_worker_workflow_shape():
 
 def test_gates_workflow_shape():
     d = load("factory-gates.yml")
+    assert "concurrency" not in d and all("concurrency" not in j for j in d["jobs"].values())
     inputs = trigger(d)["workflow_dispatch"]["inputs"]
     assert set(inputs) == {"branch", "request_id"}
     text = (WF / "factory-gates.yml").read_text()
@@ -125,3 +125,71 @@ def test_policy_workflow_names_match_files():
     from .. import policy
     p = policy.load(REPO)
     assert (WF / p.sandbox.worker_workflow).is_file() and (WF / p.sandbox.gates_workflow).is_file()
+
+
+def _dump(name):
+    return yaml.dump(load(name))
+
+
+@pytest.mark.parametrize("name", FILES)
+def test_secrets_word_only_in_the_one_allowed_env_value(name):
+    text = _dump(name)
+    hits = re.findall(r"\bsecrets\b", text)
+    if name == "factory-gates.yml":
+        assert hits == []
+    else:
+        assert len(hits) == 1
+        assert "${{ secrets.FACTORY_ANTHROPIC_API_KEY }}" in text
+        assert text.count("secrets.FACTORY_ANTHROPIC_API_KEY") == 1
+    for bad in ("toJSON(secrets", "toJson(secrets", "secrets[", "secrets ["):
+        assert bad.lower() not in text.lower()
+
+
+@pytest.mark.parametrize("name", FILES)
+def test_no_github_token_anywhere(name):
+    text = _dump(name) + (WF / name).read_text()
+    for bad in ("github.token", "GH_TOKEN", "GITHUB_TOKEN"):
+        assert bad.lower() not in text.lower().replace("persist-credentials", ""), bad
+    for s in steps(load(name)):
+        for k in (s.get("env") or {}):
+            assert "TOKEN" not in k.upper() or k == "ANTHROPIC_API_KEY", k
+
+
+def test_key_step_runs_from_trusted_and_no_key_step_runs_from_work():
+    d = load("factory-worker.yml")
+    key_steps = [s for s in steps(d) if "ANTHROPIC_API_KEY" in (s.get("env") or {})]
+    assert len(key_steps) == 1
+    assert key_steps[0]["working-directory"] == "trusted"
+    for s in steps(d):
+        wd = str(s.get("working-directory", ""))
+        run = s.get("run", "")
+        if wd.startswith("work") or re.search(r"(^|\s)(cd\s+)?work/", run) and "ANTHROPIC_API_KEY" in (s.get("env") or {}):
+            assert "ANTHROPIC_API_KEY" not in (s.get("env") or {})
+
+
+def test_input_validation_precedes_checkout_of_the_branch():
+    ss = steps(load("factory-worker.yml"))
+    v = next(i for i, s in enumerate(ss) if "--validate-only" in s.get("run", ""))
+    w = next(i for i, s in enumerate(ss) if str(s.get("uses", "")).startswith("actions/checkout@")
+             and s["with"]["path"] == "work")
+    t = next(i for i, s in enumerate(ss) if str(s.get("uses", "")).startswith("actions/checkout@")
+             and s["with"]["path"] == "trusted")
+    assert t < v < w
+
+
+@pytest.mark.parametrize("name", FILES)
+def test_runner_label_and_no_foreign_repository_checkout(name):
+    for job in load(name)["jobs"].values():
+        assert job["runs-on"] == "ubuntu-latest"
+        assert "container" not in job
+    for s in steps(load(name)):
+        if str(s.get("uses", "")).startswith("actions/checkout@"):
+            assert "repository" not in s["with"] and "token" not in s["with"]
+
+
+@pytest.mark.parametrize("name", FILES)
+def test_every_uses_is_pinned_by_40_hex_sha(name):
+    uses = [s["uses"] for s in steps(load(name)) if "uses" in s]
+    assert uses
+    for u in uses:
+        assert not u.startswith("./") and re.fullmatch(r"[\w.-]+/[\w./-]+@[0-9a-f]{40}", u), u
