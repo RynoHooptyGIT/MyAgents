@@ -1,29 +1,34 @@
-"""Deterministic runner: intake -> claim -> spec -> build -> gates -> classify -> record.
+"""Deterministic runner: intake -> claim -> spec -> sealed tests -> build -> gates -> verify -> classify -> record.
 
-Phase 2 ("Core"): every category is forced to T2 at integration time, the verify and
-sealed-test steps are explicit stubs that force T2, and there is no merge step.
-Nothing here opens a PR or merges. In sandbox mode "actions" the launcher and gate runner
-push the worker's `factory/` branch (never forced) so ephemeral Actions runners can see it.
+Phase 3: workers, gates and verification run on ephemeral Actions runners (sandbox mode "actions").
+Sealed acceptance tests are written before the build and never reach the builder; after the gates
+pass, a deterministic verify job (revert check, sealed run) and a cold-read model verifier run.
+Every category is still forced to T2 at integration time and there is no merge step: nothing here
+opens a PR or merges. The spec ambiguity check is still a stub. In sandbox mode "actions" the
+launcher, gate runner and verifier push the worker's `factory/` branch (never forced).
 """
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional, Tuple
 
 from . import classifier, ledger as ledger_mod, retry, stops
 from .gates import GateResult, GateRunner
 from .launcher import SANDBOX_REJECTED_PREFIX, Launcher, WorkerResult, build_prompt
 from .ledger import Ledger
 from .policy import Policy
+from .sealed import (SealedError, SealedHashMismatch, SealedInvalid, SealedSet, SealedStore, build_sealed_prompt,
+                     bundle as sealed_bundle, validate_sealed_patch)
+from .verifier import VerifyResult, Verifier, build_verifier_prompt, parse_agreement
 from .tracker import Issue, NotAllowlisted, StateMismatch, Tracker, select_claimable
 from .workspace import DiffStats, Workspace, slug
 
-PHASE = 2
-FORCED_LEVEL = "T2"   # phase 2: every category is T2 at integration. Changing it is a code change
+PHASE = 3
+FORCED_LEVEL = "T2"   # every category is T2 at integration until phase 4. Changing it is a code change
                       # under scripts/factory/**, which is itself a protected (always T2) path.
-NOT_IMPLEMENTED = "not implemented in phase 2"
+AMBIGUITY_CHECK = "not implemented (stub)"
 
 
 @dataclass
@@ -39,6 +44,8 @@ class Context:
     now: Callable[[], datetime] = lambda: datetime.now(timezone.utc)
     sandbox: str = "local"   # where workers and gates ran; recorded on every ledger row
     out: Callable[[str], None] = print
+    verifier: Optional[Verifier] = None          # None: verification is unavailable (a T2 reason)
+    sealed_store: Optional[SealedStore] = None   # default: SealedStore(state_dir)
 
 
 @dataclass
@@ -59,8 +66,15 @@ REASON_CODES = [
     ("retries exhausted", "retries-exhausted"), ("retry identical", "identical-retry"),
     ("budget exceeded", "budget-exceeded"), ("daily budget", "budget-exceeded"),
     ("per-issue budget", "budget-exceeded"), ("category earned", "category-level"),
-    ("verifier not implemented", "verifier-stub"), ("sealed tests not implemented", "sealed-stub"),
-    ("verifier has not agreed", "verifier-not-agreed"), ("phase", "phase-2-forced"),
+    ("verifier has not agreed", "verifier-not-agreed"), ("phase", "phase-forced"),
+    ("verification unavailable", "verify-unavailable"), ("verification skipped", "verify-skipped"),
+    ("verifier model equals", "verifier-model-equals-builder"), ("verifier unavailable", "verifier-unavailable"),
+    ("verifier returned a patch", "verifier-patch"),
+    ("revert check: tests pass", "revert-passes"), ("revert check: new tests do not pass", "revert-fails-with-change"),
+    ("revert check: no new tests", "revert-no-new-tests"), ("revert check error", "revert-error"),
+    ("sealed tests unavailable", "sealed-unavailable"), ("sealed run collected no tests", "sealed-no-tests"),
+    ("sealed canary", "sealed-canary"), ("sealed bundle hash", "sealed-hash-mismatch"),
+    ("sealed path", "sealed-path-touched"),
     ("no changes", "no-changes"), ("spec worker failed", "spec-failed"),
     ("sandbox rejected path", "sandbox-rejected-path"),
     ("unexpected error", "crash"),
@@ -76,14 +90,44 @@ def reason_code(reason: str) -> str:
 
 PLAN = [
     "claim: queued -> claimed (label)",
-    "spec: worker writes specs/<issue>.md (ambiguity check: " + NOT_IMPLEMENTED + ")",
+    "spec: worker writes specs/<issue>.md (ambiguity check: " + AMBIGUITY_CHECK + ")",
+    "sealed tests: author worker writes acceptance tests, collected as a patch and kept outside the repo (never pushed)",
     "build: worker on the routed model, in a dedicated worktree",
     "gates: scripts/factory/gates.sh; on failure retry ladder (same model, then a different model)",
-    "verify and sealed tests: stubs, " + NOT_IMPLEMENTED + "; force T2",
-    "classify: deterministic tier from the final diff; every category is forced to T2 in phase 2",
-    "integrate: label awaiting-human with a summary (no PR, no merge in phase 2; sandbox mode actions pushes the factory/ branch)",
+    "verify: revert check and sealed run on an ephemeral runner, then a cold-read verifier on a different model",
+    "classify: deterministic tier from the final diff; every category is forced to T2 in phase 3",
+    "integrate: label awaiting-human with a summary (no PR, no merge; sandbox mode actions pushes the factory/ branch)",
     "record: one ledger row",
 ]
+
+
+def decide_verdict(policy: Policy, paths: List[str], model_verdict: str, revert_status: str,
+                   available: bool) -> Tuple[str, List[str]]:
+    """The classifier's verifier verdict and the T2 reasons behind it.
+
+    `agree` needs the model verifier to agree AND the revert check to show the new tests fail without
+    the change. `no_new_tests` and `nothing_to_revert` only pass for a change whose paths are all
+    docs or tests (policy t0_paths): a code change with no new tests cannot be agreed. Unavailable
+    verification is never agreement (`not_run`)."""
+    if not available or revert_status == "unavailable":
+        return "not_run", ["verification unavailable"]
+    reasons: List[str] = []
+    if revert_status == "passes_without_change":
+        reasons.append("revert check: tests pass without the change")
+    elif revert_status == "fails_with_change":
+        reasons.append("revert check: new tests do not pass with the change")
+    elif revert_status in ("no_new_tests", "nothing_to_revert"):
+        if not all(any(classifier.glob_match(p, path) for p in policy.t0_paths) for path in paths):
+            reasons.append("revert check: no new tests for a code change")
+    elif revert_status != "fails_without_change":
+        reasons.append("revert check error")
+    if model_verdict == "unavailable":
+        return "not_run", reasons + ["verifier unavailable"]
+    if model_verdict == "not_run":
+        return "not_run", reasons
+    if model_verdict == "disagree" or reasons:
+        return "disagree", reasons
+    return "agree", reasons
 
 
 class _Run:
@@ -99,6 +143,10 @@ class _Run:
         self.retries = 0
         self.started = ctx.now()
         self.worktree: Optional[Path] = None
+        self.sealed: Optional[SealedSet] = None
+        self.pre_reasons: List[str] = []      # reasons found before the build (sealed tests unavailable)
+        self.build_texts: List[str] = []      # builder result text, searched for the sealed canary
+        self.verify_info: Optional[dict] = None
 
     def log(self, text: str) -> None:
         """Detail (worker output, gate output) stays in a local file, never on the issue."""
@@ -121,6 +169,15 @@ class _Run:
     def worker(self, role: str, prompt: str, model: Optional[str] = None) -> WorkerResult:
         res = self.ctx.launcher.run(role, prompt, self.worktree, model=model,
                                     max_budget_usd=self.remaining_budget())
+        return self._account(role, res)
+
+    def collect_worker(self, role: str, prompt: str) -> Tuple[WorkerResult, bytes]:
+        """A worker whose patch comes back unapplied. Its spend counts like any other worker's."""
+        res, patch = self.ctx.launcher.collect(role, prompt, self.worktree, model=None,
+                                               max_budget_usd=self.remaining_budget())
+        return self._account(role, res), patch
+
+    def _account(self, role: str, res: WorkerResult) -> WorkerResult:
         cost = res.cost_usd
         if not res.cost_known:
             # Unknown spend (timeout, unparseable output): charge what is left of the issue budget.
@@ -147,6 +204,8 @@ class _Run:
             "retries": self.retries, "outcome": outcome,
             "sandbox": self.ctx.sandbox,
             "started_at": self.started.isoformat(), "finished_at": finished.isoformat()}
+        if self.verify_info is not None:
+            row["verify"] = self.verify_info
         notes = self.ctx.workspace.take_notes()
         if notes:
             row["notes"] = notes
@@ -165,9 +224,20 @@ def _summary(tier: str, state: str, reasons: List[str]) -> str:
             "Details are in the operator's local factory log.")
 
 
+def _touches_sealed(paths: List[str]) -> bool:
+    for raw in paths:
+        n = classifier.normalize_path(raw)
+        if n is None or n.casefold().split("/")[:2] == ["tests", "sealed"]:
+            return True
+    return False
+
+
 def _finish(run: _Run, outcome_state: str, gate: str, stats: Optional[DiffStats],
-            extra_reasons: List[str]) -> RunResult:
+            extra_reasons: List[str], verdict: str = "not_run", sealed_failures: int = 0) -> RunResult:
     ctx = run.ctx
+    extra_reasons = list(extra_reasons) + [r for r in run.pre_reasons if r not in extra_reasons]
+    if stats and _touches_sealed(stats.paths):
+        extra_reasons.append("sealed path in build diff")
     reasons = list(extra_reasons)
     protected = False
     category = "none"
@@ -175,7 +245,7 @@ def _finish(run: _Run, outcome_state: str, gate: str, stats: Optional[DiffStats]
         category = classifier.category(stats.paths)
         c = classifier.classify(
             ctx.policy, stats.paths, stats.added, stats.deleted, stats.deleted_files, False,
-            "not_run", 0, "retries exhausted" in extra_reasons, "budget exceeded" in extra_reasons,
+            verdict, sealed_failures, "retries exhausted" in extra_reasons, "budget exceeded" in extra_reasons,
             FORCED_LEVEL, deleted_paths=stats.deleted_paths, binary_files=stats.binary_files)
         reasons = c.reasons + [r for r in extra_reasons if r not in c.reasons]
         protected = any(r.startswith("protected path") for r in c.reasons)
@@ -210,8 +280,9 @@ def _process(run: _Run) -> RunResult:
         if spec.text.startswith(SANDBOX_REJECTED_PREFIX):
             return _fail(run, "sandbox rejected path", spec.text)
         return _fail(run, "spec worker failed", spec.text)
-    ctx.out(f"ambiguity check: {NOT_IMPLEMENTED}")
+    ctx.out(f"ambiguity check: {AMBIGUITY_CHECK}")
     run.move("building")
+    _author_sealed(run)
 
     build_model = ctx.policy.routing["build"]
     history = [retry.attempt_record(0, build_model, "")]
@@ -226,6 +297,7 @@ def _process(run: _Run) -> RunResult:
             break
         res = run.worker("build", build_prompt("build", issue.number, issue.title, issue.body, plan.context),
                          model=plan.model)
+        run.build_texts.append(res.text)
         gate = (ctx.gates.run(run.worktree) if res.ok
                 else GateResult("FAIL", f"build worker exited {res.returncode}\n{res.text}"))
         run.log(f"build round {plan.round} gate {gate.verdict}\n{gate.output}")
@@ -251,11 +323,95 @@ def _process(run: _Run) -> RunResult:
     if gate.verdict != "PASS" or extra:
         return _finish(run, "awaiting-human", gate.verdict, stats, extra)
 
-    ctx.out(f"verify: {NOT_IMPLEMENTED}; forcing T2")
-    ctx.out(f"sealed tests: {NOT_IMPLEMENTED}; forcing T2")
+    if not stats.paths:
+        return _finish(run, "awaiting-human", "PASS", stats, [])
+    block = run.budget_block()
+    if block:
+        return _finish(run, "awaiting-human", "PASS", stats,
+                       ["budget exceeded", block, "verification skipped: budget exhausted"])
     run.move("verifying")
-    return _finish(run, "awaiting-human", "PASS", stats,
-                   [f"verifier {NOT_IMPLEMENTED}", f"sealed tests {NOT_IMPLEMENTED}"])
+    return _verify(run, stats)
+
+
+def _author_sealed(run: _Run) -> None:
+    """Write the sealed acceptance tests from the spec commit. The patch is collected, never applied or
+    pushed, and kept outside the repository. Any failure only means the change has no sealed tests."""
+    ctx, issue = run.ctx, run.issue
+
+    def unavailable(why: str, detail: str = "") -> None:
+        run.log(f"sealed tests unavailable ({why}) {detail}")
+        run.pre_reasons.append(f"sealed tests unavailable: {why}")
+
+    block = run.budget_block()
+    if block:
+        return unavailable("budget exhausted", block)
+    ctx.workspace.snapshot(run.worktree)           # a local-mode spec worker may not have committed
+    spec_sha = ctx.workspace.head_sha(run.worktree)
+    res, patch = run.collect_worker("sealed_test_author",
+                                    build_sealed_prompt(issue.number, issue.title, issue.body))
+    if not res.ok:
+        return unavailable("author failed", res.text)
+    try:
+        validate_sealed_patch(patch, issue.number, ctx.policy.sealed.max_patch_bytes)
+        store = ctx.sealed_store or SealedStore(ctx.state_dir)
+        run.sealed = store.save(issue.number, run.attempt, patch, spec_sha)
+    except SealedError as e:
+        return unavailable("patch invalid or not stored", str(e))
+
+
+def _verify(run: _Run, stats: DiffStats) -> RunResult:
+    ctx, issue = run.ctx, run.issue
+    reasons: List[str] = []
+    bundle: Optional[bytes] = None
+    if run.sealed is not None:
+        token = run.sealed.canary
+        if token in ctx.workspace.diff_text(run.worktree) or any(token in t for t in run.build_texts):
+            reasons.append("sealed canary found in build output")
+        try:
+            bundle = sealed_bundle((ctx.sealed_store or SealedStore(ctx.state_dir)).load(issue.number, run.attempt))
+        except SealedHashMismatch as e:
+            run.log(f"sealed bundle refused: {e}")
+            reasons.append("sealed bundle hash mismatch")
+        except SealedError as e:
+            run.log(f"sealed bundle unreadable: {e}")
+            reasons.append("sealed tests unavailable: store unreadable")
+
+    vr = (ctx.verifier.verify(run.worktree, issue.number, bundle) if ctx.verifier
+          else VerifyResult.unavailable("no verifier configured"))
+    run.log(f"verify job: available={vr.available} revert={vr.revert_check} sealed={vr.sealed_status} "
+            f"total={vr.sealed_total} failed={vr.sealed_failed} errors={vr.sealed_errors} detail={vr.detail}")
+    if vr.available:
+        if vr.sealed_status == "no_tests":
+            reasons.append("sealed run collected no tests")
+        elif vr.sealed_status in ("invalid", "crash", "oversize"):
+            reasons.append(f"sealed tests unavailable: verify run reported {vr.sealed_status}")
+
+    builders = {m.strip().casefold() for m in run.models.get("build", [])}
+    if ctx.policy.routing["verifier"].strip().casefold() in builders:
+        model_verdict = "not_run"
+        reasons.append("verifier model equals builder model")
+    elif run.budget_block():
+        model_verdict = "not_run"
+        reasons += ["budget exceeded", "verification skipped: budget exhausted"]
+    else:
+        res, patch = run.collect_worker("verifier", build_verifier_prompt(issue.number, issue.title, issue.body))
+        run.log(f"verifier output (rc {res.returncode}):\n{res.text}")
+        if not res.ok:
+            model_verdict = "unavailable"
+        elif patch.strip():
+            model_verdict = "disagree"           # a read-only reviewer that changed files is not agreeing
+            reasons.append("verifier returned a patch")
+        else:
+            model_verdict = parse_agreement(res.text)
+
+    verdict, why = decide_verdict(ctx.policy, stats.paths, model_verdict, vr.revert_check, vr.available)
+    reasons += why
+    sealed_ran = vr.available and vr.sealed_status == "ran" and bundle is not None   # a result for tests never sent is not trusted
+    failures = vr.sealed_failures if sealed_ran else 0
+    run.verify_info = {"model_verdict": model_verdict, "revert_check": vr.revert_check,
+                       "sealed_available": sealed_ran, "sealed_total": vr.sealed_total if sealed_ran else 0,
+                       "sealed_failed": failures}
+    return _finish(run, "awaiting-human", "PASS", stats, reasons, verdict=verdict, sealed_failures=failures)
 
 
 def run_once(ctx: Context, dry_run: bool = False) -> RunResult:

@@ -1,0 +1,105 @@
+name: factory-verify
+
+# Deterministic verification on an ephemeral runner: the revert check and the sealed-test run.
+# Dispatched with `--ref main`, so this file and the scripts under trusted/ come from main; the
+# branch under test is checked out into work/ as data. No credentials are referenced anywhere in
+# this workflow. Inputs reach scripts through env vars, never through ${{ }} inside a run body.
+run-name: factory-verify ${{ inputs.request_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "factory/<issue>-<slug> branch to verify"
+        required: true
+        type: string
+      request_id:
+        description: "random hex id used to find this run and name its artifact"
+        required: true
+        type: string
+      expected_sha:
+        description: "commit the branch must be at"
+        required: true
+        type: string
+      issue:
+        description: "issue number the branch belongs to"
+        required: true
+        type: string
+      sealed_b64:
+        description: "gzip + base64 of the sealed test bundle (empty when there is none)"
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      # actions/checkout v7.0.1
+      - name: Checkout trusted scripts from main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          path: trusted
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Validate inputs
+        env:
+          FACTORY_BRANCH: ${{ inputs.branch }}
+          FACTORY_REQUEST_ID: ${{ inputs.request_id }}
+          FACTORY_EXPECTED_SHA: ${{ inputs.expected_sha }}
+          FACTORY_ISSUE: ${{ inputs.issue }}
+          FACTORY_SEALED_B64: ${{ inputs.sealed_b64 }}
+        working-directory: trusted
+        run: python3 -m scripts.factory.sandbox_verify --validate-only
+
+      # Full history so origin/main resolves inside work/.
+      # actions/checkout v7.0.1
+      - name: Checkout the branch under test as data
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ inputs.branch }}
+          path: work
+          fetch-depth: 0
+          persist-credentials: false
+
+      # actions/setup-python v7.1.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: python -m pip install pytest pyyaml
+
+      # Some tests create commits in temporary repos and need an identity.
+      - name: Set a git identity for tests
+        run: |
+          git config --global user.name "ci"
+          git config --global user.email "ci@example.invalid"
+
+      # Branch code runs in this step (inside scratch worktrees).      - name: Run verification
+        env:
+          FACTORY_BRANCH: ${{ inputs.branch }}
+          FACTORY_REQUEST_ID: ${{ inputs.request_id }}
+          FACTORY_EXPECTED_SHA: ${{ inputs.expected_sha }}
+          FACTORY_ISSUE: ${{ inputs.issue }}
+          FACTORY_SEALED_B64: ${{ inputs.sealed_b64 }}
+          FACTORY_WORK_DIR: ${{ github.workspace }}/work
+          FACTORY_OUT_DIR: ${{ github.workspace }}/out
+        working-directory: trusted
+        run: python3 -m scripts.factory.sandbox_verify
+
+      # actions/upload-artifact v7.0.2
+      - name: Upload verification result
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: factory-verify-${{ inputs.request_id }}
+          path: out/verify.json
+          if-no-files-found: warn
+          retention-days: 3

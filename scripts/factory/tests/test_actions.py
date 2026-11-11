@@ -81,7 +81,8 @@ class FakeGh:
             if self.list_polls <= self.appear_after or not self.dispatched:
                 return ProcResult(0, "[]", "")
             wf = self.dispatched[-1]["workflow"]
-            prefix = "factory-worker" if "worker" in wf else "factory-gates"
+            prefix = ("factory-worker" if "worker" in wf else
+                      "factory-verify" if "verify" in wf else "factory-gates")
             title = self.title_override or f"{prefix} {self.dispatched[-1]['fields']['request_id']}"
             other = {"databaseId": 1, "displayTitle": "factory-worker deadbeefdeadbeef",
                      "status": "completed", "conclusion": "success"}
@@ -846,3 +847,115 @@ def test_push_guard_allows_ordinary_branch_content(world, tmp_path):
     git(world, "commit", "-qm", "ok")
     gh = FakeGh(artifacts=artifacts_for(world))
     assert launcher(gh, tmp_path)[0].run("build", "p", world).ok
+
+
+# --- sealed directory deny rule and collect ------------------------------------------------------
+
+from .. import sealed as SL
+
+SEALED_PATCH = SL.new_file_patch("tests/sealed/issue-7/test_acc.py", b"def test_acc():\n    assert 1\n")
+
+
+@pytest.mark.parametrize("path", [
+    "tests/sealed/issue-7/test_a.py", "tests/sealed/x", "TESTS/Sealed/issue-1/test_a.py",
+    "tests/sealed./issue-1/t.py", "./tests/sealed/issue-1/t.py", "tests\\sealed\\issue-1\\t.py",
+    "tests/sealed",
+])
+def test_sealed_dir_is_denied_for_every_ordinary_patch(path):
+    assert A.denied_path(path)
+
+
+@pytest.mark.parametrize("path", ["tests/sealedx/a.py", "tests/test_sealed.py", "docs/sealed/a.md", "sealed/a.py"])
+def test_neighbouring_paths_are_not_denied(path):
+    assert A.denied_path(path) is None
+
+
+def test_ordinary_patch_touching_the_sealed_dir_is_path_denied(tmp_path):
+    f = tmp_path / "p.patch"
+    f.write_bytes(SEALED_PATCH)
+    with pytest.raises(A.PathDenied):
+        A.validate_patch(SEALED_PATCH, f, tmp_path)
+
+
+def test_builder_patch_that_includes_sealed_tests_is_rejected_and_not_committed_or_pushed(world, tmp_path):
+    patch = make_patch(world, tmp_path, lambda s: (s / "ok.py").write_text("1\n")) + SEALED_PATCH
+    gh = FakeGh(artifacts=artifacts_for(world, patch))
+    l, _ = launcher(gh, tmp_path)
+    before = git(world, "rev-parse", "HEAD").strip()
+    r = l.run("build", "p", world)
+    assert not r.ok and r.text.startswith(Lc.SANDBOX_REJECTED_PREFIX)
+    assert git(world, "rev-parse", "HEAD").strip() == before and not (world / "ok.py").exists()
+    assert len([c for c in gh.calls if is_push(c)]) == 1          # only the pre-dispatch push
+
+
+@pytest.mark.parametrize("role", ["spec", "build", "verifier", "sealed_test_author"])
+def test_run_rejects_sealed_paths_for_every_role(world, tmp_path, role):
+    gh = FakeGh(artifacts=artifacts_for(world, SEALED_PATCH))
+    l, _ = launcher(gh, tmp_path)
+    r = l.run(role, "p", world)
+    assert r.text.startswith(Lc.SANDBOX_REJECTED_PREFIX)
+
+
+def test_assert_pushable_refuses_a_branch_containing_the_sealed_dir(world, tmp_path):
+    (world / "tests" / "sealed" / "issue-7").mkdir(parents=True)
+    (world / "tests" / "sealed" / "issue-7" / "test_x.py").write_text("def test_x(): pass\n")
+    git(world, "add", "-A")
+    git(world, "commit", "-qm", "sneaky")
+    g = A._Git(real_run, world)
+    with pytest.raises(A.PathDenied):
+        g.assert_pushable()
+    with pytest.raises(A.PathDenied):
+        g.push(BRANCH)
+    assert git(world, "ls-remote", "origin", f"refs/heads/{BRANCH}").strip() == ""
+
+
+def test_collect_returns_the_patch_unapplied(world, tmp_path):
+    gh = FakeGh(artifacts=artifacts_for(world, SEALED_PATCH))
+    l, _ = launcher(gh, tmp_path)
+    before = git(world, "rev-parse", "HEAD").strip()
+    res, patch = l.collect("sealed_test_author", "SECRET SEALED PROMPT", world, max_budget_usd=2.0)
+    assert res.ok and res.cost_known and res.cost_usd == 0.25 and res.model == "opus"
+    assert patch == SEALED_PATCH
+    assert git(world, "rev-parse", "HEAD").strip() == before
+    assert git(world, "status", "--porcelain").strip() == "" and not (world / "tests").exists()
+    pushes = [c for c in gh.calls if is_push(c)]
+    assert len(pushes) == 1 and all(SEALED_PATCH.decode() not in a for c in gh.calls for a in c)
+    assert gh.dispatched[0]["fields"]["role"] == "sealed_test_author"
+    assert gh.dispatched[0]["fields"]["model"] == "opus"
+    assert git(world, "ls-tree", "-r", "--name-only", f"origin/{BRANCH}").split() == ["a.txt", "docs/x.md"]
+
+
+def test_collect_does_not_validate_or_apply_even_denied_paths(world, tmp_path):
+    hostile = SL.new_file_patch(".github/workflows/x.yml", b"on: push\n")
+    gh = FakeGh(artifacts=artifacts_for(world, hostile))
+    l, _ = launcher(gh, tmp_path)
+    res, patch = l.collect("verifier", "p", world)
+    assert patch == hostile and res.ok
+    assert not (world / ".github").exists()
+
+
+def test_collect_bad_result_json_gives_failed_result_and_no_patch(world, tmp_path):
+    gh = FakeGh(artifacts=artifacts_for(world, SEALED_PATCH, request_id="ffffffffffffffff"))
+    l, _ = launcher(gh, tmp_path)
+    res, patch = l.collect("sealed_test_author", "p", world)
+    assert not res.ok and patch == b""
+
+
+def test_collect_timeout_gives_124_and_no_patch(world, tmp_path):
+    gh = FakeGh(artifacts=artifacts_for(world, SEALED_PATCH), complete_after=10**6)
+    l, _ = launcher(gh, tmp_path, timeout_s=60)
+    res, patch = l.collect("sealed_test_author", "p", world)
+    assert res.returncode == 124 and not res.cost_known and patch == b""
+
+
+def test_collect_missing_artifact_gives_failed_result(world, tmp_path):
+    l, _ = launcher(FakeGh(artifacts=None), tmp_path)
+    res, patch = l.collect("sealed_test_author", "p", world)
+    assert not res.ok and patch == b""
+
+
+def test_collect_oversize_prompt_is_not_dispatched(world, tmp_path):
+    gh = FakeGh(artifacts=artifacts_for(world, SEALED_PATCH))
+    l, _ = launcher(gh, tmp_path)
+    res, patch = l.collect("sealed_test_author", os.urandom(90_000).hex(), world)
+    assert not res.ok and patch == b"" and gh.dispatched == []

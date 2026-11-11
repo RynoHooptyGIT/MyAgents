@@ -12,9 +12,11 @@ ROLES = ("orchestration", "triage", "mechanical", "spec", "build",
          "sealed_test_author", "verifier", "retry_round_2", "t2_design")
 REQUIRED_PROTECTED = ("scripts/factory/**", ".factory/**", "scripts/test.sh")
 TOP_KEYS = {"version", "tiers", "protected_paths", "t0_paths", "test_paths", "env_allowlist", "state_dir", "dependency_files", "size",
-            "autonomy", "budget", "queue", "retries", "allowlisted_authors", "routing", "sandbox"}
+            "autonomy", "budget", "queue", "retries", "allowlisted_authors", "routing", "sandbox", "sealed"}
 TIERS = ("T0", "T1", "T2")
 SANDBOX_MODES = ("actions", "local")
+SEALED_DIR = "tests/sealed"       # a code constant too (actions.denied_path): the policy can only restate it
+MAX_SEALED_PATCH_BYTES = 1_000_000
 _WORKFLOW_FILE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]*\.ya?ml$")
 
 
@@ -27,8 +29,15 @@ class Sandbox:
     mode: str                # "actions" (ephemeral GitHub Actions runners) or "local" (unsandboxed, dev only)
     worker_workflow: str
     gates_workflow: str
+    verify_workflow: str
     poll_seconds: int
     timeout_minutes: int
+
+
+@dataclass(frozen=True)
+class Sealed:
+    dir: str                 # where sealed acceptance tests live, per issue: <dir>/issue-<N>/
+    max_patch_bytes: int     # cap on the sealed author's patch
 
 
 @dataclass(frozen=True)
@@ -51,6 +60,7 @@ class Policy:
     allowlisted_authors: Tuple[str, ...]
     routing: Dict[str, str]
     sandbox: Sandbox
+    sealed: Sealed
 
 
 def _section(d, key, keys):
@@ -91,10 +101,11 @@ def _str_list(d, key):
 
 
 def _sandbox(d) -> Sandbox:
-    s = _section(d, "sandbox", ("mode", "worker_workflow", "gates_workflow", "poll_seconds", "timeout_minutes"))
+    s = _section(d, "sandbox", ("mode", "worker_workflow", "gates_workflow", "verify_workflow",
+                                "poll_seconds", "timeout_minutes"))
     if not isinstance(s["mode"], str) or s["mode"] not in SANDBOX_MODES:
         raise PolicyError(f"policy: sandbox.mode must be one of {list(SANDBOX_MODES)}")
-    for k in ("worker_workflow", "gates_workflow"):
+    for k in ("worker_workflow", "gates_workflow", "verify_workflow"):
         if not isinstance(s[k], str) or not _WORKFLOW_FILE.match(s[k]):
             raise PolicyError(f"policy: sandbox.{k} must be a workflow file name such as factory-worker.yml")
     poll = _pos_int(s["poll_seconds"], "sandbox.poll_seconds")
@@ -103,7 +114,18 @@ def _sandbox(d) -> Sandbox:
         raise PolicyError("policy: sandbox.poll_seconds must be at most 300")
     if wait > 360:
         raise PolicyError("policy: sandbox.timeout_minutes must be at most 360")
-    return Sandbox(s["mode"], s["worker_workflow"], s["gates_workflow"], poll, wait)
+    return Sandbox(s["mode"], s["worker_workflow"], s["gates_workflow"], s["verify_workflow"], poll, wait)
+
+
+def _sealed(d) -> Sealed:
+    s = _section(d, "sealed", ("dir", "max_patch_bytes"))
+    if s["dir"] != SEALED_DIR:
+        # The deny rule for this directory is a constant in code, so the policy cannot move it.
+        raise PolicyError(f"policy: sealed.dir must be exactly {SEALED_DIR!r}")
+    size = _pos_int(s["max_patch_bytes"], "sealed.max_patch_bytes")
+    if size > MAX_SEALED_PATCH_BYTES:
+        raise PolicyError(f"policy: sealed.max_patch_bytes must be at most {MAX_SEALED_PATCH_BYTES}")
+    return Sealed(s["dir"], size)
 
 
 def from_dict(d) -> Policy:
@@ -170,7 +192,7 @@ def from_dict(d) -> Policy:
         max_awaiting_human=_pos_int(queue["max_awaiting_human"], "queue.max_awaiting_human"),
         max_open_proposals=_pos_int(queue["max_open_proposals"], "queue.max_open_proposals"),
         max_rounds=2, allowlisted_authors=authors, routing=dict(routing),
-        sandbox=_sandbox(d),
+        sandbox=_sandbox(d), sealed=_sealed(d),
     )
 
 
