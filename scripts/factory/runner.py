@@ -93,7 +93,7 @@ PLAN = [
     "spec: worker writes specs/<issue>.md (ambiguity check: " + AMBIGUITY_CHECK + ")",
     "sealed tests: author worker writes acceptance tests, collected as a patch and kept outside the repo (never pushed)",
     "build: worker on the routed model, in a dedicated worktree",
-    "gates: scripts/gates.sh; on failure retry ladder (same model, then a different model)",
+    "gates: scripts/factory/gates.sh; on failure retry ladder (same model, then a different model)",
     "verify: revert check and sealed run on an ephemeral runner, then a cold-read verifier on a different model",
     "classify: deterministic tier from the final diff; every category is forced to T2 in phase 3",
     "integrate: label awaiting-human with a summary (no PR, no merge; sandbox mode actions pushes the factory/ branch)",
