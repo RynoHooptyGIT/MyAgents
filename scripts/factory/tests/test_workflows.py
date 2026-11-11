@@ -79,13 +79,13 @@ def test_secret_free_workflows_have_no_secrets_at_all(name):
 
 def test_worker_workflow_references_exactly_one_secret_in_one_step_env():
     text = (WF / "factory-worker.yml").read_text()
-    assert set(re.findall(r"secrets\.([A-Za-z0-9_]+)", text)) == {"FACTORY_ANTHROPIC_API_KEY"}
+    assert set(re.findall(r"secrets\.([A-Za-z0-9_]+)", text)) == {"FACTORY_CLAUDE_OAUTH_TOKEN"}
     assert text.count("secrets.") == 1
     holders = [s for s in steps(load("factory-worker.yml"))
                if "secrets." in yaml.dump(s.get("env", {})) or "secrets." in yaml.dump(s.get("with", {}))]
     assert len(holders) == 1
     h = holders[0]
-    assert h["env"]["ANTHROPIC_API_KEY"] == "${{ secrets.FACTORY_ANTHROPIC_API_KEY }}"
+    assert h["env"]["CLAUDE_CODE_OAUTH_TOKEN"] == "${{ secrets.FACTORY_CLAUDE_OAUTH_TOKEN }}"
     assert h["env"]["CLAUDE_CODE_SUBPROCESS_ENV_SCRUB"] == "1"
     assert "with" not in h or "secrets." not in yaml.dump(h["with"])
     assert "sandbox_worker" in h["run"]
@@ -142,8 +142,8 @@ def test_secrets_word_only_in_the_one_allowed_env_value(name):
         assert hits == []
     else:
         assert len(hits) == 1
-        assert "${{ secrets.FACTORY_ANTHROPIC_API_KEY }}" in text
-        assert text.count("secrets.FACTORY_ANTHROPIC_API_KEY") == 1
+        assert "${{ secrets.FACTORY_CLAUDE_OAUTH_TOKEN }}" in text
+        assert text.count("secrets.FACTORY_CLAUDE_OAUTH_TOKEN") == 1
     for bad in ("toJSON(secrets", "toJson(secrets", "secrets[", "secrets ["):
         assert bad.lower() not in text.lower()
 
@@ -155,19 +155,19 @@ def test_no_github_token_anywhere(name):
         assert bad.lower() not in text.lower().replace("persist-credentials", ""), bad
     for s in steps(load(name)):
         for k in (s.get("env") or {}):
-            assert "TOKEN" not in k.upper() or k == "ANTHROPIC_API_KEY", k
+            assert "TOKEN" not in k.upper() or k == "CLAUDE_CODE_OAUTH_TOKEN", k
 
 
 def test_key_step_runs_from_trusted_and_no_key_step_runs_from_work():
     d = load("factory-worker.yml")
-    key_steps = [s for s in steps(d) if "ANTHROPIC_API_KEY" in (s.get("env") or {})]
+    key_steps = [s for s in steps(d) if "CLAUDE_CODE_OAUTH_TOKEN" in (s.get("env") or {})]
     assert len(key_steps) == 1
     assert key_steps[0]["working-directory"] == "trusted"
     for s in steps(d):
         wd = str(s.get("working-directory", ""))
         run = s.get("run", "")
-        if wd.startswith("work") or re.search(r"(^|\s)(cd\s+)?work/", run) and "ANTHROPIC_API_KEY" in (s.get("env") or {}):
-            assert "ANTHROPIC_API_KEY" not in (s.get("env") or {})
+        if wd.startswith("work") or re.search(r"(^|\s)(cd\s+)?work/", run) and "CLAUDE_CODE_OAUTH_TOKEN" in (s.get("env") or {}):
+            assert "CLAUDE_CODE_OAUTH_TOKEN" not in (s.get("env") or {})
 
 
 @pytest.mark.parametrize("name", ["factory-worker.yml", "factory-verify.yml"])
@@ -246,3 +246,18 @@ def test_verify_workflow_uses_the_same_pinned_actions_as_gates():
 def test_verify_workflow_is_dispatched_with_no_credentials_in_any_env():
     for s in steps(load("factory-verify.yml")):
         assert "ANTHROPIC" not in yaml.dump(s.get("env", {}))
+
+
+@pytest.mark.parametrize("name", FILES)
+def test_no_anthropic_api_key_anywhere_in_any_factory_workflow(name):
+    # an API key in the environment would take precedence over the subscription token
+    assert "ANTHROPIC_API_KEY" not in (WF / name).read_text()
+    assert "FACTORY_ANTHROPIC_API_KEY" not in (WF / name).read_text()
+
+
+def test_worker_workflow_maps_the_subscription_token_with_the_scrub_flag():
+    holders = [s for s in steps(load("factory-worker.yml")) if "secrets." in yaml.dump(s.get("env", {}))]
+    assert len(holders) == 1
+    env = holders[0]["env"]
+    assert env["CLAUDE_CODE_OAUTH_TOKEN"] == "${{ secrets.FACTORY_CLAUDE_OAUTH_TOKEN }}"
+    assert env["CLAUDE_CODE_SUBPROCESS_ENV_SCRUB"] == "1" and "ANTHROPIC_API_KEY" not in env

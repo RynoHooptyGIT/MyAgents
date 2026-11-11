@@ -69,7 +69,7 @@ def env_for(tmp_path, **over):
          "FACTORY_MAX_BUDGET_USD": "2.5", "FACTORY_REQUEST_ID": RID,
          "FACTORY_PROMPT_B64": enc("hello PROMPT"),
          "FACTORY_WORK_DIR": str(tmp_path / "work"), "FACTORY_OUT_DIR": str(tmp_path / "out"),
-         "PATH": os.environ["PATH"], "HOME": str(tmp_path), "ANTHROPIC_API_KEY": "sk-ant-test-123",
+         "PATH": os.environ["PATH"], "HOME": str(tmp_path), "CLAUDE_CODE_OAUTH_TOKEN": "sk-ant-oat01-test-123", "ANTHROPIC_API_KEY": "sk-ant-should-not-pass",
          "GITHUB_TOKEN": "ghs_nope", "LANG": "C"}
     e.update(over)
     return e
@@ -138,16 +138,18 @@ def test_argv_is_the_launchers_argv_prompt_on_stdin_cwd_work(tmp_path, work):
     assert Path(call["cwd"]).resolve() == work.resolve()
 
 
-def test_api_key_only_in_claude_env_with_scrub_flag(tmp_path, work):
+def test_oauth_token_only_in_claude_env_with_scrub_flag(tmp_path, work):
     claude = FakeClaude(work, edit=lambda w: (w / "n.txt").write_text("n"))
     go(tmp_path, claude)
     cenv = claude.claude_calls()[0]["env"]
-    assert cenv["ANTHROPIC_API_KEY"] == "sk-ant-test-123"
+    assert cenv["CLAUDE_CODE_OAUTH_TOKEN"] == "sk-ant-oat01-test-123"
+    assert "ANTHROPIC_API_KEY" not in cenv          # an API key would outrank the subscription token
     assert cenv["CLAUDE_CODE_SUBPROCESS_ENV_SCRUB"] == "1"
     assert "GITHUB_TOKEN" not in cenv
     for c in claude.calls:
         if c["argv"][0] != "claude":
-            assert "ANTHROPIC_API_KEY" not in (c["env"] or {}) and "GITHUB_TOKEN" not in (c["env"] or {})
+            e = c["env"] or {}
+            assert "ANTHROPIC_API_KEY" not in e and "CLAUDE_CODE_OAUTH_TOKEN" not in e and "GITHUB_TOKEN" not in e
 
 
 def test_git_steps_disable_hooks(tmp_path, work):
@@ -341,3 +343,12 @@ def test_sealed_author_output_is_returned_as_a_patch_like_any_worker(tmp_path, w
     claude = FakeClaude(work, edit=edit)
     assert go(tmp_path, claude, FACTORY_ROLE="sealed_test_author") == 0
     assert b"tests/sealed/issue-3/test_a.py" in (tmp_path / "out" / "changes.patch").read_bytes()
+
+
+def test_missing_oauth_token_is_rejected_even_with_an_api_key_present(tmp_path, work):
+    e = env_for(tmp_path)
+    del e["CLAUDE_CODE_OAUTH_TOKEN"]
+    claude = FakeClaude(work)
+    with pytest.raises(S.SandboxInputError, match="CLAUDE_CODE_OAUTH_TOKEN"):
+        S.run(e, POLICY, runner=claude)
+    assert claude.claude_calls() == []
