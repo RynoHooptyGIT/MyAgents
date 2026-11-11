@@ -38,6 +38,24 @@ def _int(v):
     return isinstance(v, int) and not isinstance(v, bool)
 
 
+MODEL_VERDICTS = ("agree", "disagree", "not_run", "unavailable")
+
+
+def _validate_verify(v) -> None:
+    keys = {"model_verdict", "revert_check", "sealed_available", "sealed_total", "sealed_failed"}
+    if not isinstance(v, dict) or set(v) != keys:
+        raise LedgerError(f"verify must be an object with exactly {sorted(keys)}")
+    if v["model_verdict"] not in MODEL_VERDICTS:
+        raise LedgerError(f"bad verify.model_verdict {v['model_verdict']!r}")
+    if not isinstance(v["revert_check"], str) or not v["revert_check"]:
+        raise LedgerError("verify.revert_check must be a non-empty string")
+    if not isinstance(v["sealed_available"], bool):
+        raise LedgerError("verify.sealed_available must be a bool")
+    for k in ("sealed_total", "sealed_failed"):
+        if not _int(v[k]) or v[k] < 0:
+            raise LedgerError(f"verify.{k} must be a non-negative int")
+
+
 def validate(r) -> None:
     if not isinstance(r, dict):
         raise LedgerError("row must be an object")
@@ -71,6 +89,8 @@ def validate(r) -> None:
         raise LedgerError(f"bad sandbox {r['sandbox']!r}")
     if "notes" in r and (not isinstance(r["notes"], list) or not all(isinstance(x, str) for x in r["notes"])):
         raise LedgerError("notes must be a list of strings")
+    if "verify" in r:
+        _validate_verify(r["verify"])
     for k in ("ts", "started_at", "finished_at"):
         _ts(r[k], k)
 

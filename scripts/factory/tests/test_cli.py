@@ -140,3 +140,28 @@ def test_real_wiring_puts_ledger_outside_repo(tmp_path, monkeypatch):
     ctx = cli.build_real_context(tmp_path / "repo", repo=None)
     assert str(ctx.ledger.path).startswith(str(tmp_path / "home"))
     assert not str(ctx.state_dir).startswith(str(tmp_path / "repo"))
+
+
+def test_status_and_plan_describe_phase_3_honestly(tmp_path):
+    tr, build, out = setup(tmp_path)
+    assert cli.main(["status", "--root", str(tmp_path)], build=build) == 0
+    assert any("phase 3" in l and "ambiguity check is a stub" in l for l in out)
+    assert not any("phase 2" in l for l in out)
+    out.clear()
+    cli.main(["run", "--once", "--dry-run", "--root", str(tmp_path)], build=build)
+    plan = " ".join(out)
+    assert "sealed tests" in plan and "revert check" in plan and "stub" in plan
+    assert "not implemented in phase 2" not in plan and "forced to T2 in phase 3" in plan
+
+
+def test_real_context_wires_a_verifier_for_each_sandbox_mode(tmp_path):
+    from .. import actions as A
+    from .. import verifier as V
+    root = tmp_path / "root"
+    (root / ".factory").mkdir(parents=True)
+    text = (REPO / ".factory" / "policy.yaml").read_text().replace(
+        'state_dir: "~/.local/state/myagents-factory"', f'state_dir: "{tmp_path / "st"}"')
+    (root / ".factory" / "policy.yaml").write_text(text)
+    assert isinstance(cli.build_real_context(root, None).verifier, A.ActionsVerifier)
+    (root / ".factory" / "policy.yaml").write_text(text.replace("mode: actions", "mode: local"))
+    assert isinstance(cli.build_real_context(root, None).verifier, V.LocalVerifier)

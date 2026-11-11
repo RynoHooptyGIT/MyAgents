@@ -9,6 +9,9 @@ from typing import Callable, List
 from .proc import ProcResult, run as default_run
 
 
+DIFF_TEXT_CAP = 5_000_000
+
+
 class WorkspaceError(RuntimeError):
     pass
 
@@ -41,12 +44,21 @@ class Workspace:
     def diff(self, path: Path) -> DiffStats:
         raise NotImplementedError
 
+    def head_sha(self, path: Path) -> str:
+        raise NotImplementedError
+
+    def diff_text(self, path: Path, cap: int = DIFF_TEXT_CAP) -> str:
+        """The branch's diff against the base plus its commit messages, as text (for the canary search)."""
+        raise NotImplementedError
+
 
 class FakeWorkspace(Workspace):
     def __init__(self, base: Path, stats: DiffStats):
         self._base, self._stats = Path(base), stats
         self.prepared = []
         self.notes: List[str] = []
+        self.sha = "1" * 40
+        self.diff_text_value = ""
 
     def take_notes(self):
         n, self.notes = self.notes, []
@@ -63,6 +75,12 @@ class FakeWorkspace(Workspace):
 
     def diff(self, path):
         return self._stats
+
+    def head_sha(self, path):
+        return self.sha
+
+    def diff_text(self, path, cap=DIFF_TEXT_CAP):
+        return self.diff_text_value[:cap]
 
 
 class GitWorkspace(Workspace):
@@ -118,3 +136,12 @@ class GitWorkspace(Workspace):
                 deleted += int(d)
         deleted_paths = [p for p in gone.split("\0") if p]
         return DiffStats(paths, added, deleted, len(deleted_paths), deleted_paths, binary)
+
+    def head_sha(self, path):
+        return self._git(["rev-parse", "HEAD"], path).strip()
+
+    def diff_text(self, path, cap=DIFF_TEXT_CAP):
+        diff = self._git(["diff", "--no-ext-diff", "--no-textconv", "--no-renames", "--text",
+                          f"{self._base}...HEAD"], path)
+        log = self._git(["log", "--format=%B", f"{self._base}..HEAD"], path)
+        return (diff + "\n" + log)[:cap]
