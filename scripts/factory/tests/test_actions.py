@@ -296,7 +296,7 @@ def test_argv_hygiene_ref_main_no_force_prompt_encoded(world, tmp_path):
     run_argv = [c for c in gh.gh_calls() if c[1:3] == ["workflow", "run"]][0]
     assert run_argv[run_argv.index("--ref") + 1] == "main"
     pushes = [c for c in gh.calls if is_push(c)]
-    assert len(pushes) == 2 and all(c[2] == "origin" for c in pushes)
+    assert len(pushes) == 2 and all(c[c.index("push") + 1] == "origin" for c in pushes)
 
 
 def test_branch_is_pushed_before_dispatch_and_start_sha_matches(world, tmp_path):

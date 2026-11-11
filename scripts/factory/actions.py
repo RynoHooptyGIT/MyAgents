@@ -14,13 +14,14 @@ import json
 import math
 import re
 import secrets
+import shutil
 import tempfile
 import time
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple
 
 from .gates import GateResult, GateRunner, parse_verdict
-from .launcher import ClaudeLauncher, Launcher, WorkerResult
+from .launcher import SANDBOX_REJECTED_PREFIX, ClaudeLauncher, Launcher, WorkerResult
 from .policy import Policy
 from .proc import ProcResult, run as default_run
 from .sandbox_worker import BRANCH_RE, REQUEST_ID_RE
@@ -33,6 +34,9 @@ MAX_GATES_BYTES = 2_000_000
 MAX_TEXT_CHARS = 20_000
 GIT_TIMEOUT_S = 300
 GH_TIMEOUT_S = 120
+GIT = ["git", "-c", "core.hooksPath=/dev/null", "-c", "core.fsmonitor=false"]   # operator-side git: no hooks
+BASE_REF = "origin/main"
+QUEUE_TIMEOUT_S = 1800                # how long a run may take to appear and start (queueing is GitHub's)
 _SHA = re.compile(r"[0-9a-f]{40}")
 _RESULT_FIELDS = ("returncode", "result", "input_tokens", "output_tokens", "total_cost_usd",
                   "model", "start_sha", "request_id")
@@ -50,6 +54,31 @@ class PatchRejected(ActionsError):
     pass
 
 
+class PathDenied(PatchRejected):
+    """A path that executes once pushed or once a person opens the worktree. Never applied or pushed."""
+
+
+# Hard deny-list. A code constant on purpose: it must not depend on the policy file, which a
+# worker might also be able to edit. In sandbox mode the factory cannot propose changes to these
+# paths at all (a deliberate narrowing of the spec). Matched case-insensitively on normalised
+# path components; anything unclear fails closed.
+DENIED_DIRS_ANYWHERE = frozenset({".github", ".claude", ".vscode", ".idea", ".devcontainer", ".husky"})
+DENIED_FILES_ANYWHERE = frozenset({"claude.md", "claude.local.md", "agents.md", ".mcp.json", ".envrc",
+                                   ".gitattributes", ".gitmodules", ".lfsconfig"})
+DENIED_ROOT_DIRS = frozenset({".agents", "hooks"})
+
+
+def denied_path(path: str) -> Optional[str]:
+    parts = [c.casefold().rstrip(". ") for c in path.replace("\\", "/").split("/") if c not in ("", ".")]
+    parts = [c for c in parts if c]
+    for c in parts:
+        if c in DENIED_DIRS_ANYWHERE or c in DENIED_FILES_ANYWHERE:
+            return f"denied path {path!r}"
+    if parts and parts[0] in DENIED_ROOT_DIRS:
+        return f"denied path {path!r}"
+    return None
+
+
 def _int(v) -> bool:
     return isinstance(v, int) and not isinstance(v, bool)
 
@@ -57,13 +86,14 @@ def _int(v) -> bool:
 class ActionsClient:
     def __init__(self, state_dir, runner: Callable[..., ProcResult] = default_run, repo: Optional[str] = None,
                  cwd=None, poll_seconds: float = 10, timeout_s: float = 4500,
-                 sleep: Callable[[float], None] = time.sleep, clock: Callable[[], float] = time.monotonic):
+                 queue_timeout_s: float = QUEUE_TIMEOUT_S, sleep: Callable[[float], None] = time.sleep, clock: Callable[[], float] = time.monotonic):
         self._state = Path(state_dir)
         self._run = runner
         self._repo = repo
         self._cwd = cwd
         self._poll = poll_seconds
-        self._timeout = timeout_s
+        self._timeout = timeout_s              # a started run may take this long (job cap is 60 min)
+        self._queue_timeout = queue_timeout_s   # time for the run to appear and start
         self._sleep = sleep
         self._clock = clock
 
@@ -97,7 +127,10 @@ class ActionsClient:
                 raise ActionsTimeout(f"no run named {title!r} appeared")
             self._sleep(self._poll)
 
-    def wait(self, run_id: int, deadline: float) -> str:
+    def wait(self, run_id: int, queue_deadline: float, run_timeout_s: float) -> str:
+        """Queue time and run time are limited separately, so a job that is legitimately running is
+        never cancelled for time it spent waiting for a runner."""
+        run_deadline: Optional[float] = None
         while True:
             r = self._gh(["run", "view", str(run_id), "--json", "status,conclusion"])
             if r.returncode != 0:
@@ -106,9 +139,16 @@ class ActionsClient:
                 data = json.loads(r.stdout)
             except ValueError:
                 raise ActionsError("gh run view returned invalid JSON") from None
-            if isinstance(data, dict) and data.get("status") == "completed":
+            status = data.get("status") if isinstance(data, dict) else None
+            if status == "completed":
                 return str(data.get("conclusion") or "")
-            if self._clock() >= deadline:
+            if status == "in_progress" and run_deadline is None:
+                run_deadline = self._clock() + run_timeout_s
+            if run_deadline is None:
+                if self._clock() >= queue_deadline:
+                    self._gh(["run", "cancel", str(run_id)])
+                    raise ActionsTimeout(f"run {run_id} did not start in time")
+            elif self._clock() >= run_deadline:
                 self._gh(["run", "cancel", str(run_id)])   # best effort; the workflow has its own cap too
                 raise ActionsTimeout(f"run {run_id} did not finish in time")
             self._sleep(self._poll)
@@ -131,11 +171,18 @@ class ActionsClient:
 
     def run_workflow(self, workflow: str, title_prefix: str, fields: Dict[str, str],
                      artifact: str) -> Tuple[str, Optional[Path]]:
-        deadline = self._clock() + self._timeout
+        queue_deadline = self._clock() + self._queue_timeout
         self.dispatch(workflow, fields)
-        run_id = self.find_run(workflow, f"{title_prefix} {fields['request_id']}", deadline)
-        conclusion = self.wait(run_id, deadline)
+        # If the run never appears there is no run id, so there is nothing to cancel: a dispatched
+        # run that shows up late can still execute (known limit, see docs/factory.md).
+        run_id = self.find_run(workflow, f"{title_prefix} {fields['request_id']}", queue_deadline)
+        conclusion = self.wait(run_id, queue_deadline, self._timeout)
         return conclusion, self.download(run_id, artifact)
+
+    @staticmethod
+    def cleanup(d: Optional[Path]) -> None:
+        if d is not None:
+            shutil.rmtree(d, ignore_errors=True)
 
 
 def read_artifact_file(d: Path, name: str, cap: int) -> bytes:
@@ -194,6 +241,25 @@ _NEW_MODE = re.compile(rb"^(?:new file mode|new mode) (?:120000|160000)\s*$")
 _SPECIAL = ("120000", "160000")   # symlink, gitlink. classifier.py does not force these to T2, so reject.
 
 
+_HEADER = (b"diff --git ", b"rename from ", b"rename to ", b"copy from ", b"copy to ", b"--- ", b"+++ ")
+
+
+def header_paths(patch: bytes) -> List[str]:
+    """Every path-looking token in the patch's header lines, read without trusting git's parse."""
+    out: List[str] = []
+    for line in patch.split(b"\n"):
+        for h in _HEADER:
+            if line.startswith(h):
+                rest = line[len(h):].decode("utf-8", errors="replace")
+                for tok in re.split(r'[\s"]+', rest):
+                    if tok and tok != "/dev/null":
+                        out.append(tok)
+                        if tok[:2] in ("a/", "b/"):
+                            out.append(tok[2:])
+                break
+    return out
+
+
 def numstat_paths(numstat_z: str) -> List[str]:
     toks = numstat_z.split("\0")
     paths: List[str] = []
@@ -226,17 +292,24 @@ def validate_patch(patch: bytes, patch_file: Path, cwd: Path,
     for line in patch.split(b"\n"):
         if _INDEX_LINK.match(line) or _NEW_MODE.match(line):
             raise PatchRejected("patch creates or changes a symlink or gitlink")
-    num = runner(["git", "apply", "--numstat", "-z", str(patch_file)], cwd=cwd, timeout=GIT_TIMEOUT_S)
+    for p in header_paths(patch):
+        why = denied_path(p)
+        if why:
+            raise PathDenied(why)
+    num = runner([*GIT, "apply", "--numstat", "-z", str(patch_file)], cwd=cwd, timeout=GIT_TIMEOUT_S)
     if num.returncode != 0:
         raise PatchRejected(f"git cannot parse the patch: {num.stderr.strip()[:300]}")
     paths = numstat_paths(num.stdout)
     if not paths:
         raise PatchRejected("patch touches no paths")
     for p in paths:
+        why = denied_path(p)
+        if why:
+            raise PathDenied(why)
         why = _bad_path(p)
         if why:
             raise PatchRejected(f"{why}: {p!r}")
-    summ = runner(["git", "apply", "--summary", str(patch_file)], cwd=cwd, timeout=GIT_TIMEOUT_S)
+    summ = runner([*GIT, "apply", "--summary", str(patch_file)], cwd=cwd, timeout=GIT_TIMEOUT_S)
     if summ.returncode != 0:
         raise PatchRejected("git cannot summarise the patch")
     for line in summ.stdout.splitlines():
@@ -252,7 +325,7 @@ class _Git:
         self._run, self.cwd = runner, Path(cwd)
 
     def __call__(self, *args: str, timeout: int = GIT_TIMEOUT_S) -> ProcResult:
-        return self._run(["git", *args], cwd=self.cwd, timeout=timeout)
+        return self._run([*GIT, *args], cwd=self.cwd, timeout=timeout)
 
     def out(self, *args: str) -> str:
         r = self(*args)
@@ -268,7 +341,24 @@ class _Git:
             raise ActionsError("worktree is not clean")
         return b
 
+    def assert_pushable(self) -> None:
+        """One check before every push: nothing on this branch since main may touch a denied path.
+        Fails closed (no base ref, git error)."""
+        if self("rev-parse", "--verify", "-q", f"{BASE_REF}^{{commit}}").returncode != 0:
+            raise ActionsError(f"base ref {BASE_REF} not found; refusing to push")
+        r = self("diff", "--name-only", "--no-renames", "-z", f"{BASE_REF}...HEAD")
+        if r.returncode != 0:
+            raise ActionsError(f"cannot list branch changes against {BASE_REF}: {r.stderr.strip()[:300]}")
+        for p in filter(None, r.stdout.split("\0")):
+            why = denied_path(p)
+            if why:
+                raise PathDenied(why)
+            why = _bad_path(p)
+            if why:
+                raise PathDenied(f"{why}: {p!r}")
+
     def push(self, branch: str) -> None:
+        self.assert_pushable()
         # Never forced: a rejected push is an error, not a retry.
         r = self("push", "origin", f"refs/heads/{branch}:refs/heads/{branch}")
         if r.returncode != 0:
@@ -291,7 +381,9 @@ class ActionsLauncher(Launcher):
             return self._run_sandboxed(role, prompt, Path(cwd), m, max_budget_usd)
         except ActionsTimeout as e:
             return self._failed(f"sandbox worker timed out: {e}", m, 124)
-        except ActionsError as e:
+        except PathDenied as e:
+            return self._failed(f"{SANDBOX_REJECTED_PREFIX} {e}", m)
+        except (ActionsError, OSError) as e:
             return self._failed(f"sandbox worker failed: {e}", m)
 
     def _run_sandboxed(self, role, prompt, cwd, m, max_budget_usd) -> WorkerResult:
@@ -313,9 +405,12 @@ class ActionsLauncher(Launcher):
                                                   fields, f"factory-result-{request_id}")
         if d is None:
             raise ActionsError(f"run concluded {conclusion or 'unknown'} with no result artifact")
-        res = parse_result(read_artifact_file(d, "result.json", MAX_RESULT_BYTES), request_id, start_sha)
-        patch = read_artifact_file(d, "changes.patch", MAX_PATCH_BYTES + 1)
-        self._apply(git, patch, d / "changes.patch", role, start_sha, branch)
+        try:
+            res = parse_result(read_artifact_file(d, "result.json", MAX_RESULT_BYTES), request_id, start_sha)
+            patch = read_artifact_file(d, "changes.patch", MAX_PATCH_BYTES + 1)
+            self._apply(git, patch, d / "changes.patch", role, start_sha, branch)
+        finally:
+            self._client.cleanup(d)
         rc = res["returncode"]
         if conclusion != "success" and rc == 0:
             rc = 1
@@ -348,7 +443,7 @@ class ActionsGateRunner(GateRunner):
     def run(self, worktree):
         try:
             return self._run_gates(Path(worktree))
-        except ActionsError as e:   # includes timeouts: a gate that cannot run is MISCONFIGURED
+        except (ActionsError, OSError) as e:   # includes timeouts: a gate that cannot run is MISCONFIGURED
             return GateResult("MISCONFIGURED", f"actions gates: {e}")
 
     def _run_gates(self, worktree: Path) -> GateResult:
@@ -371,10 +466,13 @@ class ActionsGateRunner(GateRunner):
                                                   f"factory-gates-{request_id}")
         if d is None:
             raise ActionsError(f"run concluded {conclusion or 'unknown'} with no gates artifact")
-        if conclusion != "success":
-            raise ActionsError(f"gates run concluded {conclusion or 'unknown'}")
-        text = read_artifact_file(d, "gates-output.txt", MAX_GATES_BYTES).decode("utf-8", errors="replace")
-        ran = read_artifact_file(d, "gates-sha.txt", 128).decode("ascii", errors="replace").strip()
+        try:
+            if conclusion != "success":
+                raise ActionsError(f"gates run concluded {conclusion or 'unknown'}")
+            text = read_artifact_file(d, "gates-output.txt", MAX_GATES_BYTES).decode("utf-8", errors="replace")
+            ran = read_artifact_file(d, "gates-sha.txt", 128).decode("ascii", errors="replace").strip()
+        finally:
+            self._client.cleanup(d)
         if ran != local:
             raise ActionsError("gates ran on a different commit than the local head")
         return GateResult(parse_verdict(text), text)

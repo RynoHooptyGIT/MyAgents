@@ -72,11 +72,12 @@ rows produced unsandboxed. `status` prints it.
    input, runs `claude -p` in `work/` with the same argv as the local launcher, snapshots
    uncommitted changes, and uploads `changes.patch` and `result.json` as `factory-result-<request_id>`.
 4. The launcher finds the run by its `run-name` (`gh run list`), waits with a hard timeout,
-   downloads the artifact into a fresh directory under `state_dir`, and validates `result.json`
+   downloads the artifact into a fresh directory under `state_dir` (deleted after use), and validates `result.json`
    strictly (types, matching `request_id`, `start_sha` equal to the pushed commit).
-5. It checks the patch (no absolute paths, `..`, `.git` components, new symlinks or gitlinks;
-   those are rejected because the classifier does not force them to T2), applies it with
-   `git apply --index`, commits `factory: worker output (<role>)` and pushes again.
+5. It checks the patch (no absolute paths, `..`, `.git` components, new symlinks or gitlinks,
+   and nothing on the hard deny-list below), applies it with `git apply --index`, commits
+   `factory: worker output (<role>)` and pushes again. Symlinks and gitlinks are rejected
+   because the classifier does not force them to T2.
 6. A timeout maps to return code 124, any other failure to a non-zero code, both with
    `cost_known: false`, so the runner charges the remaining per-issue budget.
 
@@ -88,13 +89,37 @@ for a different commit is `MISCONFIGURED`. A forged extra verdict line is `MISCO
 `local` mode runs `claude` and `gates.sh` on this machine with the scrubbed environment. It is
 unsandboxed and for development only.
 
+### Denied paths (a deliberate narrowing of the spec)
+
+The spec lets the factory propose changes to its own gates. In sandbox mode it cannot propose
+changes to the paths below at all, for now. A pushed commit is read by GitHub (workflows run
+from the pushed YAML with repo secrets in scope) and by people and tools that open the
+worktree (editor tasks, direnv, agent configs, git hooks, submodules). The list is a constant
+in `scripts/factory/actions.py` (`denied_path`), independent of the policy file, matched
+case-insensitively on normalised path components, and fails closed:
+
+- `.github/` at any depth
+- `.claude/`, `.vscode/`, `.idea/`, `.devcontainer/`, `.husky/` at any depth
+- `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`, `.mcp.json`, `.envrc`, `.gitattributes`,
+  `.gitmodules`, `.lfsconfig` at any depth
+- `.agents/` and `hooks/` at the repo root
+
+A patch that adds, renames into or out of, deletes or changes the mode of any of them is
+rejected before anything is applied, committed or pushed. The result carries the marker
+`sandbox-rejected-path`; the runner parks the issue at once with the reason code
+`sandbox-rejected-path` and does not retry. The same check runs before every push the
+launcher and gate runner make: if the branch already differs from `origin/main` on a denied
+path (or `origin/main` is missing) nothing is pushed. All operator-side git commands run with
+`core.hooksPath=/dev/null` and `core.fsmonitor=false`.
+
 ### One-time owner setup
 
 - Merge the workflows to `main` first. Dispatch uses `--ref main`, so `factory-worker.yml` and
   `factory-gates.yml` must exist there.
-- Create the repository secret `FACTORY_ANTHROPIC_API_KEY`. Use a dedicated API key with its own
-  spend limit in the Anthropic Console, not a shared or personal key. This is the only secret
-  the workflows reference, and only in the `Run worker` step.
+- Create the repository secret `FACTORY_ANTHROPIC_API_KEY`. Treat the key as burnable: a
+  dedicated key, not shared or personal, with a low spend limit set in the Anthropic Console
+  and rotated on a schedule and after any suspected leak. This is the only secret the
+  workflows reference, and only in the `Run worker` step.
 - Keep Actions workflow permissions at read-only for the repo and do not add other secrets
   that the dispatched workflows could reach. Branch protection on `main` is still required
   before phase 4.
@@ -115,36 +140,60 @@ unsandboxed and for development only.
 - Workers run on an ephemeral GitHub-hosted runner with `permissions: contents: read`, no
   checkout credentials, and none of the operator's credentials. The workflow file and the
   scripts that drive it come from `main`; the worker's branch is data. Workflow inputs reach
-  scripts only through environment variables, never inside `run:` bodies.
-- The API key is set only on the step that runs the worker, together with
-  `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1`, which strips it from the environment of everything
-  Claude Code spawns (Bash tool, tests, hooks). Documented in the Claude Code environment
-  variable reference; it needs Claude Code 2.1.251 or later, and the workflow pins 2.1.311.
-  The entrypoint's own git calls run without the key, with hooks disabled.
-- Local-side checks on anything a runner sends back: strict `result.json`, patch path and mode
-  checks, size caps, gate verdict parsing that needs exactly one final verdict line.
-- `gates.sh <worktree> <base_ref>` reports MISCONFIGURED if the worker changed, added or deleted
-  the gate entry script, the harnesses it auto-discovers, pytest config or conftest, or the files
-  they read, and requires `scripts/test.sh` to equal the base commit's copy.
-- Workers are launched with `--max-budget-usd` set to the remaining budget. `claude --help`
-  shows no per-run turn-limit flag, so none is passed. A timed-out worker or unknown cost is
-  charged the rest of the per-issue budget and the row records `cost_known: false`.
+  scripts only through environment variables, never inside `run:` bodies. The workflows use
+  no concurrency group: the operator side processes one issue at a time, and a group with
+  `cancel-in-progress: false` would still cancel an older pending run when a newer one queued.
+- The sandboxed `claude` is started with `--setting-sources user` and `--strict-mcp-config`
+  (both in the Claude Code CLI reference), so project and local settings (hooks, env
+  overrides, `apiKeyHelper`) and project MCP config from the worker's branch are ignored. As a
+  second layer the entrypoint refuses to run if `.mcp.json`, `CLAUDE.local.md` or anything under
+  `.claude/` in the branch differs from the copy in `trusted/` (or main has none). A branch
+  cut from a stale main whose `.claude/` has since changed is refused too; rebase it.
+  The local launcher's argv is unchanged.
+- The entrypoint's own git calls run without the API key, with hooks disabled.
+- `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1` is set on the worker step. Per the environment variable
+  reference it strips credentials from the environment of what Claude Code spawns (Bash tool,
+  hooks, stdio MCP servers); it needs Claude Code 2.1.251 or later and the workflow pins
+  2.1.311. It does not protect the key from worker code that can read it another way (see
+  Known limits).
+- Local-side checks on anything a runner sends back (strict `result.json`, patch path and mode
+  checks, the deny-list above, size caps, gate verdict parsing that needs exactly one final
+  verdict line) catch accidents, malformed output and naive forgery. They are not protection
+  against a hostile worker. The same goes for `gates.sh`'s trusted-base check: it stops a
+  worker accidentally or casually editing gate files, nothing more.
+- Workers are launched with `--max-budget-usd` set to the remaining budget, but in sandbox mode
+  the runner's cost report is only a number the runner sent back. A timed-out worker or unknown
+  cost is charged the rest of the per-issue budget and the row records `cost_known: false`.
 - A requeued issue gets a fresh worktree and branch (`factory/N-slug-a2`); branches are never deleted.
 
 ## Known limits
 
-- Cost and gate output come from a machine where worker code ran. A worker can write a forged
-  `result.json` or gate output file; the local checks catch malformed or mismatched data, not
-  a well-formed lie. The verifier and sealed tests (next in phase 3) are the cross-check, and
-  until they exist everything is T2 and a person reviews it.
-- GitHub-hosted runners have open network egress. If the subprocess scrub does not hold, the
-  API key can leak to anywhere. That is why the key must be dedicated with a spend limit.
-  The scrub recognizes credentials by variable name or value shape, so it is one layer, not a guarantee.
-- The runner is only as isolated as GitHub makes it. Worker code can modify files on that
-  runner, including action code, after the key is in scope for the worker step. The blast
-  radius is one disposable runner and one capped key.
-- `GITHUB_TOKEN` is read-only but still present on the runner for the workflow's own steps.
-  The repo is public, so its contents are not secret.
+- The API key is exposed to worker code by design. It is in the worker step's process
+  environment and readable through `/proc` whatever the subprocess scrub does, and runners have
+  open network egress. The key is burnable: dedicated, low Console spend limit, rotated. The
+  Console limit is the only real spend cap. The per-issue and per-day budgets in the policy
+  are accounting based on figures the runner reports and can be forged.
+- A gate `PASS` on a factory branch is advisory until the verifier exists. Test code runs on the
+  same VM that writes the verdict file, so a hostile worker can write whatever verdict it likes.
+  Everything is T2 and a person reviews it. The verifier and sealed tests (next in phase 3) are
+  the cross-check.
+- Result and patch contents are untrusted data. A well-formed lie (a forged cost, a patch that
+  does something unwanted inside the allowed paths) passes the local checks.
+- Worker code runs on the same runner as the later steps (entrypoint, artifact upload) and can
+  modify files there, including action code, after the key is in scope. The blast radius is one
+  disposable runner and one capped key. Passwordless sudo and open egress are not removed: no
+  documented way to drop sudo on `ubuntu-latest` was found, and an egress allowlist
+  (step-security/harden-runner in block mode) was not added because its endpoint format and
+  the endpoint set that GitHub's own artifact upload needs could not be verified without
+  running it. It is a candidate follow-up, tested on a real run.
+- If a dispatched run never appears in `gh run list` within the queue timeout, there is no run
+  id to cancel. The operator side reports a timeout, but that run may still start later and
+  consume runner minutes and API spend against the key. The branch it would work on is not
+  applied locally.
+- Queue time (30 minutes for a run to appear and start) and run time (`sandbox.timeout_minutes`
+  once started, shipped as 75 against the workflow's 60 minute cap) are limited separately.
+- `GITHUB_TOKEN` is read-only and checkouts do not persist it. The repo is public, so its
+  contents are not secret.
 - `local` mode is unsandboxed: a worker can execute arbitrary code as the operator. Use it for
   development only. Phase 4 must refuse autonomy for rows whose `sandbox` is not `actions`.
-- Concurrent dispatches for one branch queue (no cancel). Artifacts are kept 3 days.
+- Artifacts are kept 3 days. The operator side deletes its downloaded copy after each use.

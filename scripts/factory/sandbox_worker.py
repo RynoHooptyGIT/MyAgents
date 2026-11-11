@@ -88,6 +88,37 @@ def validate_inputs(environ: Mapping[str, str], policy: Policy) -> Dict[str, obj
             "model": model, "prompt": prompt}
 
 
+def _config_files(work: Path):
+    """Worker-controlled files claude could load as configuration: .mcp.json, CLAUDE.local.md, .claude/**."""
+    found = []
+    for rel in (".mcp.json", "CLAUDE.local.md"):
+        p = work / rel
+        if p.is_symlink() or p.exists():
+            found.append(rel)
+    cdir = work / ".claude"
+    if cdir.is_symlink():
+        raise SandboxInputError("work/.claude is a symlink; refusing to run")
+    if cdir.is_dir():
+        for dirpath, dirnames, filenames in os.walk(cdir, followlinks=False):
+            for name in dirnames + filenames:
+                full = Path(dirpath) / name
+                if full.is_symlink():
+                    raise SandboxInputError(f"{full.relative_to(work)} is a symlink; refusing to run")
+            found.extend(str((Path(dirpath) / n).relative_to(work)) for n in filenames)
+    return found
+
+
+def check_worker_config(work: Path, trusted: Path) -> None:
+    """Refuse to run if the worker's branch carries Claude Code config that main does not."""
+    for rel in _config_files(work):
+        mine, theirs = work / rel, trusted / rel
+        if mine.is_symlink() or not mine.is_file():
+            raise SandboxInputError(f"{rel} is not a regular file; refusing to run")
+        if theirs.is_symlink() or not theirs.is_file() or theirs.read_bytes() != mine.read_bytes():
+            raise SandboxInputError(f"{rel} in the worker branch differs from the copy in trusted/ "
+                                    "(or main has none); refusing to run")
+
+
 def _git_env(policy: Policy) -> Dict[str, str]:
     """No API key, no tokens: git (and anything a planted config makes it run) never sees them."""
     env = envscrub.scrub_env(os.environ, list(policy.env_allowlist))
@@ -96,13 +127,14 @@ def _git_env(policy: Policy) -> Dict[str, str]:
 
 
 def run(environ: Mapping[str, str], policy: Policy,
-        runner: Callable[..., ProcResult] = default_run) -> int:
+        runner: Callable[..., ProcResult] = default_run, trusted_root: Optional[Path] = None) -> int:
     v = validate_inputs(environ, policy)
     api_key = environ.get("ANTHROPIC_API_KEY")
     if not api_key:
         raise SandboxInputError("ANTHROPIC_API_KEY is not set")
     work = Path(environ.get("FACTORY_WORK_DIR", "work")).resolve()
     out = Path(environ.get("FACTORY_OUT_DIR", "out")).resolve()
+    check_worker_config(work, Path(trusted_root) if trusted_root else Path(__file__).resolve().parents[2])
     out.mkdir(parents=True, exist_ok=True)
     genv = _git_env(policy)
 
@@ -119,6 +151,9 @@ def run(environ: Mapping[str, str], policy: Policy,
         raise SandboxInputError("cannot resolve the start commit")
 
     argv = ClaudeLauncher(policy).build_argv(str(v["model"]), float(v["budget"]))
+    # Ignore project and local settings (hooks, env overrides, apiKeyHelper) and project MCP config
+    # from the worker-controlled branch. Both flags are in the Claude Code CLI reference.
+    argv += ["--setting-sources", "user", "--strict-mcp-config"]
     cenv = envscrub.scrub_env(os.environ, list(policy.env_allowlist))
     cenv["ANTHROPIC_API_KEY"] = api_key
     cenv["CLAUDE_CODE_SUBPROCESS_ENV_SCRUB"] = "1"
@@ -155,7 +190,7 @@ def main(argv=None, root: Optional[Path] = None) -> int:
             return 0
         if args:
             raise SandboxInputError("unexpected arguments")
-        return run(os.environ, policy, runner=default_run)
+        return run(os.environ, policy, runner=default_run, trusted_root=root)
     except (SandboxInputError, PolicyError) as e:
         print(f"sandbox_worker: rejected: {e}", file=sys.stderr)
         return 2

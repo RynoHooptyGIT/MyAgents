@@ -20,10 +20,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: factory-gates-${{ inputs.branch }}
-  cancel-in-progress: false
-
 jobs:
   gates:
     runs-on: ubuntu-latest

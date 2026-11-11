@@ -14,7 +14,7 @@ from typing import Callable, Dict, List, Optional
 
 from . import classifier, ledger as ledger_mod, retry, stops
 from .gates import GateResult, GateRunner
-from .launcher import Launcher, WorkerResult, build_prompt
+from .launcher import SANDBOX_REJECTED_PREFIX, Launcher, WorkerResult, build_prompt
 from .ledger import Ledger
 from .policy import Policy
 from .tracker import Issue, NotAllowlisted, StateMismatch, Tracker, select_claimable
@@ -62,6 +62,7 @@ REASON_CODES = [
     ("verifier not implemented", "verifier-stub"), ("sealed tests not implemented", "sealed-stub"),
     ("verifier has not agreed", "verifier-not-agreed"), ("phase", "phase-2-forced"),
     ("no changes", "no-changes"), ("spec worker failed", "spec-failed"),
+    ("sandbox rejected path", "sandbox-rejected-path"),
     ("unexpected error", "crash"),
 ]
 
@@ -206,6 +207,8 @@ def _process(run: _Run) -> RunResult:
         return _finish(run, "awaiting-human", "not run", None, ["budget exceeded", block])
     spec = run.worker("spec", build_prompt("spec", issue.number, issue.title, issue.body))
     if not spec.ok:
+        if spec.text.startswith(SANDBOX_REJECTED_PREFIX):
+            return _fail(run, "sandbox rejected path", spec.text)
         return _fail(run, "spec worker failed", spec.text)
     ctx.out(f"ambiguity check: {NOT_IMPLEMENTED}")
     run.move("building")
@@ -226,6 +229,9 @@ def _process(run: _Run) -> RunResult:
         gate = (ctx.gates.run(run.worktree) if res.ok
                 else GateResult("FAIL", f"build worker exited {res.returncode}\n{res.text}"))
         run.log(f"build round {plan.round} gate {gate.verdict}\n{gate.output}")
+        if not res.ok and res.text.startswith(SANDBOX_REJECTED_PREFIX):
+            extra.append("sandbox rejected path")   # hostile or broken output: park it, no retry
+            break
         if gate.verdict == "PASS":
             break
         try:

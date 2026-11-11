@@ -38,10 +38,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: factory-worker-${{ inputs.branch }}
-  cancel-in-progress: false
-
 jobs:
   worker:
     runs-on: ubuntu-latest

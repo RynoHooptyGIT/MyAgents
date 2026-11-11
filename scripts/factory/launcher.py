@@ -17,6 +17,7 @@ ALLOWED_TOOLS = ["Read", "Edit", "Write", "Glob", "Grep", "Bash(git add:*)", "Ba
 DENIED_TOOLS = ["Bash(git push:*)", "Bash(gh:*)", "Bash(git merge:*)", "Bash(git remote:*)",
                 "Bash(git checkout main:*)", "Bash(git switch main:*)"]
 WORKER_TIMEOUT_S = 3600
+SANDBOX_REJECTED_PREFIX = "sandbox-rejected-path:"   # WorkerResult.text marker: the runner's patch or branch touched a denied path
 
 
 class LauncherError(RuntimeError):
