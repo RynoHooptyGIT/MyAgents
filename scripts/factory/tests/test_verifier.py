@@ -323,7 +323,7 @@ def test_local_verifier_runs_the_same_entrypoint_with_a_scrubbed_env(tmp_path):
     r = lv.verify(wt, 7, bundle)
     assert r.available, r.detail
     assert r.revert_check == "fails_without_change" and r.sealed_status == "ran" and r.sealed_total == 1
-    argv, env, cwd = seen[0]
+    argv, env, cwd = next(c for c in seen if "scripts.factory.sandbox_verify" in c[0])
     assert "scripts.factory.sandbox_verify" in argv and Path(cwd) == REPO
     assert "GITHUB_TOKEN" not in env and "ANTHROPIC_API_KEY" not in env
     assert env["FACTORY_WORK_DIR"] == str(wt)

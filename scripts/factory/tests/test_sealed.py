@@ -136,7 +136,7 @@ def test_garbage_rejected():
 
 
 def test_unparseable_by_git_rejected():
-    bad = GOOD.replace(b"@@ -0,0 +1,2 @@", b"@@ nonsense @@")
+    bad = GOOD.replace(b"@@ -0,0 +1,2 @@", b"@@ -0,0 +1,5 @@")
     with pytest.raises(S.SealedInvalid):
         check(bad)
 

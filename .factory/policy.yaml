@@ -125,8 +125,16 @@ sandbox:
   mode: actions
   worker_workflow: factory-worker.yml
   gates_workflow: factory-gates.yml
+  verify_workflow: factory-verify.yml
   poll_seconds: 10
   timeout_minutes: 75
+
+# Sealed acceptance tests: written by a separate worker before the build, kept outside the repo
+# in state_dir, never pushed. `dir` is also a code constant in actions.py (denied for every
+# ordinary patch and branch), so it can only restate "tests/sealed".
+sealed:
+  dir: "tests/sealed"
+  max_patch_bytes: 100000
 
 # Interim hardening: workers and gates run with only these variables.
 # Never list tokens or keys here unless a worker strictly needs them.

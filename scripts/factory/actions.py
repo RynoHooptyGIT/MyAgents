@@ -22,9 +22,11 @@ from typing import Callable, Dict, List, Optional, Tuple
 
 from .gates import GateResult, GateRunner, parse_verdict
 from .launcher import SANDBOX_REJECTED_PREFIX, ClaudeLauncher, Launcher, WorkerResult
-from .policy import Policy
+from .policy import SEALED_DIR, Policy
 from .proc import ProcResult, run as default_run
 from .sandbox_worker import BRANCH_RE, REQUEST_ID_RE
+from .verifier import (MAX_SEALED_B64, MAX_VERIFY_BYTES, VerifyError, VerifyResult, Verifier, finish,
+                       parse_verify, prepare_bundle)
 
 DISPATCH_REF = "main"                 # the workflow file and the scripts that drive it always come from main
 MAX_PROMPT_B64 = 48_000               # workflow_dispatch inputs are capped at 65,535 characters in total
@@ -76,6 +78,10 @@ def denied_path(path: str) -> Optional[str]:
             return f"denied path {path!r}"
     if parts and parts[0] in DENIED_ROOT_DIRS:
         return f"denied path {path!r}"
+    if [c for c in parts[:2]] == SEALED_DIR.split("/"):
+        # Sealed acceptance tests live in the operator's state dir, never in a branch: a pushed
+        # branch of a public repo is readable by the builder.
+        return f"denied path {path!r} (sealed test directory)"
     return None
 
 
@@ -365,6 +371,27 @@ class _Git:
             raise ActionsError(f"push of {branch} was rejected or failed: {r.stderr.strip()[:300]}")
 
 
+def _remote_head(git: _Git, branch: str) -> str:
+    r = git("ls-remote", "origin", f"refs/heads/{branch}")
+    if r.returncode != 0:
+        raise ActionsError(f"ls-remote failed: {r.stderr.strip()[:300]}")
+    remote = r.stdout.split()[0] if r.stdout.strip() else ""
+    if remote and not _SHA.fullmatch(remote):
+        raise ActionsError("ls-remote returned a malformed sha")
+    return remote
+
+
+def _sync_remote(git: _Git, branch: str) -> str:
+    """Make origin's branch equal local HEAD (push if behind, refuse if diverged). Returns local HEAD."""
+    local = git.out("rev-parse", "HEAD")
+    remote = _remote_head(git, branch)
+    if remote != local:
+        if remote and git("merge-base", "--is-ancestor", remote, local).returncode != 0:
+            raise ActionsError("remote branch has diverged from the local branch; refusing to force")
+        git.push(branch)
+    return local
+
+
 class ActionsLauncher(Launcher):
     def __init__(self, policy: Policy, client: ActionsClient, runner: Callable[..., ProcResult] = default_run,
                  new_request_id: Callable[[], str] = lambda: secrets.token_hex(8)):
@@ -376,23 +403,32 @@ class ActionsLauncher(Launcher):
         return WorkerResult(rc, text[:MAX_TEXT_CHARS], 0, 0, 0.0, False, model)
 
     def run(self, role, prompt, cwd, model=None, max_budget_usd=None):
+        return self._execute(role, prompt, cwd, model, max_budget_usd, collect=False)[0]
+
+    def collect(self, role, prompt, cwd, model=None, max_budget_usd=None):
+        """Same dispatch, wait, download and `result.json` validation as `run`, but the patch comes back as
+        untrusted bytes and is never applied, committed or pushed. The branch pushed before dispatch is the
+        ordinary one: nothing the worker produced is ever pushed from here."""
+        return self._execute(role, prompt, cwd, model, max_budget_usd, collect=True)
+
+    def _execute(self, role, prompt, cwd, model, max_budget_usd, collect: bool) -> Tuple[WorkerResult, bytes]:
         m = self._claude.model_for(role, model)   # raises LauncherError for an unknown role
         try:
-            return self._run_sandboxed(role, prompt, Path(cwd), m, max_budget_usd)
+            return self._run_sandboxed(role, prompt, Path(cwd), m, max_budget_usd, collect)
         except ActionsTimeout as e:
-            return self._failed(f"sandbox worker timed out: {e}", m, 124)
+            return self._failed(f"sandbox worker timed out: {e}", m, 124), b""
         except PathDenied as e:
-            return self._failed(f"{SANDBOX_REJECTED_PREFIX} {e}", m)
+            return self._failed(f"{SANDBOX_REJECTED_PREFIX} {e}", m), b""
         except (ActionsError, OSError) as e:
-            return self._failed(f"sandbox worker failed: {e}", m)
+            return self._failed(f"sandbox worker failed: {e}", m), b""
 
-    def _run_sandboxed(self, role, prompt, cwd, m, max_budget_usd) -> WorkerResult:
+    def _run_sandboxed(self, role, prompt, cwd, m, max_budget_usd, collect: bool) -> Tuple[WorkerResult, bytes]:
         git = _Git(self._run, cwd)
         branch = git.branch()
         b64 = base64.b64encode(gzip.compress(prompt.encode("utf-8"), mtime=0)).decode("ascii")
         if len(b64) > MAX_PROMPT_B64:
             return self._failed(f"prompt too large for a workflow_dispatch input ({len(b64)} encoded "
-                                f"characters, cap {MAX_PROMPT_B64}); nothing was dispatched", m)
+                                f"characters, cap {MAX_PROMPT_B64}); nothing was dispatched", m), b""
         git.push(branch)
         start_sha = git.out("rev-parse", "HEAD")
         request_id = self._rid()
@@ -405,10 +441,16 @@ class ActionsLauncher(Launcher):
                                                   fields, f"factory-result-{request_id}")
         if d is None:
             raise ActionsError(f"run concluded {conclusion or 'unknown'} with no result artifact")
+        patch = b""
         try:
             res = parse_result(read_artifact_file(d, "result.json", MAX_RESULT_BYTES), request_id, start_sha)
-            patch = read_artifact_file(d, "changes.patch", MAX_PATCH_BYTES + 1)
-            self._apply(git, patch, d / "changes.patch", role, start_sha, branch)
+            raw = read_artifact_file(d, "changes.patch", MAX_PATCH_BYTES + 1)
+            if collect:
+                if len(raw) > MAX_PATCH_BYTES:
+                    raise ActionsError("collected patch is too large")
+                patch = raw
+            else:
+                self._apply(git, raw, d / "changes.patch", role, start_sha, branch)
         finally:
             self._client.cleanup(d)
         rc = res["returncode"]
@@ -416,7 +458,7 @@ class ActionsLauncher(Launcher):
             rc = 1
         cost = res["total_cost_usd"]
         return WorkerResult(rc, res["result"][:MAX_TEXT_CHARS], res["input_tokens"], res["output_tokens"],
-                            float(cost) if cost is not None else 0.0, cost is not None, m)
+                            float(cost) if cost is not None else 0.0, cost is not None, m), patch
 
     def _apply(self, git: _Git, patch: bytes, patch_file: Path, role: str, start_sha: str, branch: str) -> None:
         if not validate_patch(patch, patch_file, git.cwd, self._run):
@@ -449,17 +491,7 @@ class ActionsGateRunner(GateRunner):
     def _run_gates(self, worktree: Path) -> GateResult:
         git = _Git(self._run, worktree)
         branch = git.branch()
-        local = git.out("rev-parse", "HEAD")
-        r = git("ls-remote", "origin", f"refs/heads/{branch}")
-        if r.returncode != 0:
-            raise ActionsError(f"ls-remote failed: {r.stderr.strip()[:300]}")
-        remote = r.stdout.split()[0] if r.stdout.strip() else ""
-        if remote and not _SHA.fullmatch(remote):
-            raise ActionsError("ls-remote returned a malformed sha")
-        if remote != local:
-            if remote and git("merge-base", "--is-ancestor", remote, local).returncode != 0:
-                raise ActionsError("remote branch has diverged from the local branch; refusing to force")
-            git.push(branch)
+        local = _sync_remote(git, branch)
         request_id = self._rid()
         conclusion, d = self._client.run_workflow(self._workflow, "factory-gates",
                                                   {"branch": branch, "request_id": request_id},
@@ -476,3 +508,41 @@ class ActionsGateRunner(GateRunner):
         if ran != local:
             raise ActionsError("gates ran on a different commit than the local head")
         return GateResult(parse_verdict(text), text)
+
+
+class ActionsVerifier(Verifier):
+    """Dispatches factory-verify.yml: the revert check and the sealed run, on an ephemeral runner."""
+
+    def __init__(self, policy: Policy, client: ActionsClient, runner: Callable[..., ProcResult] = default_run,
+                 new_request_id: Callable[[], str] = lambda: secrets.token_hex(8)):
+        self._policy, self._client, self._run, self._rid = policy, client, runner, new_request_id
+
+    def verify(self, worktree, issue, bundle):
+        try:
+            return self._verify(Path(worktree), int(issue), bundle)
+        except (ActionsError, VerifyError, OSError) as e:   # includes timeouts and a denied branch
+            return VerifyResult.unavailable(f"actions verify: {e}")
+
+    def _verify(self, worktree: Path, issue: int, bundle: Optional[bytes]) -> VerifyResult:
+        git = _Git(self._run, worktree)
+        branch = git.branch()
+        local = _sync_remote(git, branch)
+        if _remote_head(git, branch) != local:
+            raise ActionsError("remote branch does not equal local HEAD after the push")
+        b64, oversize = prepare_bundle(bundle)   # an oversize bundle is dropped, never dispatched
+        request_id = self._rid()
+        if not REQUEST_ID_RE.fullmatch(request_id):
+            raise ActionsError("generated request id is malformed")
+        fields = {"branch": branch, "request_id": request_id, "expected_sha": local, "issue": str(issue),
+                  "sealed_b64": b64}
+        conclusion, d = self._client.run_workflow(self._policy.sandbox.verify_workflow, "factory-verify",
+                                                  fields, f"factory-verify-{request_id}")
+        if d is None:
+            raise ActionsError(f"run concluded {conclusion or 'unknown'} with no verify artifact")
+        try:
+            if conclusion != "success":
+                raise ActionsError(f"verify run concluded {conclusion or 'unknown'}")
+            raw = read_artifact_file(d, "verify.json", MAX_VERIFY_BYTES)
+        finally:
+            self._client.cleanup(d)
+        return finish(parse_verify(raw, request_id, local, sent_bundle=bool(b64)), oversize)

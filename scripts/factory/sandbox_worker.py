@@ -150,7 +150,7 @@ def run(environ: Mapping[str, str], policy: Policy,
     if sha.returncode != 0 or not re.fullmatch(r"[0-9a-f]{40}", start_sha):
         raise SandboxInputError("cannot resolve the start commit")
 
-    argv = ClaudeLauncher(policy).build_argv(str(v["model"]), float(v["budget"]))
+    argv = ClaudeLauncher(policy).build_argv(str(v["model"]), float(v["budget"]), role=str(v["role"]))
     # Ignore project and local settings (hooks, env overrides, apiKeyHelper) and project MCP config
     # from the worker-controlled branch. Both flags are in the Claude Code CLI reference.
     argv += ["--setting-sources", "user", "--strict-mcp-config"]
