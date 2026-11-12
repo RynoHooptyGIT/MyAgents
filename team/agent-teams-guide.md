@@ -53,10 +53,10 @@ Create a fullstack team to design the new authentication system
 
 ### 2. Creative Squad (Innovation)
 
-**Members:** creative-thinking-coach, design-strategy-coach, storyteller-presenter
+**Members:** creative-coach
 **Best for:** Innovation, problem solving, creative exploration
-**Lead Agent:** Design-strategy coach coordinates
-**Typical Size:** 3 agents (all CIS agents)
+**Lead Agent:** creative-coach (design strategy, creative thinking and storytelling in one role card)
+**Typical Size:** 1 agent
 
 **Example Usage:**
 ```
@@ -64,9 +64,7 @@ Spawn creative squad to brainstorm solutions for user retention
 ```
 
 **Expected Workflow:**
-- Design-strategy coach leads exploration and ensures user-centricity
-- Creative-thinking coach facilitates ideation and analyzes constraints
-- Storyteller-presenter crafts narratives and visualizes concepts
+- creative-coach frames the challenge (design strategy), facilitates ideation (creative thinking) and crafts the narrative (storytelling)
 
 ### 3. Implementation Team (Parallel Development)
 
@@ -424,12 +422,12 @@ Result: Multi-dimensional review catching issues single reviewer might miss
 ```
 Spawn creative squad to brainstorm innovative features for user retention
 
-Expected team: All 3 CIS agents
+Expected team: creative-coach
 
 Workflow:
-1. Design-strategy coach frames the challenge and ensures user-centricity
-2. Creative-thinking coach facilitates wild idea generation and analyzes constraints
-3. Storyteller-presenter crafts compelling narratives and visualizes top concepts
+1. Frame the challenge and ensure user-centricity (design strategy)
+2. Facilitate wild idea generation and analyze constraints (creative thinking)
+3. Craft compelling narratives and visualize top concepts (storytelling)
 
 Result: Diverse, creative solutions with user validation plans
 ```

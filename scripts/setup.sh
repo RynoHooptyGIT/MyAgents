@@ -107,7 +107,7 @@ rm -rf "$TARGET_DIR/team/_memory/_learnings"
 mkdir -p "$TARGET_DIR/team/_memory/_learnings/instincts"
 touch "$TARGET_DIR/team/_memory/_learnings/instincts/.gitkeep"
 
-echo -e "  ${GREEN}✓${NC} team/ directory installed (28 agents, 70+ workflows)"
+echo -e "  ${GREEN}✓${NC} team/ directory installed ($(grep -l '^role: ' "$TEAM_ROOT/team/agents/"*.md | wc -l | tr -d ' ') agents, 70+ workflows)"
 
 # ── Step 2: Generate config ─────────────────────────────────────
 echo -e "${CYAN}[2/6] Generating configuration...${NC}"

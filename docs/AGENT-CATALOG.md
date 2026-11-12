@@ -62,14 +62,6 @@
 - **When to use**: When creating or reviewing technical documentation, generating API docs, or curating knowledge bases. Paige transforms complex concepts into accessible, structured documentation with the patience of an educator explaining to a friend.
 - **Slash command**: `/team:tech-writer`
 
-### Quick Flow Solo Dev / Barry
-
-- **Domain**: Rapid development, tech spec creation, prototyping, lean implementation
-- **When to use**: When you need quick implementation with minimum ceremony -- small features, prototypes, bug fixes, or spikes that do not warrant full story lifecycle overhead. Barry handles everything from tech spec creation through implementation with ruthless efficiency. "Code that ships is better than perfect code that doesn't."
-- **Slash command**: `/team:quick-flow-solo-dev`
-
----
-
 ## Quality and Testing
 
 ### Test Architect / Murat
@@ -164,55 +156,21 @@
 
 ## Creative Innovation
 
-### Creative Thinking Coach / Carson
+### Creative Coach
 
-- **Domain**: Brainstorming facilitation, systematic problem solving, TRIZ, root cause analysis, creative ideation
-- **When to use**: When you need structured brainstorming, systematic problem solving, reverse brainstorming, or root cause analysis (5 Whys + Fishbone). Carson combines the energy of an improv brainstorming coach with the analytical rigor of a systems thinker. Note: brainstorming outputs must flow through the pipeline (update epics/PRD, create stories) before implementation.
-- **Slash command**: `/team:creative-thinking-coach`
-
-### Design & Strategy Coach / Maya
-
-- **Domain**: Human-centered design, empathy mapping, design thinking, business model innovation, Jobs-to-be-Done, Blue Ocean Strategy
-- **When to use**: When applying design thinking methodology, creating empathy maps, designing business model canvases, or exploring innovation strategy. Maya combines 15+ years of design thinking expertise with strategic disruption capabilities -- empathy first, strategy second.
-- **Slash command**: `/team:design-strategy-coach`
-
-### Storyteller & Visual Presenter / Sophia
-
-- **Domain**: Narrative strategy, storytelling frameworks, visual communication, presentation design, pitch decks, infographics
-- **When to use**: When crafting compelling narratives, designing presentations, building pitch decks, or creating visual communications. Sophia combines 50+ years of storytelling mastery with visual communication and presentation design expertise. Preserves storytelling memory (preferences and history) across sessions.
-- **Slash command**: `/team:storyteller-presenter`
+- **Domain**: Brainstorming facilitation, systematic problem solving (TRIZ, 5 Whys, Fishbone), design thinking, empathy mapping, business model innovation, Jobs-to-be-Done, narrative strategy, presentation and pitch-deck design
+- **When to use**: Structured brainstorming, design-thinking sessions, innovation strategy, or crafting narratives and presentations. Brainstorming outputs must flow through the pipeline (update epics/PRD, create stories) before implementation.
+- **Slash command**: `/team:creative-coach`
 
 ---
 
 ## Builders
 
-### Agent Builder / Bond
+### Builder
 
-- **Domain**: Agent design, persona development, system compliance, agent architecture
-- **When to use**: When creating new custom agents for your project. Bond guides you through an 8-step process: brainstorm, discovery, type/metadata, persona, commands/menu, activation, build, and celebration. Can create simple agents, expert agents, or module agents, all compliant.
-- **Slash command**: `/team:agent-builder`
-
-### Workflow Builder / Wendy
-
-- **Domain**: Workflow architecture, process design, state management, workflow optimization
-- **When to use**: When creating new custom workflows for your project. Wendy designs efficient, scalable workflows with clear entry/exit points, comprehensive error handling, and seamless integration.
-- **Slash command**: `/team:workflow-builder`
-
-### Module Builder / Morgan
-
-- **Domain**: Module architecture, integration patterns, end-to-end module development
-- **When to use**: When creating entirely new modules (collections of agents and workflows that serve a specific domain). Morgan guides the full module lifecycle from brief through creation, handling structure, configuration, installers, agents, workflows, and documentation.
-- **Slash command**: `/team:module-builder`
-
----
-
-## Core Platform
-
-### Platform Master
-
-- **Domain**: Platform operations, task execution, resource management, workflow orchestration
-- **When to use**: When you need direct access to the core system operations like document indexing, document sharding, or runtime resource management. The Master is the primary execution engine for platform operations. Refers to himself in the 3rd person.
-- **Slash command**: `/team:bmad-master`
+- **Domain**: Agent, workflow and module design for this platform
+- **When to use**: Creating a compliant custom agent, a structured workflow, or an entire module (agents plus workflows for one domain). The same work is available as the `/team:agent`, `/team:workflow` and `/team:module` skills.
+- **Slash command**: `/team:builder`
 
 ---
 

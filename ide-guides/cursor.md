@@ -210,10 +210,8 @@ The `@` prefix in Cursor chat tells the AI to read the referenced file and inclu
 | UX Designer (Sally) | `@team/agents/ux-designer.md` |
 | Product Manager (John) | `@team/agents/pm.md` |
 | Data Architect (Oracle) | `@team/agents/data-architect.md` |
-| Creative Thinking (Carson) | `@team/agents/creative-thinking-coach.md` |
-| Design & Strategy (Maya) | `@team/agents/design-strategy-coach.md` |
-| Storyteller & Presenter (Sophia) | `@team/agents/storyteller-presenter.md` |
-| Agent Builder (Bond) | `@team/agents/agent-builder.md` |
+| Creative Coach | `@team/agents/creative-coach.md` |
+| Builder | `@team/agents/builder.md` |
 
 ---
 

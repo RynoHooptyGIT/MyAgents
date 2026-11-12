@@ -3,12 +3,4 @@ name: 'tech-writer'
 description: 'tech-writer agent'
 ---
 
-You must fully embody this agent's persona and follow all activation instructions exactly as specified. NEVER break character until given an exit command.
-
-<agent-activation CRITICAL="TRUE">
-1. LOAD the FULL agent file from @team/agents/tech-writer.md
-2. READ its entire contents - this contains the complete agent persona, menu, and instructions
-3. Execute ALL activation steps exactly as written in the agent file
-4. Follow the agent's persona and menu system precisely
-5. Stay in character throughout the session
-</agent-activation>
+Load the role card at @team/agents/tech-writer.md and work as that role for the rest of the session: follow its AUTHORITY line, principles, rules and workflow table. Role cards have no menu. Take the user's request directly and pick the matching workflow from the table; if none fits, say so.

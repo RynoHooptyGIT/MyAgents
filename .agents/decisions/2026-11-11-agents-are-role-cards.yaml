@@ -1,0 +1,7 @@
+decided_by: ceo
+story_id: "agent-role-cards"
+date: 2026-11-11
+decision: "The software factory (docs/specs/2026-11-10-software-factory-design.md) is the main path and the Fable orchestrator routes work through it. team/agents/*.md are plain role cards: frontmatter (name, description, role, tools for advisors), an AUTHORITY line, Role / Communication / Principles / Rules / Workflows sections and any domain knowledge. No activation XML, greetings, numbered menus, named personas or party mode. bmad-master and quick-flow-solo-dev are removed; agent-, module- and workflow-builder merged into builder; the three coaches merged into creative-coach. oracle.md, oracle-dispatch-map.md and oracle-reference/ are unchanged."
+rationale: "The factory launcher builds its own prompts and routes models; it never reads agent files, so the interactive shell (about 1,100 lines across 28 files) was dead weight and a maintenance cost. Role cards keep the domain knowledge the orchestrator and subagents actually use. scripts/apply-contract.sh now wires the AUTHORITY line into role cards and still supports legacy activation XML."
+affects_agents: all
+acknowledged_by: []
