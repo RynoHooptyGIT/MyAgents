@@ -125,7 +125,7 @@ Please load the agent from team/agents/security-auditor.md and follow its activa
 ```
 
 ```
-Please load the agent from team/agents/creative-thinking-coach.md and follow its activation protocol.
+Please load the role card from team/agents/creative-coach.md and work as that role.
 ```
 
 ### Agent File Locations
@@ -144,11 +144,8 @@ Please load the agent from team/agents/creative-thinking-coach.md and follow its
 | Analyst (Mary) | `team/agents/analyst.md` |
 | Data Architect (Oracle) | `team/agents/data-architect.md` |
 | API Contract (Pact) | `team/agents/api-contract.md` |
-| Quick Flow (Barry) | `team/agents/quick-flow-solo-dev.md` |
-| Creative Thinking (Carson) | `team/agents/creative-thinking-coach.md` |
-| Design & Strategy (Maya) | `team/agents/design-strategy-coach.md` |
-| Storyteller & Presenter (Sophia) | `team/agents/storyteller-presenter.md` |
-| Agent Builder (Bond) | `team/agents/agent-builder.md` |
+| Creative Coach | `team/agents/creative-coach.md` |
+| Builder | `team/agents/builder.md` |
 
 ---
 

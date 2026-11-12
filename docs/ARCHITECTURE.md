@@ -481,7 +481,7 @@ teams:
 
   creative:
     name: "Creative Squad"
-    members: [creative-thinking-coach, design-strategy-coach, storyteller-presenter]
+    members: [creative-coach]
     best_for: ["Innovation strategy", "Creative problem solving"]
 ```
 

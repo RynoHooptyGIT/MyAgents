@@ -49,8 +49,8 @@ Claude Code has the deepest integration with native support for every feature.
 /team:dev-story    # Run dev-story workflow
 /team:code-review  # Run code review
 /team:ship         # Ship (commit, push, PR)
-/team:creative-thinking-coach  # Invoke creative thinking
-/team:agent-builder   # Build a custom agent
+/team:creative-coach  # Brainstorming, design strategy, storytelling
+/team:builder         # Build a custom agent, workflow or module
 ```
 
 Commands are organized in a flat `claude-commands/team/` directory with a unified `/team:*` namespace.

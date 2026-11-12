@@ -77,7 +77,6 @@ Invoke any agent directly:
 /team:analyst             # Analyst (Mary)
 /team:ux-designer         # UX Designer (Sally)
 /team:tech-writer         # Tech Writer (Paige)
-/team:quick-flow-solo-dev # Quick Flow Solo Dev (Barry)
 /team:api-contract        # API Contract (Pact)
 /team:agentic-expert      # Agentic Expert (Nexus)
 /team:ml-expert           # ML Expert (Neuron)
@@ -85,13 +84,8 @@ Invoke any agent directly:
 /team:healthcare-expert   # Healthcare Expert (Dr. Vita)
 /team:government-expert   # Government Expert (Senator)
 /team:financial-expert    # Financial Expert (Sterling)
-/team:creative-thinking-coach   # Creative Thinking Coach (Carson)
-/team:design-strategy-coach     # Design & Strategy Coach (Maya)
-/team:storyteller-presenter     # Storyteller & Presenter (Sophia)
-/team:agent-builder       # Agent Builder (Bond)
-/team:workflow-builder    # Workflow Builder (Wendy)
-/team:module-builder      # Module Builder (Morgan)
-/team:bmad-master        # Master
+/team:creative-coach      # Creative Coach (brainstorming, design strategy, storytelling)
+/team:builder             # Builder (agents, workflows, modules)
 ```
 
 ### Workflow Commands
@@ -256,7 +250,7 @@ Teams are defined in `team/manifest.yaml`:
 |------|---------|----------|
 | **fullstack** | analyst, architect, pm, ux-designer | Planning, architectural decisions |
 | **implementation** | dev, tea, tech-writer | Parallel development, test coverage |
-| **creative** | creative-thinking-coach, design-strategy-coach, storyteller-presenter | Innovation, creative problem solving |
+| **creative** | creative-coach | Innovation, creative problem solving |
 
 ### Invocation
 

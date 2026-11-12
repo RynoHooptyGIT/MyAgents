@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Wire team/engine/authority-contract.xml into every agent file.
-# Adds: frontmatter `role:` (+ `tools:` for advisors), activation <step n="2a">,
-# and an AUTHORITY <r> as the first rule. Idempotent — safe to re-run.
+# Adds: frontmatter `role:` (+ `tools:` for advisors) and an AUTHORITY line.
+# Role cards (plain markdown) get the line after their first heading; legacy
+# activation-XML agents get <step n="2a"> plus an AUTHORITY <r> as the first rule.
+# Idempotent — safe to re-run.
 #
 # Usage: scripts/apply-contract.sh [--check] [--agents-dir DIR]
 #   --check   verify only; exit 1 and list gaps if any agent is unwired
@@ -27,6 +29,7 @@ CONTRACT_PATH='{project-root}/team/engine/authority-contract.xml'
 ADVISOR_TOOLS='Read, Grep, Glob, WebFetch, WebSearch'
 STEP_2A='      <step n="2a">Load '"$CONTRACT_PATH"' and adopt the role named in this file'"'"'s frontmatter (role: supervisor | worker | advisor). Hard rules there override any menu item, workflow step, or persona principle.</step>'
 RULE_LINE='      <r>AUTHORITY: '"$CONTRACT_PATH"' hard rules override any menu item, workflow step, or persona principle. If constructing a reason to skip one, that IS the signal to follow it.</r>'
+CARD_LINE='AUTHORITY: '"$CONTRACT_PATH"' hard rules override any workflow step or principle in this file. If constructing a reason to skip one, that IS the signal to follow it.'
 
 role_for() {
   case "$1" in
@@ -38,8 +41,9 @@ role_for() {
 
 has_role()  { grep -q '^role: "' "$1"; }
 has_tools() { grep -q '^tools: ' "$1"; }
-has_step()  { grep -q '<step n="2a">' "$1"; }
-has_rule()  { grep -q '<r>AUTHORITY: ' "$1"; }
+is_legacy() { grep -q '<activation' "$1"; }
+has_step()  { ! is_legacy "$1" || grep -q '<step n="2a">' "$1"; }
+has_rule()  { grep -q 'AUTHORITY: {project-root}/team/engine/authority-contract.xml' "$1"; }
 
 # Insert `role:` (and `tools:` for advisors) after the `description:` line of the frontmatter.
 add_frontmatter() {  # file role
@@ -66,14 +70,26 @@ add_step() {  # file
   ' "$1" > "$tmp" && mv "$tmp" "$1"
 }
 
-# Insert the AUTHORITY rule as the first line after <rules>.
+# Legacy: insert the AUTHORITY rule as the first line after <rules>.
+# Role card: insert the AUTHORITY line (blank-line separated) after the first
+# `# ` heading, or after the closing frontmatter `---` when there is no heading.
 add_rule() {  # file
   local tmp; tmp="$(mktemp)"
-  awk -v rule="$RULE_LINE" '
-    BEGIN { done=0 }
-    { print }
-    !done && /<rules>/ { print rule; done=1 }
-  ' "$1" > "$tmp" && mv "$tmp" "$1"
+  if is_legacy "$1"; then
+    awk -v rule="$RULE_LINE" '
+      BEGIN { done=0 }
+      { print }
+      !done && /<rules>/ { print rule; done=1 }
+    ' "$1" > "$tmp" && mv "$tmp" "$1"
+  else
+    local anchor='^# '
+    grep -q "$anchor" "$1" || anchor='^---$'   # no heading: use the closing frontmatter fence
+    awk -v rule="$CARD_LINE" -v anchor="$anchor" '
+      BEGIN { seen=0; done=0 }
+      { print }
+      !done && $0 ~ anchor { seen++; if (anchor == "^---$" && seen < 2) next; print ""; print rule; done=1 }
+    ' "$1" > "$tmp" && mv "$tmp" "$1"
+  fi
 }
 
 GAPS=0

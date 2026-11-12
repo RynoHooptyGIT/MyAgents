@@ -12,15 +12,15 @@ The easiest way to create a compliant agent is through the Agent Builder workflo
 
 **Claude Code:**
 ```
-/team:agent-builder
+/team:builder
 ```
 
 **Other tools:**
 ```
-Load the agent from team/agents/agent-builder.md and follow its activation protocol.
+Load the role card from team/agents/builder.md and work as that role.
 ```
 
-Bond (the Agent Builder) guides you through an 8-step process:
+The builder guides you through an 8-step process:
 
 1. **Brainstorm** -- Define what the agent should do and why
 2. **Discovery** -- Explore the domain and identify capabilities
@@ -131,10 +131,10 @@ idempotently, and `bash scripts/apply-contract.sh --check` is a release gate. Th
 
 **Other tools:**
 ```
-Load the agent from team/agents/workflow-builder.md and follow its activation protocol.
+Load the role card from team/agents/builder.md and work as that role.
 ```
 
-Wendy (the Workflow Builder) guides you through creating a structured workflow with proper YAML configuration, instruction steps, templates, and validation.
+The builder guides you through creating a structured workflow with proper YAML configuration, instruction steps, templates, and validation.
 
 ### Manual Workflow Creation
 
@@ -288,7 +288,6 @@ Use the agent's `name` field (from agent-manifest.csv) as the member identifier:
 | `tea` | Murat (Test Architect) |
 | `tech-writer` | Paige (Tech Writer) |
 | `ux-designer` | Sally (UX Designer) |
-| `quick-flow-solo-dev` | Barry (Quick Flow Solo Dev) |
 | `custodian` | Sentinel (Custodian) |
 | `security-auditor` | Shield (Security) |
 | `devops` | Forge (DevOps) |
@@ -300,9 +299,8 @@ Use the agent's `name` field (from agent-manifest.csv) as the member identifier:
 | `healthcare-expert` | Dr. Vita (Healthcare) |
 | `government-expert` | Senator (Government) |
 | `financial-expert` | Sterling (Financial) |
-| `creative-thinking-coach` | Carson (Creative Thinking) |
-| `design-strategy-coach` | Maya (Design & Strategy) |
-| `storyteller-presenter` | Sophia (Storyteller & Presenter) |
+| `creative-coach` | Creative Coach |
+| `builder` | Builder |
 
 ### Team Configuration Options
 
@@ -431,10 +429,10 @@ For large-scale customization, create an entirely new module using the Module Bu
 
 **Claude Code:**
 ```
-/team:module-builder
+/team:builder
 ```
 
-Morgan (the Module Builder) guides you through creating a complete module with:
+The builder guides you through creating a complete module with:
 - `config.yaml` -- Module configuration
 - `agents/` -- Module-specific agents
 - `workflows/` -- Module-specific workflows

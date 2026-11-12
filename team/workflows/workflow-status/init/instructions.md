@@ -117,7 +117,7 @@ Choice [1/2]:</ask>
 <action>Map to selected_track: method/enterprise</action>
 
 <output>🚀 **For Quick Flow (minimal planning, straight to code):**
-Load the **quick-flow-solo-dev** agent instead - use Quick Flow agent for faster development</output>
+Use the **dev** role card with the `/team:quick-dev` skill for faster development</output>
 
 <template-output>field_type</template-output>
 <template-output>selected_track</template-output>
@@ -184,7 +184,7 @@ Continue with software workflows? (y/n)</output>
 - Benefit: Comprehensive planning for complex systems
 
 **🚀 For Quick Flow (minimal planning, straight to code):**
-Load the **quick-flow-solo-dev** agent instead - use Quick Flow agent for faster development
+Use the **dev** role card with the `/team:quick-dev` skill for faster development
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -197,17 +197,17 @@ Load the **quick-flow-solo-dev** agent instead - use Quick Flow agent for faster
 1. Standard Method {{#if recommended}}(recommended){{/if}}
 2. Enterprise Method
 3. Help me decide
-4. Switch to Quick Flow (use quick-flow-solo-dev agent)
+4. Switch to Quick Flow (dev role card + /team:quick-dev)
 
 Choice [1/2/3/4]:</ask>
 
 <check if="choice == 4">
   <output>🚀 **Switching to Quick Flow!**
 
-Load the **quick-flow-solo-dev** agent instead:
+Use the **dev** role card with `/team:quick-dev`:
 
 - Start a new chat
-- Load the quick-flow-solo-dev agent
+- Load the dev role card (/team:dev) and run /team:quick-dev
 - Use Quick Flow for minimal planning and faster development
 
 Quick Flow is perfect for:
@@ -277,7 +277,7 @@ Enter numbers (e.g., "1,2" or "none"): </ask>
 <action>Analyze artifacts to detect track:
 - Has PRD → Standard Method
 - Has Security/DevOps → Enterprise Method
-- Has tech-spec only → Suggest switching to quick-flow-solo-dev agent
+- Has tech-spec only → Suggest Quick Flow (dev role card + /team:quick-dev)
 </action>
 
 <output>Detected: **{{detected_track}}** based on {{found_artifacts}}</output>
@@ -287,7 +287,7 @@ Enter numbers (e.g., "1,2" or "none"): </ask>
 
 1. Standard Method
 2. Enterprise Method
-3. Switch to Quick Flow (use quick-flow-solo-dev agent)
+3. Switch to Quick Flow (dev role card + /team:quick-dev)
 
 Choice:</ask>
 

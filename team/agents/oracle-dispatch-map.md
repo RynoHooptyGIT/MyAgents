@@ -38,14 +38,12 @@ Athena recommends these via their `/team:` command. The user invokes them.
 | Compliance (NIST) | Atlas | /team:nist-rmf-expert | Regulatory gaps, NIST RMF framework |
 | Compliance (HIPAA) | Dr. Vita | /team:healthcare-expert | Healthcare regulatory, HIPAA |
 | Code health | Sentinel | /team:custodian | Repo health, dead code, pattern audit |
-| Quick fix | Barry | /team:quick-flow-solo-dev | Small isolated fix, prototype |
+| Quick fix | dev | /team:quick-dev | Small isolated fix, prototype |
 | ML / model eval | Neuron | /team:ml-expert | Model selection, evaluation, MLOps |
 | Compliance (Gov) | Senator | /team:government-expert | Government regulations, public-sector policy |
 | Compliance (Financial) | Sterling | /team:financial-expert | Financial-services regulation, AI governance |
 | PRD / product | John | /team:pm | PRD creation/editing, product requirements |
-| Brainstorming | Carson | /team:creative-thinking-coach | Idea exploration, creative thinking |
-| Design / innovation | Maya | /team:design-strategy-coach | Design thinking, innovation strategy |
-| Storytelling | Sophia | /team:storyteller-presenter | Narratives, presentations |
+| Brainstorming / design / storytelling | creative-coach | /team:creative-coach | Idea exploration, design thinking, innovation strategy, narratives, presentations |
 | Sprint lifecycle | Athena | Self (CS, DS, CR, SH) | Story creation, dev, review, ship |
 | Learning | Athena | /team:instincts | Repeated user corrections, "we keep doing this", `[instincts] … pending` banner at session start |
 
